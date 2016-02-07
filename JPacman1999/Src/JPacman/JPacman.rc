@@ -1,0 +1,151 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+GFX_MENU                BITMAP  DISCARDABLE     "gfx_menu.bmp"
+GFX_GAME                BITMAP  DISCARDABLE     "gfx_game.bmp"
+GFX_INTRO               BITMAP  DISCARDABLE     "gfx_intro.bmp"
+GFX_PUNTAJES            BITMAP  DISCARDABLE     "gfx_puntajes.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+JPACMAN_ICON            ICON    DISCARDABLE     "JPacman.ico"
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x29L
+#else
+ FILEFLAGS 0x28L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "340a04b0"
+        BEGIN
+            VALUE "Comments", "JPacman\0"
+            VALUE "CompanyName", "JPL Soft\0"
+            VALUE "FileDescription", "JPacman\0"
+            VALUE "FileVersion", "1,0,0,0\0"
+            VALUE "InternalName", "JPacman\0"
+            VALUE "LegalCopyright", "Copyright © 1998-1999 Juan Pablo Lastra\0"
+            VALUE "LegalTrademarks", "-\0"
+            VALUE "OriginalFilename", "JPacman.exe\0"
+            VALUE "PrivateBuild", "-\0"
+            VALUE "ProductName", " JPacman\0"
+            VALUE "ProductVersion", "1, 0, 0, 0\0"
+            VALUE "SpecialBuild", "-\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x340a, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Spanish (Castilian) (unknown sub-lang: 0xD) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESL)
+#ifdef _WIN32
+LANGUAGE LANG_SPANISH, 0xD
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+POINT                   WAVE    DISCARDABLE     "Point.wav"
+REVENGE                 WAVE    DISCARDABLE     "revenge.wav"
+FRUIT                   WAVE    DISCARDABLE     "fruit.wav"
+EYES                    WAVE    DISCARDABLE     "eyes.wav"
+REVENGETIME             WAVE    DISCARDABLE     "revengetime.wav"
+#endif    // Spanish (Castilian) (unknown sub-lang: 0xD) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
