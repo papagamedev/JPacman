@@ -1,5 +1,3 @@
-#define INITGUID
-
 #include "JPacman.h"
 
 HWND                    hWndMain;

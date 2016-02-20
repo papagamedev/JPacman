@@ -1,6 +1,8 @@
 #ifndef JPACMAN_INCLUDED
 #define JPACMAN_INCLUDED
 
+#define INITGUID
+
 #undef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -8,7 +10,9 @@
 #include <mmsystem.h>
 #include <ddraw.h>
 #include <dsound.h>
-#include <dmusici.h>
+#ifdef DIRECTMUSIC_SUPPORT
+# include <dmusici.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <io.h>
@@ -151,9 +155,6 @@ void StampPalette(void);
 void FadeIn(void);
 void FadeOut(void);
 
-void InitializeSound(void);
-void DestroySound(void);
-
 void LoadScores(void);
 void SaveScores(void);
 void LoadConfig(void);
@@ -161,7 +162,7 @@ void SaveConfig(void);
 void UpdateConfig(int save=FALSE);
 
 extern unsigned Score;
-extern PuntajesMode;
+extern int PuntajesMode;
 
 BOOL InitMusic(void);
 void UninitMusic(void);

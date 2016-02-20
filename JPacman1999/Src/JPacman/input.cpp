@@ -1,10 +1,14 @@
-#include <dinput.h>
-#include "input.h"
+#include "JPacman.h"
+
 #include "resource.h"
+#include "input.h"
+
+#ifdef DIRECTINPUT_SUPPORT
+#include <dinput.h>
+#endif
 
 extern HWND hWndMain;
 extern void ReadKeyboardInput(void);
-extern void ReadJoystickInput(void);
 
 #define MAX_SCANCODE 85
 
@@ -31,8 +35,12 @@ int InputMode=0;
 char CurrentKey;
 int ShiftMode=FALSE;
 
+
+
 // allocate external variables
 void (*ReadGameInput)(void) = ReadKeyboardInput;
+
+#ifdef DIRECTINPUT_SUPPORT
 
 /*
  *  We'll use up to the first ten input devices.
@@ -42,13 +50,12 @@ void (*ReadGameInput)(void) = ReadKeyboardInput;
  *  g_pdevCurrent is the device that we are using for input.
  */
 
-
 #define MAX_DINPUT_DEVICES 10
 int g_cpdevFound;
 LPDIRECTINPUTDEVICE2 g_rgpdevFound[MAX_DINPUT_DEVICES];
 LPDIRECTINPUTDEVICE2 g_pdevCurrent;
 
-
+#endif
 
 
 /*--------------------------------------------------------------------------
@@ -61,6 +68,7 @@ LPDIRECTINPUTDEVICE2 g_pdevCurrent;
 |
 *-------------------------------------------------------------------------*/
 
+#ifdef DIRECTINPUT_SUPPORT
 
 void AddInputDevice(LPDIRECTINPUTDEVICE pdev, LPCDIDEVICEINSTANCE pdi)
 {
@@ -93,7 +101,6 @@ void AddInputDevice(LPDIRECTINPUTDEVICE pdev, LPCDIDEVICEINSTANCE pdi)
         }
     }
 }
-
 
 /*--------------------------------------------------------------------------
 |
@@ -187,6 +194,7 @@ BOOL InitKeyboardInput(LPDIRECTINPUT pdi)
 
    return TRUE;
 }
+#endif
 
 /*--------------------------------------------------------------------------
 | InitJoystickInput
@@ -299,6 +307,7 @@ BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 
 BOOL InitInput(HINSTANCE hInst, HWND hWnd)
 {
+#ifdef DIRECTINPUT_SUPPORT
    LPDIRECTINPUT pdi;
    BOOL fRc;
 
@@ -340,7 +349,7 @@ BOOL InitInput(HINSTANCE hInst, HWND hWnd)
 */
    // Default device is the keyboard
    PickInputDevice(0);
-
+#endif
    // if we get here, we were successful
    return TRUE;
 }
@@ -352,6 +361,7 @@ BOOL InitInput(HINSTANCE hInst, HWND hWnd)
 *-------------------------------------------------------------------------*/
 void CleanupInput(void)
 {
+#ifdef DIRECTINPUT_SUPPORT
    int idev;
 
    // make sure the device is unacquired
@@ -370,7 +380,7 @@ void CleanupInput(void)
          g_rgpdevFound[idev] = 0;
       }
    }
-
+#endif
 }
 
 
@@ -383,7 +393,8 @@ void CleanupInput(void)
 *-------------------------------------------------------------------------*/
 BOOL ReacquireInput(void)
 {
-    HRESULT hRes;
+#ifdef DIRECTINPUT_SUPPORT
+	HRESULT hRes;
 
     // if we have a current device
     if(g_pdevCurrent)
@@ -402,13 +413,13 @@ BOOL ReacquireInput(void)
        }
     }
     else
-    {
+#endif
+	{
        // we don't have a current device
        return FALSE;
     }
 
 }
-
 
 /*--------------------------------------------------------------------------
 | ReadKeyboardInput
@@ -417,6 +428,8 @@ BOOL ReacquireInput(void)
 *-------------------------------------------------------------------------*/
 void ReadKeyboardInput(void)
 {
+#ifdef DIRECTINPUT_SUPPORT
+
    DIDEVICEOBJECTDATA      rgKeyData[KEYBUFSIZE];
    DWORD                   dwEvents;
    DWORD                   dw;
@@ -518,6 +531,7 @@ void ReadKeyboardInput(void)
 				else
 					CurrentKey=ScantoAsc[rgKeyData[dw].dwOfs];
 	}
+#endif
 }
 
 /*--------------------------------------------------------------------------
@@ -593,8 +607,11 @@ DWORD ReadJoystickInput(void)
 |
 *-------------------------------------------------------------------------*/
 
+#ifdef DIRECTINPUT_SUPPORT
+
 BOOL PickInputDevice(int n)
 {
+
     if (n < g_cpdevFound) {
 
         
@@ -629,4 +646,6 @@ BOOL PickInputDevice(int n)
         return FALSE;
     }
 }
+#endif
+
 

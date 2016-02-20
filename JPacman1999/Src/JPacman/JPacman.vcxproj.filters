@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{5761a301-44e6-4adf-95be-e526a5d4fe4e}</UniqueIdentifier>
+      <Extensions>*.h</Extensions>
+    </Filter>
+    <Filter Include="Fuentes">
+      <UniqueIdentifier>{a9181b68-bf7a-47dc-a277-0c573dabd774}</UniqueIdentifier>
+      <Extensions>*.cpp</Extensions>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{37e8004e-702b-4a6f-ace5-6a49d07910f9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ddutil.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="dsutil.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="JPacman.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ddutil.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="dsutil.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="gfx.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="intro.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="JPacman.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="music.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="puntajes.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+    <ClCompile Include="sfx.cpp">
+      <Filter>Fuentes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="JPacman.rc">
+      <Filter>Fuentes</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="eyes.wav">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="fruit.wav">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="Point.wav">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="revenge.wav">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="revengetime.wav">
+      <Filter>Resources</Filter>
+    </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="gfx_game.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="gfx_intro.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="gfx_menu.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="gfx_puntajes.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="JPacman.ico">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,8 @@
+JPacman1999/Src/MapEdit/Release/
+JPacman1999/Src/JPacman/Release/
+*.suo
+*.opendb
+*.sdf
+JPacman1999/Src/ipch/
+JPacman1999/Src/JPacman/Debug/
+JPacman1999/Src/MapEdit/Debug/

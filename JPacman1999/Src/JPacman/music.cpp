@@ -2,6 +2,9 @@
 
 int curmus=-1;
 
+#ifdef DIRECTMUSIC_SUPPORT
+
+
 IDirectMusicPerformance* lpPerf=NULL;
 IDirectMusicSegment* lpSgtIntro=NULL;
 IDirectMusicSegment* lpSgtMenu=NULL;
@@ -13,19 +16,26 @@ IDirectMusicSegment* lpSgtOops=NULL;
 IDirectMusicSegment* lpSgtWin=NULL;
 IDirectMusicSegment* lpSgtGameIntro=NULL;
 
+#endif
+
 int MusicEnabled=TRUE,MusicOn=TRUE;
 
 BOOL InitMusic()
 {
+#ifdef DIRECTMUSIC_SUPPORT
 	IDirectMusicLoader* lpLoader;
 
 	if (!lpDS)
+#endif
 	{
-bye:
+	bye:
 		MusicEnabled=FALSE;
 		MusicOn=FALSE;
 		return FALSE;
+
+
 	}
+#ifdef DIRECTMUSIC_SUPPORT
 
 	if (FAILED(CoInitialize(NULL)))
 		goto bye;
@@ -100,14 +110,16 @@ bye:
 		goto bye;
 
 	lpLoader->Release();
-
 	return TRUE;
+#endif
 }
 
 void UninitMusic()
 {
 	if (!MusicEnabled) return;
-	
+
+#ifdef DIRECTMUSIC_SUPPORT
+
 	if (lpSgtIntro!=NULL)
 	{
 		lpSgtIntro->Release();
@@ -163,10 +175,14 @@ void UninitMusic()
 	}
 
 	CoUninitialize();
+#endif
+
 }
 
 void PlayMusic(int mus)
 {
+#ifdef DIRECTMUSIC_SUPPORT
+
 	IDirectMusicSegment* lpSgt;
 
 	if (!MusicOn) return;
@@ -217,5 +233,6 @@ void PlayMusic(int mus)
 	}
 	if (mus!=MUS_NONE)
 		lpPerf->PlaySegment(lpSgt, DMUS_SEGF_MEASURE , 0, NULL);
-
+#endif
 }
+
