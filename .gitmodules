@@ -1,0 +1,4 @@
+[submodule "External/cocos2d-x"]
+	path = External/cocos2d-x
+	url = https://github.com/cocos2d/cocos2d-x.git
+	branch = v3.10
