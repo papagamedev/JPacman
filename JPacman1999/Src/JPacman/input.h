@@ -40,6 +40,8 @@ extern char CurrentKey;
 
 extern void (*ReadGameInput)(void);
 
+#ifndef JPACMAN_COCOS2DX
+
 //--------------------------------------------------------------------------
 
 // prototypes
@@ -48,7 +50,11 @@ void CleanupInput(void);
 BOOL ReacquireInput(void);
 BOOL PickInputDevice(int);
 
+
 //--------------------------------------------------------------------------
+
+#endif // JPACMAN_COCOS2DX
+
 #endif // _INPUT_H
 
 

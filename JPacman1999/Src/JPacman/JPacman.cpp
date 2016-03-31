@@ -1,7 +1,14 @@
 #include "JPacman.h"
+#include <stdlib.h>
+#include <string.h>
+
+#ifndef JPACMAN_COCOS2DX
 
 HWND                    hWndMain;
 HINSTANCE               hInst;
+
+#endif
+
 BOOL                    bIsActive;
 BOOL                    bMouseVisible;
 DWORD                   dwFrameCount;
@@ -29,6 +36,8 @@ double inline randDouble( double low, double high )
     double num = range * (double)rand()/(double)RAND_MAX;
     return( num + low );
 }
+
+#ifndef JPACMAN_COCOS2DX
 
 /*
  * MainWndproc
@@ -191,6 +200,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 } /* WinMain */
 
+#endif // JPACMAN_COCOS2DX
 
 BOOL InitializeGame( void )
 {
@@ -219,8 +229,10 @@ BOOL CleanupAndExit( char *err)
 		DPF(0,"CleanupAndExit  err = %s", err );
 	else
 		DPF(0,"Cleaning up...");
-    // make the cursor visible
+#ifndef JPACMAN_COCOS2DX
+	// make the cursor visible
     SetCursor(LoadCursor( NULL, IDC_ARROW ));
+#endif
     bMouseVisible = TRUE;
 
 	bIsActive=FALSE;
@@ -235,17 +247,22 @@ BOOL CleanupAndExit( char *err)
 
 	DPF(0,"UninitSound OK");
 
-     // clean up DirectInput objects
+#ifndef JPACMAN_COCOS2DX
+	// clean up DirectInput objects
     CleanupInput();
+#endif // JPACMAN_COCOS2DX
 
 	DPF(0,"CleanupInput OK");
     //
     // warn user if there is one
     //
 	if (err)
-        MessageBox( hWndMain, err, "ERROR", MB_OK );
-
-    return FALSE;
+	{
+#ifndef JPACMAN_COCOS2DX
+		MessageBox(hWndMain, err, "ERROR", MB_OK);
+#endif // JPACMAN_COCOS2DX
+	}
+	return FALSE;
 }
 
 void SetGameMode(int Mode)
@@ -280,6 +297,8 @@ void SetGameMode(int Mode)
 	}
 	RestoreGFX();
 	Setup();
+#ifndef JPACMAN_COCOS2DX
 	objTickCount=GetTickCount();
+#endif // JPACMAN_COCOS2DX
 }
 

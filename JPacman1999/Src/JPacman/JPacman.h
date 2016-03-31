@@ -1,6 +1,8 @@
 #ifndef JPACMAN_INCLUDED
 #define JPACMAN_INCLUDED
 
+#ifndef JPACMAN_COCOS2DX
+
 #define INITGUID
 
 #undef WIN32_LEAN_AND_MEAN
@@ -13,8 +15,8 @@
 #ifdef DIRECTMUSIC_SUPPORT
 # include <dmusici.h>
 #endif
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
 #include <sys\stat.h>
@@ -22,19 +24,30 @@
 #include "resource.h"
 #include "ddutil.h"
 #include "dsutil.h"
-#include "input.h"
 #include "debug.h"
+
+extern LPDIRECTSOUND           lpDS;
+extern HWND                    hWndMain;
+
+#else // JPACMAN_COCOS2DX
+
+typedef int BOOL;
+typedef unsigned int DWORD;
+const BOOL TRUE = 1;
+const BOOL FALSE = 0;
+void DPF(int priority, char *fmt, ...);
+#define NULL  0
+
+#endif // JPACMAN_COCOS2DX
+
+#include "input.h"
 
 BOOL    InitializeGame( void );
 BOOL    CleanupAndExit( char *err );
 int  randInt( int low, int high );
 double  inline randDouble( double low, double high );
 
-extern LPDIRECTSOUND           lpDS;
-
 extern char GFXFile[10];
-
-extern HWND                    hWndMain;
 
 enum
 {

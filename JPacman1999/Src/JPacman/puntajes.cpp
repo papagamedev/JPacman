@@ -1,5 +1,11 @@
 #include "JPacman.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
+#include <sys\stat.h>
+
 int PuntajesMode,PosIns,CurPos,Cursor,byep,CurScr;
 
 unsigned MaxPuntajes[20][10]={

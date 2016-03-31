@@ -1,5 +1,8 @@
 #include "JPacman.h"
 
+#include <stdio.h>
+#include <string.h>
+
 typedef struct {
 	char Item[20];
 	int Data;
@@ -184,7 +187,9 @@ void Menu_DoTick()
 		switch (bye)
 		{
 			case ID_SALIR:
-	            PostMessage( hWndMain, WM_CLOSE, 0, 0 );
+#ifndef JPACMAN_COCOS2DX
+				PostMessage( hWndMain, WM_CLOSE, 0, 0 );
+#endif
 				SaveConfig();
 				DPF(0,"Quitting...");
 //			PostQuitMessage(0);

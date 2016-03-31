@@ -1,7 +1,10 @@
 #include "JPacman.h"
 
+#ifndef JPACMAN_COCOS2DX
 LPDIRECTSOUND lpDS=NULL;
-
+#else
+typedef void* HSNDOBJ;
+#endif
 HSNDOBJ hsoFruit=NULL;			// Fruta
 HSNDOBJ hsoPoint=NULL;			// Punto
 HSNDOBJ hsoRevengeTime=NULL;	// Mientras fantasmas morados
@@ -10,13 +13,14 @@ HSNDOBJ hsoEyes=NULL;			// Ojitos huyendo
 
 int SoundOn=TRUE,SoundEnabled=TRUE;
 
+#ifndef JPACMAN_COCOS2DX
 int InitSound()
 {
-    if (SUCCEEDED(DirectSoundCreate(NULL, &lpDS, NULL)))
-    {
-        if (SUCCEEDED(lpDS->SetCooperativeLevel(hWndMain,DSSCL_PRIORITY)))
-        {
-            if ((hsoPoint=SndObjCreate(lpDS,"POINT",1)) &&
+	if (SUCCEEDED(DirectSoundCreate(NULL, &lpDS, NULL)))
+	{
+		if (SUCCEEDED(lpDS->SetCooperativeLevel(hWndMain,DSSCL_PRIORITY)))
+		{
+			if ((hsoPoint=SndObjCreate(lpDS,"POINT",1)) &&
 				(hsoFruit=SndObjCreate(lpDS,"FRUIT",1)) &&
 				(hsoRevenge=SndObjCreate(lpDS,"REVENGE",1)) &&
 				(hsoRevengeTime=SndObjCreate(lpDS,"REVENGETIME",1)) &&
@@ -32,9 +36,9 @@ int InitSound()
 
 void UninitSound()
 {
-    if (lpDS)
-    {
-        SndObjDestroy(hsoFruit);
+	if (lpDS)
+	{
+		SndObjDestroy(hsoFruit);
         hsoFruit=NULL;
         SndObjDestroy(hsoPoint);
         hsoPoint=NULL;
@@ -44,10 +48,15 @@ void UninitSound()
         hsoRevengeTime=NULL;
         SndObjDestroy(hsoEyes);
         hsoEyes=NULL;
-        lpDS->Release();
+		lpDS->Release();
         lpDS = NULL;
     }
 }
+#else // JPACMAN_COCOS2DX
+
+
+#endif // JPACMAN_COCOS2DX
+
 
 void PlaySound(int snd)
 {
