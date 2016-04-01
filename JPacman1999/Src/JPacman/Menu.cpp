@@ -99,6 +99,7 @@ void InitMenu(int menu)
 
 void Menu_Setup()
 {
+	DPF(0, "Menu setup");
 	int i;
 
 	bye=0;

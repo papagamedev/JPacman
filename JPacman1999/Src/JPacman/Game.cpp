@@ -1,8 +1,5 @@
 #include "JPacman.h"
 
-#include <stdio.h>
-#include <math.h>
-
 SpriteData *Pacman,*Goblins[4],*Cookies[4],*Fruit;
 int nPoints,fFruit,Map=0,Lives,rev_time,Level,levR,levL,PauseMode,ByeMode,TotalPoints;
 int GoblinSpeed,BonusMode,RevengeTimeout,CookiesMove,PointsMove,PointsMult,GoblinCI,GoblinStart,GobPurp[4];

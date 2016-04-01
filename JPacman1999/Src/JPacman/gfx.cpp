@@ -1,5 +1,9 @@
 #include "JPacman.h"
 
+#include <math.h>
+
+#ifndef JPACMAN_COCOS2DX
+
 LPDIRECTDRAW7           lpDD=NULL;
 LPDIRECTDRAWSURFACE7    lpFrontBuffer=NULL;
 LPDIRECTDRAWSURFACE7    lpBackBuffer=NULL;
@@ -9,6 +13,7 @@ LPDIRECTDRAWSURFACE7    lpGfx=NULL;
 DWORD                   dwTransType;
 
 PALETTEENTRY Palette[256];
+#endif
 
 int frames_sec=0;
 int frame_updated=1;
@@ -98,6 +103,8 @@ SpriteKind SpriteInfo [] = {{
 
 BOOL InitGFX()
 {
+#ifndef JPACMAN_COCOS2DX
+
     HRESULT	ddrval;
     DDSURFACEDESC2  ddsd;
     DDSCAPS2        ddscaps;
@@ -164,17 +171,17 @@ BOOL InitGFX()
         return FALSE;
 
 	InitText();
+#endif
 
 	if ((Sprites=(SpriteData *) LocalAlloc(LPTR,MAX_SPRITES*sizeof(SpriteData)))==NULL)
         return FALSE;
 
 	nSprites=0;
 	Sprite1=NULL;
-	for (i=0;i<MAX_SPRITES;i++)
+	for (int i=0;i<MAX_SPRITES;i++)
 		SpriteOcc[i]=FALSE;
 
 	DPF(0,"InitGFX OK");
-
 	return TRUE;
 }
 
@@ -182,11 +189,13 @@ void UninitGFX()
 {
 	ClearSprites();
 	
+
 	if (Sprites!=NULL)
 	{
 		LocalFree(Sprites);
 		Sprites=NULL;
 	}
+#ifndef JPACMAN_COCOS2DX
 
     if( lpPalette != NULL )
     {
@@ -217,13 +226,15 @@ void UninitGFX()
 		lpDD->Release();
 		lpDD=NULL;
 	}
-
+#endif
 	DPF(0,"UninitGFX OK");
 }
 
+
 BOOL RestoreGFX()
 {
-    HRESULT	ddrval;
+#ifndef JPACMAN_COCOS2DX
+	HRESULT	ddrval;
     HBITMAP     hbm;
 
     ddrval = lpFrontBuffer->Restore();
@@ -273,6 +284,7 @@ BOOL RestoreGFX()
     DDSetColorKey( lpFondo, 0 );
     DDSetColorKey( lpGfx, 0 );
 
+#endif
 	DPF(0,"RestoreGFX OK");
 
 	return TRUE;
@@ -298,6 +310,8 @@ void InitText()
 
 void DrawText(int x,int y,char *text)
 {
+#ifndef JPACMAN_COCOS2DX
+
 	char *p=text,c,ct;
     HRESULT ddrval;
     RECT src;
@@ -329,10 +343,13 @@ void DrawText(int x,int y,char *text)
 		else
 			x+=5;
 	}
+#endif
 }
 
 void UpdateGFX()
 {
+#ifndef JPACMAN_COCOS2DX
+
     HRESULT     ddrval;
     RECT    src;
 	SpriteData *act;
@@ -419,6 +436,7 @@ void UpdateGFX()
 		FlipScreen();
 	frames_count++;
 	frame_updated=1;
+#endif
 }
 
 SpriteData *AddSprite(int kind)
@@ -509,6 +527,7 @@ int CheckCollision(SpriteData *spr1,SpriteData *spr2)
 
 int DrawSprite(int x,int y,int kind,int dir,int frame)
 {
+#ifndef JPACMAN_COCOS2DX
     HRESULT ddrval;
     RECT src;
 	int i,j;
@@ -533,7 +552,8 @@ int DrawSprite(int x,int y,int kind,int dir,int frame)
 		}
 		if( ddrval != DDERR_WASSTILLDRAWING )
 	        return FALSE;
-	}	
+	}
+#endif
 	return TRUE;
 }
 
@@ -548,6 +568,8 @@ void FadeOut()
 	fademode=-0.04;
 	fadestate=1;
 }
+
+#ifndef JPACMAN_COCOS2DX
 
 void StampPalette()
 {
@@ -626,3 +648,4 @@ void EraseScreen( void)
     }
 }
 
+#endif

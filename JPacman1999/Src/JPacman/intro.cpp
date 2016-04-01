@@ -38,6 +38,7 @@ int PointsPos[3][100][2]={{
 
 void Intro_Setup()
 {
+	DPF(0, "Intro setup");
 	int i;
 
 	iPac=AddSprite(SP_PACMAN);

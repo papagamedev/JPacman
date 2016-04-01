@@ -1,6 +1,8 @@
 #include "AppScene.h"
 #include "AppMacros.h"
 
+#include "../../JPacman/JPacman.h"
+
 USING_NS_CC;
 
 
@@ -28,6 +30,11 @@ bool AppScene::init()
     {
         return false;
     }
+
+	if (!InitializeGame())
+	{
+		return false;
+	}
     
 	scheduleUpdate();
 	/*
@@ -79,7 +86,9 @@ bool AppScene::init()
 
 void AppScene::update(float delta)
 {
-	log("");
+	ReadGameInput();
+	DoTick();
+	UpdateGFX();
 }
 
 void AppScene::menuCloseCallback(Ref* sender)
@@ -90,4 +99,5 @@ void AppScene::menuCloseCallback(Ref* sender)
     exit(0);
 #endif
 }
+
 

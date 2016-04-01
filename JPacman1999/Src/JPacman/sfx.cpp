@@ -54,6 +54,27 @@ void UninitSound()
 }
 #else // JPACMAN_COCOS2DX
 
+#define DSBPLAY_LOOPING 1
+
+int InitSound()
+{
+	return TRUE;
+}
+
+void UninitSound()
+{
+
+}
+
+void SndObjPlay(HSNDOBJ snd, int flags)
+{
+
+}
+
+void SndObjStop(HSNDOBJ snd)
+{
+
+}
 
 #endif // JPACMAN_COCOS2DX
 

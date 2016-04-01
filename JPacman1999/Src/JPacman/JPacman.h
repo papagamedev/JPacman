@@ -1,7 +1,13 @@
 #ifndef JPACMAN_INCLUDED
 #define JPACMAN_INCLUDED
 
-#ifndef JPACMAN_COCOS2DX
+#ifdef JPACMAN_COCOS2DX
+
+#include "cocos2d.h"
+
+#define DPF(priority, fmt, ...) cocos2d::log(fmt,__VA_ARGS__)
+
+#else // JPACMAN_COCOS2DX
 
 #define INITGUID
 
@@ -29,16 +35,7 @@
 extern LPDIRECTSOUND           lpDS;
 extern HWND                    hWndMain;
 
-#else // JPACMAN_COCOS2DX
-
-typedef int BOOL;
-typedef unsigned int DWORD;
-const BOOL TRUE = 1;
-const BOOL FALSE = 0;
-void DPF(int priority, char *fmt, ...);
-#define NULL  0
-
-#endif // JPACMAN_COCOS2DX
+#endif // !JPACMAN_COCOS2DX
 
 #include "input.h"
 

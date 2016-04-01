@@ -1,6 +1,7 @@
 #include "JPacman.h"
 
-#include "resource.h"
+#ifndef JPACMAN_COCOS2DX
+
 #include "input.h"
 
 #ifdef DIRECTINPUT_SUPPORT
@@ -8,7 +9,6 @@
 #endif
 
 extern HWND hWndMain;
-extern void ReadKeyboardInput(void);
 
 #define MAX_SCANCODE 85
 
@@ -30,15 +30,20 @@ char ScantoAscShifted[MAX_SCANCODE+1]={
 	'N','M'
 };
 
+#endif
+
 DWORD dwKeyState = 0;
 int InputMode=0;
 char CurrentKey;
 int ShiftMode=FALSE;
 
 
+extern void ReadKeyboardInput(void);
 
 // allocate external variables
 void (*ReadGameInput)(void) = ReadKeyboardInput;
+
+#ifndef JPACMAN_COCOS2DX
 
 #ifdef DIRECTINPUT_SUPPORT
 
@@ -420,7 +425,7 @@ BOOL ReacquireInput(void)
     }
 
 }
-
+#endif
 /*--------------------------------------------------------------------------
 | ReadKeyboardInput
 |
