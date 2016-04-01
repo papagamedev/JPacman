@@ -43,7 +43,80 @@ extern void ReadKeyboardInput(void);
 // allocate external variables
 void (*ReadGameInput)(void) = ReadKeyboardInput;
 
-#ifndef JPACMAN_COCOS2DX
+#ifdef JPACMAN_COCOS2DX
+
+DWORD bufKeys = 0;
+
+cocos2d::EventListener* InitInput()
+{
+	auto eventListener = cocos2d::EventListenerKeyboard::create();
+	eventListener->onKeyPressed = [](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+		switch (keyCode) {
+		case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_A:
+			bufKeys |= JPACMAN_KEY_LEFT;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_D:
+			bufKeys |= JPACMAN_KEY_RIGHT;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_W:
+			bufKeys |= JPACMAN_KEY_UP;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_S:
+			bufKeys |= JPACMAN_KEY_DOWN;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
+			bufKeys |= JPACMAN_KEY_SPACE;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+			bufKeys |= JPACMAN_KEY_ENTER;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+			bufKeys |= JPACMAN_KEY_ESC;
+			break;
+		}
+	};
+	eventListener->onKeyReleased = [](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+		switch (keyCode) {
+		case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_A:
+			bufKeys &= ~JPACMAN_KEY_LEFT;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_D:
+			bufKeys &= ~JPACMAN_KEY_RIGHT;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_W:
+			bufKeys &= ~JPACMAN_KEY_UP;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_S:
+			bufKeys &= ~JPACMAN_KEY_DOWN;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
+			bufKeys &= ~JPACMAN_KEY_SPACE;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+			bufKeys &= ~JPACMAN_KEY_ENTER;
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+			bufKeys &= ~JPACMAN_KEY_ESC;
+			break;
+		}
+	};
+	return eventListener;
+}
+
+void ReadKeyboardInput()
+{
+	dwKeyState = bufKeys;
+}
+
+#else // !JPACMAN_COCOS2DX
 
 #ifdef DIRECTINPUT_SUPPORT
 
@@ -425,7 +498,6 @@ BOOL ReacquireInput(void)
     }
 
 }
-#endif
 /*--------------------------------------------------------------------------
 | ReadKeyboardInput
 |
@@ -654,3 +726,4 @@ BOOL PickInputDevice(int n)
 #endif
 
 
+#endif // JPACMAN_COCOS2DX

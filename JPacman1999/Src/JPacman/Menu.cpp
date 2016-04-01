@@ -188,7 +188,9 @@ void Menu_DoTick()
 		switch (bye)
 		{
 			case ID_SALIR:
-#ifndef JPACMAN_COCOS2DX
+#ifdef JPACMAN_COCOS2DX
+				cocos2d::Director::getInstance()->end();
+#else
 				PostMessage( hWndMain, WM_CLOSE, 0, 0 );
 #endif
 				SaveConfig();
@@ -206,25 +208,25 @@ void Menu_DoTick()
 		return;
 	}
 
-	if (dwKeyState & KEY_DOWN)
+	if (dwKeyState & JPACMAN_KEY_DOWN)
 	{
 		CurSel++;
 		if (CurSel>CurMenuItems) CurSel=1;
 		PlaySound(SND_POINT);
 	}
-	if (dwKeyState & KEY_UP)
+	if (dwKeyState & JPACMAN_KEY_UP)
 	{
 		CurSel--;
 		if (CurSel<1) CurSel=CurMenuItems;
 		PlaySound(SND_POINT);
 	}
-	if (dwKeyState & KEY_ESC)
+	if (dwKeyState & JPACMAN_KEY_ESC)
 	{
 		if (EscMenu==ID_SALIR) goto salir;
 		InitMenu(EscMenu);
 	}
 	op=Menu[CurMenu+CurSel].Data;
-	if ((dwKeyState & KEY_LEFT) && (op<0))
+	if ((dwKeyState & JPACMAN_KEY_LEFT) && (op<0))
 		switch(op)
 		{
 		case ID_DIF:
@@ -262,13 +264,13 @@ void Menu_DoTick()
 			}
 			break;
 		}
-	else if ((dwKeyState & KEY_ENTER) && (op>=0))
+	else if ((dwKeyState & JPACMAN_KEY_ENTER) && (op>=0))
 	{
 		if ((op==MENU_DELPLYR) && (CurIdent==0)) goto caca;
 		PlaySound(SND_POINT);
 		InitMenu(op);
 	}
-	else if (((dwKeyState & KEY_ENTER) || (dwKeyState & KEY_RIGHT)) && (op<0))
+	else if (((dwKeyState & JPACMAN_KEY_ENTER) || (dwKeyState & JPACMAN_KEY_RIGHT)) && (op<0))
 		switch(op)
 		{
 		case ID_SALIR:

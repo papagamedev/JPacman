@@ -2,7 +2,14 @@
 
 #include <math.h>
 
-#ifndef JPACMAN_COCOS2DX
+#define MAX_SPRITES	1000
+
+#ifdef JPACMAN_COCOS2DX
+
+cocos2d::Sprite* sSpriteFondo;
+cocos2d::Sprite* sSprites[MAX_SPRITES];
+
+#else // !JPACMAN_COCOS2DX
 
 LPDIRECTDRAW7           lpDD=NULL;
 LPDIRECTDRAWSURFACE7    lpFrontBuffer=NULL;
@@ -13,7 +20,7 @@ LPDIRECTDRAWSURFACE7    lpGfx=NULL;
 DWORD                   dwTransType;
 
 PALETTEENTRY Palette[256];
-#endif
+#endif // !JPACMAN_COCOS2DX
 
 int frames_sec=0;
 int frame_updated=1;
@@ -23,9 +30,7 @@ int ticks_count=0;
 double fadestate=1,fademode=0;
 int skipflip=FALSE;
 
-char GFXFile[10];
-
-#define MAX_SPRITES	1000
+const char *GFXFile;
 
 SpriteData *Sprites,*Sprite1;
 int nSprites;
@@ -109,7 +114,7 @@ BOOL InitGFX()
     DDSURFACEDESC2  ddsd;
     DDSCAPS2        ddscaps;
 	int i;
-
+	
 	ddrval = DirectDrawCreateEx( NULL, (VOID**)&lpDD, IID_IDirectDraw7, NULL);
 
     if (ddrval != DD_OK)
@@ -230,10 +235,24 @@ void UninitGFX()
 	DPF(0,"UninitGFX OK");
 }
 
-
 BOOL RestoreGFX()
 {
-#ifndef JPACMAN_COCOS2DX
+#ifdef JPACMAN_COCOS2DX
+	if (sSpriteFondo != nullptr)
+	{
+		gAppScene->removeChild(sSpriteFondo);
+	}
+
+	char fileToLoad[MAX_PATH];
+	sprintf_s(fileToLoad, "%s.png", GFXFile);
+	sSpriteFondo = cocos2d::Sprite::create(fileToLoad, cocos2d::Rect(0, 0, 640, 480));
+	if (sSpriteFondo)
+	{
+		gAppScene->addChild(sSpriteFondo);
+		sSpriteFondo->setPosition(320, 240);
+	}
+
+#else
 	HRESULT	ddrval;
     HBITMAP     hbm;
 
@@ -348,7 +367,6 @@ void DrawText(int x,int y,char *text)
 
 void UpdateGFX()
 {
-#ifndef JPACMAN_COCOS2DX
 
     HRESULT     ddrval;
     RECT    src;
@@ -375,6 +393,9 @@ void UpdateGFX()
 		StampPalette();
 	}
 
+
+#ifndef JPACMAN_COCOS2DX
+
 	src.left=0;
 	src.top=0;
 	src.right=640;
@@ -394,14 +415,14 @@ void UpdateGFX()
         if( ddrval != DDERR_WASSTILLDRAWING )
             return;
 	}
-
+#endif
 	act=Sprite1;
 	while (act!=NULL)
 	{
 		if (act->dir==-1)
-			DrawSprite((int)act->xpos,(int)act->ypos,act->kind,0,(int) (act->frame));
+			DrawSprite(act, (int)act->xpos,(int)act->ypos,act->kind,0,(int) (act->frame));
 		else
-			DrawSprite((int)act->xpos,(int)act->ypos,act->kind,act->dir,(int) (act->frame));
+			DrawSprite(act, (int)act->xpos,(int)act->ypos,act->kind,act->dir,(int) (act->frame));
 		act->frame+=act->framespeed;
 		if (act->framespeed>0)
 		{
@@ -421,6 +442,8 @@ void UpdateGFX()
 		}
 		act=act->next;
 	}
+
+#ifndef JPACMAN_COCOS2DX
 
 	UpdateFrame();
 
@@ -455,6 +478,10 @@ SpriteData *AddSprite(int kind)
 	spnew->idx=i;
 	SpriteOcc[i]=TRUE;
 
+#ifdef JPACMAN_COCOS2DX
+	sSprites[i] = cocos2d::Sprite::create("gfx_sprites.png");
+	gAppScene->addChild(sSprites[i]);
+#endif
 	spnew->kind=kind;
 	spnew->framespeed=(float) SpriteInfo[kind].speedframes;
 	spnew->frame=0;
@@ -476,6 +503,7 @@ SpriteData *AddSprite(int kind)
 		prev->next=spnew;
 	else
 		Sprite1=spnew;
+
 	DPF(0,"AddSprite %d OK",spnew->idx);
 	return (spnew);
 }
@@ -493,6 +521,9 @@ void RemoveSprite(SpriteData **sp)
 	if (spr->next!=NULL)
 		spr->next->prev=spr->prev;
 	SpriteOcc[spr->idx]=FALSE;
+#ifdef JPACMAN_COCOS2DX
+	gAppScene->removeChild(sSprites[spr->idx]);
+#endif
 	nSprites--;
 	DPF(0,"RemoveSprite %d OK",spr->idx);
 	*sp=NULL;
@@ -506,6 +537,9 @@ void ClearSprites()
 	while (act!=NULL)
 	{
 		SpriteOcc[act->idx]=FALSE;
+#ifdef JPACMAN_COCOS2DX
+		gAppScene->removeChild(sSprites[act->idx]);
+#endif
 		DPF(0,"RemoveSprite %d OK (Clearall)",act->idx);
 		nSprites--;
 		act=act->next;
@@ -525,9 +559,19 @@ int CheckCollision(SpriteData *spr1,SpriteData *spr2)
 	return FALSE;
 }
 
-int DrawSprite(int x,int y,int kind,int dir,int frame)
+int DrawSprite(SpriteData* spr,int x,int y,int kind,int dir,int frame)
 {
-#ifndef JPACMAN_COCOS2DX
+#ifdef JPACMAN_COCOS2DX
+
+	sSprites[spr->idx]->setPosition(x ,480 - y);
+	sSprites[spr->idx]->setTextureRect(
+		cocos2d::Rect(
+			SpriteInfo[kind].right_x[dir * 8 + frame] + 0.25f, 
+			SpriteInfo[kind].right_y[dir * 8 + frame] + 0.25f, 
+			SpriteInfo[kind].width - 0.5f, 
+			SpriteInfo[kind].height - 0.5f));
+
+#else // !JPACMAN_COCOS2DX
     HRESULT ddrval;
     RECT src;
 	int i,j;
@@ -553,7 +597,7 @@ int DrawSprite(int x,int y,int kind,int dir,int frame)
 		if( ddrval != DDERR_WASSTILLDRAWING )
 	        return FALSE;
 	}
-#endif
+#endif // !JPACMAN_COCOS2DX
 	return TRUE;
 }
 
@@ -569,14 +613,18 @@ void FadeOut()
 	fadestate=1;
 }
 
-#ifndef JPACMAN_COCOS2DX
 
 void StampPalette()
 {
+	DPF(0, "StampPalette: fadestate=%d fademode=%d", (int)(fadestate*10000.0), (int)(fademode*10000.0));
+
+#ifdef JPACMAN_COCOS2DX
+	gAppScene->setCascadeOpacityEnabled(true);
+	gAppScene->setOpacity(fadestate * 255);
+#else // !JPACMAN_COCOS2DX
 	PALETTEENTRY Temp[256];
 	int i;
 
-	DPF(0,"StampPalette: fadestate=%d fademode=%d",(int) (fadestate*10000.0),(int) (fademode*10000.0));
 
 	for (i=0;i<256;i++)
 	{
@@ -587,7 +635,10 @@ void StampPalette()
 	}
 
     lpPalette->SetEntries(0,0,256,Temp);
+#endif
 }
+
+#ifndef JPACMAN_COCOS2DX
 
 void FlipScreen( void )
 {

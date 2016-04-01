@@ -12,6 +12,9 @@
     <Filter Include="JPacman">
       <UniqueIdentifier>{79367b3b-984f-483a-aba0-4a6ed802e5d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{1afba352-109a-4054-b55b-70f0d933be01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
@@ -70,5 +73,19 @@
     <ClInclude Include="..\..\JPacman\input.h">
       <Filter>JPacman</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\gfx_game.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\gfx_menu.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\gfx_puntajes.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\gfx_sprites.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

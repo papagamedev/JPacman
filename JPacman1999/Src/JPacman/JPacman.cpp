@@ -274,25 +274,25 @@ void SetGameMode(int Mode)
 		Setup=Intro_Setup;
 		UpdateFrame=Intro_UpdateFrame;
 		DoTick=Intro_DoTick;
-		strcpy(GFXFile,"GFX_INTRO");
+		GFXFile = "GFX_INTRO";
 		break;
 	case MODE_MENU:
 		Setup=Menu_Setup;
 		UpdateFrame=Menu_UpdateFrame;
 		DoTick=Menu_DoTick;
-		strcpy(GFXFile,"GFX_MENU");
+		GFXFile = "GFX_MENU";
 		break;
 	case MODE_PUNTAJES:
 		Setup=Puntajes_Setup;
 		UpdateFrame=Puntajes_UpdateFrame;
 		DoTick=Puntajes_DoTick;
-		strcpy(GFXFile,"GFX_PUNTAJES");
+		GFXFile = "GFX_PUNTAJES";
 		break;
 	case MODE_GAME:
 		Setup=Game_Setup;
 		UpdateFrame=Game_UpdateFrame;
 		DoTick=Game_DoTick;
-		strcpy(GFXFile,"GFX_GAME");
+		GFXFile = "GFX_GAME";
 		break;
 	}
 	RestoreGFX();

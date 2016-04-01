@@ -6,6 +6,7 @@
 
 USING_NS_CC;
 
+AppScene* gAppScene = nullptr;
 
 Scene* AppScene::scene()
 {
@@ -32,11 +33,20 @@ bool AppScene::init()
         return false;
     }
 
+	gAppScene = this;
+
 	if (!InitializeGame())
 	{
 		return false;
 	}
     
+	cocos2d::EventListener* eventListener = InitInput();
+	if (!eventListener)
+	{
+		return false;
+	}
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(eventListener, this);
+
 	scheduleUpdate();
 	/*
 	auto visibleSize = Director::getInstance()->getVisibleSize();

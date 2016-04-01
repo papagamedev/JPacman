@@ -18,4 +18,6 @@ public:
     CREATE_FUNC(AppScene);
 };
 
+extern AppScene* gAppScene;
+
 #endif // __HELLOWORLD_SCENE_H__

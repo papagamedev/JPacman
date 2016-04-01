@@ -94,7 +94,8 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)</Command>
+      <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
+copy $(ProjectDir)..\Resources\*.png $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,7 +127,8 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)</Command>
+      <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
+copy $(ProjectDir)..\Resources\*.png $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -153,6 +155,12 @@
     <ClInclude Include="..\Classes\AppMacros.h" />
     <ClInclude Include="..\Classes\AppScene.h" />
     <ClInclude Include="Main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\gfx_game.png" />
+    <Image Include="..\Resources\gfx_menu.png" />
+    <Image Include="..\Resources\gfx_puntajes.png" />
+    <Image Include="..\Resources\gfx_sprites.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

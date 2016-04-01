@@ -19,13 +19,13 @@
 /*
  * keyboard commands
  */
-#define KEY_ESC    0x00000001l
-#define KEY_DOWN   0x00000002l
-#define KEY_LEFT   0x00000004l
-#define KEY_RIGHT  0x00000008l
-#define KEY_UP     0x00000010l
-#define KEY_ENTER  0x00000020l
-#define KEY_SPACE  0x00000040l
+#define JPACMAN_KEY_ESC    0x00000001l
+#define JPACMAN_KEY_DOWN   0x00000002l
+#define JPACMAN_KEY_LEFT   0x00000004l
+#define JPACMAN_KEY_RIGHT  0x00000008l
+#define JPACMAN_KEY_UP     0x00000010l
+#define JPACMAN_KEY_ENTER  0x00000020l
+#define JPACMAN_KEY_SPACE  0x00000040l
 
 //--------------------------------------------------------------------------
 
@@ -40,7 +40,11 @@ extern char CurrentKey;
 
 extern void (*ReadGameInput)(void);
 
-#ifndef JPACMAN_COCOS2DX
+#ifdef JPACMAN_COCOS2DX
+
+cocos2d::EventListener* InitInput();
+
+#else
 
 //--------------------------------------------------------------------------
 

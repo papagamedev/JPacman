@@ -147,6 +147,22 @@ void InitLevel()
 	act->ypos=440;
 	act->framespeed=1;
 
+	act = AddSprite(SP_PACMAN);
+	act->xpos = 18;
+	act->ypos = 462;
+	act->dir = DIR_RIGHT;
+	act->frame = 5;
+	act->framespeed = 0;
+
+	for (int i = 0; i < Level; i++)
+	{
+		act = AddSprite(SP_FRUIT);
+		act->dir = 0;
+		act->frame = i;
+		act->framespeed = 0;
+		act->xpos = 620 - 18 * (i & 15);
+		act->ypos = (i & 16) ? 470 : 452;
+	}
 
 	GameTime=LossTime=WinTime=0;
 	b=Level;
@@ -454,6 +470,8 @@ void Game_Setup()
 	InputMode=0;
 	ScoretoAdd=0;
 	InitLevel();
+
+
 }
 
 void Game_UpdateFrame()
@@ -461,15 +479,15 @@ void Game_UpdateFrame()
 	char buf[100];
 	int i;
 
-	DrawSprite(18,462,SP_PACMAN,DIR_RIGHT,5);
+//	DrawSprite(18,462,SP_PACMAN,DIR_RIGHT,5);
 	sprintf(buf,"x%d",Lives);
 	DrawText(36,446,buf);
 
 	sprintf(buf,"%d",Score);
 	DrawText(130,446,buf);
 
-	for (i=0;i<Level;i++)
-		DrawSprite(620-18*(i & 15),(i&16)?470:452,SP_FRUIT,0,i);
+//	for (i=0;i<Level;i++)
+//		DrawSprite(620-18*(i & 15),(i&16)?470:452,SP_FRUIT,0,i);
 
 	if (ScoretoAdd)
 	{
@@ -669,7 +687,7 @@ void Game_DoTick()
 		return;
 	}
 
-	if (dwKeyState & KEY_ESC)
+	if (dwKeyState & JPACMAN_KEY_ESC)
 	{
 		PlayMusic(MUS_NONE);
 		StopSound(SND_EYES);
@@ -683,7 +701,7 @@ void Game_DoTick()
 
 	if (PauseMode==5)
 	{
-		if (dwKeyState & KEY_SPACE)
+		if (dwKeyState & JPACMAN_KEY_SPACE)
 		{
 			PauseMode=4;
 			InputMode=0;
@@ -799,7 +817,7 @@ void Game_DoTick()
 		return;
 
 #ifdef _DEBUG
-	if (dwKeyState & KEY_ENTER)
+	if (dwKeyState & JPACMAN_KEY_ENTER)
 	{
 		goto nextlevel;
 	}
@@ -807,7 +825,7 @@ void Game_DoTick()
 
 	if (PauseMode)
 		PauseMode--;
-	else if (dwKeyState & KEY_SPACE)
+	else if (dwKeyState & JPACMAN_KEY_SPACE)
 	{
 		PauseMode=5;
 		InputMode=1;
@@ -864,13 +882,13 @@ void Game_DoTick()
 
 	DirsCanMove(Pacman,dirs);
 
-	if ((dwKeyState & KEY_UP) && (dirs[DIR_UP]))
+	if ((dwKeyState & JPACMAN_KEY_UP) && (dirs[DIR_UP]))
 		Pacman->dir=DIR_UP;
-	else if ((dwKeyState & KEY_DOWN) && (dirs[DIR_DOWN]))
+	else if ((dwKeyState & JPACMAN_KEY_DOWN) && (dirs[DIR_DOWN]))
 		Pacman->dir=DIR_DOWN;
-	if ((dwKeyState & KEY_LEFT) && (dirs[DIR_LEFT]))
+	if ((dwKeyState & JPACMAN_KEY_LEFT) && (dirs[DIR_LEFT]))
 		Pacman->dir=DIR_LEFT;
-	else if ((dwKeyState & KEY_RIGHT) && (dirs[DIR_RIGHT]))
+	else if ((dwKeyState & JPACMAN_KEY_RIGHT) && (dirs[DIR_RIGHT]))
 		Pacman->dir=DIR_RIGHT;
 	
 	// mov. fantasmas

@@ -5,6 +5,8 @@
 
 #include "cocos2d.h"
 
+#include "AppScene.h"
+
 #define DPF(priority, fmt, ...) cocos2d::log(fmt,__VA_ARGS__)
 
 #else // JPACMAN_COCOS2DX
@@ -44,7 +46,7 @@ BOOL    CleanupAndExit( char *err );
 int  randInt( int low, int high );
 double  inline randDouble( double low, double high );
 
-extern char GFXFile[10];
+extern const char* GFXFile;
 
 enum
 {
@@ -141,7 +143,7 @@ void ClearSprites();
 SpriteData *AddSprite(int kind);
 void RemoveSprite(SpriteData **sp);
 int CheckCollision(SpriteData *spr1,SpriteData *spr2);
-int DrawSprite(int x,int y,int kind,int dir,int frame);
+int DrawSprite(SpriteData* act,int x,int y,int kind,int dir,int frame);
 void FlipScreen( void );
 void EraseScreen( void );
 
