@@ -1,3 +1,4 @@
+#include "jpacman.h"
 #include "AppDelegate.h"
 
 #include <vector>

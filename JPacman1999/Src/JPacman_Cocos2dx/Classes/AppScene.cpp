@@ -1,3 +1,4 @@
+#include "jpacman.h"
 #include "AppScene.h"
 #include "AppMacros.h"
 

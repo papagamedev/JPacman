@@ -1,3 +1,4 @@
+#include "jpacman.h"
 #include "main.h"
 #include "../Classes/AppDelegate.h"
 
