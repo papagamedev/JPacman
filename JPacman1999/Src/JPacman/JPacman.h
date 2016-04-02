@@ -205,11 +205,12 @@ enum {
 };
 
 enum {
-	SND_FRUIT=1,
+	SND_FRUIT=0,
 	SND_POINT,
 	SND_REVENGE,
 	SND_REVENGETIME,
-	SND_EYES
+	SND_EYES,
+	SND_MAX
 };
 
 #endif

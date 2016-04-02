@@ -88,4 +88,21 @@
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\JPacman\eyes.wav">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="..\..\JPacman\fruit.wav">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="..\..\JPacman\Point.wav">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="..\..\JPacman\revenge.wav">
+      <Filter>Resources</Filter>
+    </Media>
+    <Media Include="..\..\JPacman\revengetime.wav">
+      <Filter>Resources</Filter>
+    </Media>
+  </ItemGroup>
 </Project>

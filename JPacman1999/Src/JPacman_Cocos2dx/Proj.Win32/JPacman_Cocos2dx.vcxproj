@@ -95,7 +95,8 @@
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
-copy $(ProjectDir)..\Resources\*.png $(OutDir)</Command>
+copy $(ProjectDir)..\Resources\*.png $(OutDir)
+copy $(ProjectDir)..\..\JPacman\*.wav $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -128,7 +129,8 @@ copy $(ProjectDir)..\Resources\*.png $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
-copy $(ProjectDir)..\Resources\*.png $(OutDir)</Command>
+copy $(ProjectDir)..\Resources\*.png $(OutDir)
+copy $(ProjectDir)..\..\JPacman\*.wav $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -161,6 +163,13 @@ copy $(ProjectDir)..\Resources\*.png $(OutDir)</Command>
     <Image Include="..\Resources\gfx_menu.png" />
     <Image Include="..\Resources\gfx_puntajes.png" />
     <Image Include="..\Resources\gfx_sprites.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\JPacman\eyes.wav" />
+    <Media Include="..\..\JPacman\fruit.wav" />
+    <Media Include="..\..\JPacman\Point.wav" />
+    <Media Include="..\..\JPacman\revenge.wav" />
+    <Media Include="..\..\JPacman\revengetime.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

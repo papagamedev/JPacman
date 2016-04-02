@@ -1,9 +1,14 @@
 #include "JPacman.h"
 
-#ifndef JPACMAN_COCOS2DX
-LPDIRECTSOUND lpDS=NULL;
-#else
+#ifdef JPACMAN_COCOS2DX
+
+#include "Audio/include/SimpleAudioEngine.h"
 typedef void* HSNDOBJ;
+
+#else
+
+LPDIRECTSOUND lpDS = NULL;
+
 #endif
 HSNDOBJ hsoFruit=NULL;			// Fruta
 HSNDOBJ hsoPoint=NULL;			// Punto
@@ -54,24 +59,37 @@ void UninitSound()
 }
 #else // JPACMAN_COCOS2DX
 
-#define DSBPLAY_LOOPING 1
+const char *sndFiles[SND_MAX] =
+{
+	"fruit.wav",
+	"point.wav",
+	"revenge.wav",
+	"revengetime.wav",
+	"eyes.wav"
+};
+
+bool sndLoop[SND_MAX] =
+{
+	false,
+	false,
+	false,
+	true,
+	true
+};
+
+unsigned sndId[SND_MAX];
 
 int InitSound()
 {
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	for (int i = 0; i < SND_MAX; i++)
+	{
+		audio->preloadEffect(sndFiles[i]);
+	}
 	return TRUE;
 }
 
 void UninitSound()
-{
-
-}
-
-void SndObjPlay(HSNDOBJ snd, int flags)
-{
-
-}
-
-void SndObjStop(HSNDOBJ snd)
 {
 
 }
@@ -84,6 +102,11 @@ void PlaySound(int snd)
 	if (!SoundOn) return;
 	if (!SoundEnabled) return;
 
+#if JPACMAN_COCOS2DX
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	sndId[snd] = audio->playEffect(sndFiles[snd], sndLoop[snd]);
+	DPF(0, "play %s", sndFiles[snd]);
+#else // !JPACMAN_COCOS2DX
 	switch (snd)
 	{
 	case SND_FRUIT:
@@ -102,12 +125,22 @@ void PlaySound(int snd)
 		SndObjPlay(hsoEyes,DSBPLAY_LOOPING);
 		break;
 	}
+#endif // !JPACMAN_COCOS2DX
 }
 
 void StopSound(int snd)
 {
 	if (!SoundOn) return;
 	if (!SoundEnabled) return;
+
+#if JPACMAN_COCOS2DX
+	if (sndId[snd])
+	{
+		auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+		audio->stopEffect(sndId[snd]);
+		sndId[snd] = 0;
+	}
+#else // !JPACMAN_COCOS2DX
 
 	switch (snd)
 	{
@@ -127,4 +160,6 @@ void StopSound(int snd)
 		SndObjStop(hsoEyes);
 		break;
 	}
+#endif // !JPACMAN_COCOS2DX
+
 }
