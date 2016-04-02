@@ -175,8 +175,9 @@ BOOL InitGFX()
     if( ddrval != DD_OK )
         return FALSE;
 
-	InitText();
 #endif
+
+	InitText();
 
 	if ((Sprites=(SpriteData *) LocalAlloc(LPTR,MAX_SPRITES*sizeof(SpriteData)))==NULL)
         return FALSE;
@@ -324,26 +325,64 @@ void InitText()
 		CharsLeftPos[i]=256+x;
 		x+=CharsWidth[i];
 	}
+
 	DPF(0,"InitText OK");
 }
 
+#ifdef JPACMAN_COCOS2DX
+
+std::vector<cocos2d::Sprite*> sChars;
+int sUsedChars = 0;
+
+void ResetChars()
+{
+	for (unsigned i = 0; i < sChars.size(); i++)
+	{
+		sChars[i]->setPosition(-100,-100);
+	}
+	sUsedChars = 0;
+}
+
+cocos2d::Sprite* GetChar()
+{
+	if (sUsedChars == sChars.size())
+	{
+		auto sp = cocos2d::Sprite::create("gfx_sprites.png");
+		gAppScene->addChild(sp);
+		sChars.push_back(sp);
+	}
+	auto sp = sChars[sUsedChars];
+	sUsedChars++;
+	return sp;
+}
+
+#endif // JPACMAN_COCOS2DX
+
 void DrawText(int x,int y,char *text)
 {
-#ifndef JPACMAN_COCOS2DX
-
 	char *p=text,c,ct;
-    HRESULT ddrval;
+
+#ifndef JPACMAN_COCOS2DX
+	HRESULT ddrval;
     RECT src;
+#endif  // JPACMAN_COCOS2DX
 
     while ((c=(*p++))!=0)
 	{
 		ct=CharTable[c];
 		if (ct!=-1)	
 		{
-			src.left=CharsLeftPos[ct];
-			src.top=CharsTopPos[ct];
-			src.right=src.left+CharsWidth[ct];
-			src.bottom=src.top+32;
+#ifdef JPACMAN_COCOS2DX
+			auto sprite = GetChar();
+			sprite->setPosition(x+ CharsWidth[ct]/2, 480 - y - 16);
+			sprite->setTextureRect(cocos2d::Rect(CharsLeftPos[ct] + 0.25f, CharsTopPos[ct] + 0.25f, CharsWidth[ct] - 0.5f, 31.5f));
+			sprite->setZOrder(100);
+
+#else // !JPACMAN_COCOS2DX
+			src.left = CharsLeftPos[ct];
+			src.top = CharsTopPos[ct];
+			src.right = src.left + CharsWidth[ct];
+			src.bottom = src.top + 32;
 			while( 1 )
 			{
 			    ddrval = lpBackBuffer->BltFast(x,y,lpGfx, &src, dwTransType);
@@ -357,17 +396,19 @@ void DrawText(int x,int y,char *text)
 				if( ddrval != DDERR_WASSTILLDRAWING )
 		            return;
 			}
+#endif
 			x+=CharsWidth[ct]+2;
 		}
 		else
 			x+=5;
 	}
-#endif
 }
 
 void UpdateGFX()
 {
-
+#ifdef JPACMAN_COCOS2DX
+	ResetChars();
+#endif
     HRESULT     ddrval;
     RECT    src;
 	SpriteData *act;
@@ -443,9 +484,9 @@ void UpdateGFX()
 		act=act->next;
 	}
 
-#ifndef JPACMAN_COCOS2DX
-
 	UpdateFrame();
+
+#ifndef JPACMAN_COCOS2DX
 
 #ifdef _DEBUG
 	char temp[10];
@@ -481,6 +522,7 @@ SpriteData *AddSprite(int kind)
 #ifdef JPACMAN_COCOS2DX
 	sSprites[i] = cocos2d::Sprite::create("gfx_sprites.png");
 	gAppScene->addChild(sSprites[i]);
+	sSprites[i]->setZOrder(20 - kind);
 #endif
 	spnew->kind=kind;
 	spnew->framespeed=(float) SpriteInfo[kind].speedframes;
