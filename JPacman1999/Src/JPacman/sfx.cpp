@@ -59,32 +59,51 @@ void UninitSound()
 }
 #else // JPACMAN_COCOS2DX
 
-const char *sndFiles[SND_MAX] =
+struct jpacmanSndInfo
 {
-	"fruit.wav",
-	"point.wav",
-	"revenge.wav",
-	"revengetime.wav",
-	"eyes.wav"
+	const char *fileName;
+	bool loop;
+	long durationInMiliseconds;
+	unsigned engineId;
+	long endTimeInMiliseconds;
 };
 
-bool sndLoop[SND_MAX] =
+jpacmanSndInfo sSoundInfo[SND_MAX]=
 {
-	false,
-	false,
-	false,
-	true,
-	true
+	{
+		"fruit.wav",
+		false,
+		2000,
+	},
+	{
+		"point.wav",
+		false,
+		170,
+	},
+	{
+		"revenge.wav",
+		false,
+		1000,
+	},
+	{
+		"revengetime.wav",
+		true,
+		0,
+	},
+	{
+		"eyes.wav",
+		true,
+		0,
+	},
 };
 
-unsigned sndId[SND_MAX];
 
 int InitSound()
 {
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
 	for (int i = 0; i < SND_MAX; i++)
 	{
-		audio->preloadEffect(sndFiles[i]);
+		audio->preloadEffect(sSoundInfo[i].fileName);
 	}
 	return TRUE;
 }
@@ -103,9 +122,25 @@ void PlaySound(int snd)
 	if (!SoundEnabled) return;
 
 #if JPACMAN_COCOS2DX
+	jpacmanSndInfo& sound = sSoundInfo[snd];
+	if (sound.loop)
+	{
+		// if sound is looping and already playing, do not start it over again
+		if (sound.engineId)
+			return;
+	}
+	else
+	{
+		// if sound is not looping, make sure it already finished to avoid aborting it in the middle
+		if (sound.endTimeInMiliseconds > cocos2d::utils::getTimeInMilliseconds())
+			return;
+	}
+
 	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	sndId[snd] = audio->playEffect(sndFiles[snd], sndLoop[snd]);
-	DPF(0, "play %s", sndFiles[snd]);
+	sound.engineId = audio->playEffect(sound.fileName, sound.loop);
+	sound.endTimeInMiliseconds = cocos2d::utils::getTimeInMilliseconds() + sound.durationInMiliseconds;
+	DPF(0, "play %s", sound.fileName);
+
 #else // !JPACMAN_COCOS2DX
 	switch (snd)
 	{
@@ -134,11 +169,12 @@ void StopSound(int snd)
 	if (!SoundEnabled) return;
 
 #if JPACMAN_COCOS2DX
-	if (sndId[snd])
+	jpacmanSndInfo& sound = sSoundInfo[snd];
+	if (sound.engineId)
 	{
 		auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-		audio->stopEffect(sndId[snd]);
-		sndId[snd] = 0;
+		audio->stopEffect(sound.engineId);
+		sound.engineId = 0;
 	}
 #else // !JPACMAN_COCOS2DX
 

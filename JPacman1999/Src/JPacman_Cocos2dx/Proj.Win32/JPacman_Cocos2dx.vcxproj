@@ -96,7 +96,7 @@
     <PreBuildEvent>
       <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
 copy $(ProjectDir)..\Resources\*.png $(OutDir)
-copy $(ProjectDir)..\..\JPacman\*.wav $(OutDir)</Command>
+copy $(ProjectDir)..\Resources\*.wav $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,7 +130,7 @@ copy $(ProjectDir)..\..\JPacman\*.wav $(OutDir)</Command>
     <PreBuildEvent>
       <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
 copy $(ProjectDir)..\Resources\*.png $(OutDir)
-copy $(ProjectDir)..\..\JPacman\*.wav $(OutDir)</Command>
+copy $(ProjectDir)..\Resources\*.wav $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
