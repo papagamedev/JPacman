@@ -1,24 +1,17 @@
 #include "JPacman.h"
 
-#ifdef JPACMAN_COCOS2DX
+int SoundOn = TRUE, SoundEnabled = TRUE;
 
-#include "Audio/include/SimpleAudioEngine.h"
-typedef void* HSNDOBJ;
-
-#else
+#ifndef JPACMAN_COCOS2DX
 
 LPDIRECTSOUND lpDS = NULL;
 
-#endif
-HSNDOBJ hsoFruit=NULL;			// Fruta
-HSNDOBJ hsoPoint=NULL;			// Punto
-HSNDOBJ hsoRevengeTime=NULL;	// Mientras fantasmas morados
-HSNDOBJ hsoRevenge=NULL;		// Comerse un fantasma
-HSNDOBJ hsoEyes=NULL;			// Ojitos huyendo
+HSNDOBJ hsoFruit = NULL;			// Fruta
+HSNDOBJ hsoPoint = NULL;			// Punto
+HSNDOBJ hsoRevengeTime = NULL;	// Mientras fantasmas morados
+HSNDOBJ hsoRevenge = NULL;		// Comerse un fantasma
+HSNDOBJ hsoEyes = NULL;			// Ojitos huyendo
 
-int SoundOn=TRUE,SoundEnabled=TRUE;
-
-#ifndef JPACMAN_COCOS2DX
 int InitSound()
 {
 	if (SUCCEEDED(DirectSoundCreate(NULL, &lpDS, NULL)))
@@ -58,6 +51,8 @@ void UninitSound()
     }
 }
 #else // JPACMAN_COCOS2DX
+
+#include "Audio/include/SimpleAudioEngine.h"
 
 struct jpacmanSndInfo
 {

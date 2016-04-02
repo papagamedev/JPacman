@@ -64,7 +64,7 @@ void Intro_Setup()
 	// INTRO DURA 9600ms con tempo=200
 
 	StepX=7; // 420/(4.8*TICKS_SEC) = ancho pantalla dividido por numero de ticks en 4.8 segundos
-	ChgTick=144;
+	ChgTick = 157;// 144;
 	CurTick=0;
 	ChgMode=0;
 

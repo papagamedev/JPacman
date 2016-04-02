@@ -811,9 +811,9 @@ void Game_DoTick()
 	else if ((Fruit!=NULL) && (GameTime==80*TICKS_SEC))
 		RemoveSprite(&Fruit);
 
-	if (GameTime==TICKS_SEC*4)
+	if (GameTime==TICKS_SEC*4.1)
 		TickMode=0;
-	if (GameTime<TICKS_SEC*4)
+	if (GameTime<TICKS_SEC*4.1)
 		return;
 
 #ifdef _DEBUG

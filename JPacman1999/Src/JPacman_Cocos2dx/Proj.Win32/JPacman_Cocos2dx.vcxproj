@@ -95,8 +95,7 @@
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
-copy $(ProjectDir)..\Resources\*.png $(OutDir)
-copy $(ProjectDir)..\Resources\*.wav $(OutDir)</Command>
+copy $(ProjectDir)..\Resources\*.* $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,8 +128,7 @@ copy $(ProjectDir)..\Resources\*.wav $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
-copy $(ProjectDir)..\Resources\*.png $(OutDir)
-copy $(ProjectDir)..\Resources\*.wav $(OutDir)</Command>
+copy $(ProjectDir)..\Resources\*.* $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

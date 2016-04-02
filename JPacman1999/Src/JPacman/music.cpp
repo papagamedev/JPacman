@@ -1,6 +1,63 @@
 #include "JPacman.h"
 
 int curmus=-1;
+int MusicEnabled = TRUE, MusicOn = TRUE;
+
+#ifdef JPACMAN_COCOS2DX
+
+#include "Audio/include/SimpleAudioEngine.h"
+
+struct jpacmanMusicInfo
+{
+	const char *fileName;
+	bool loop;
+};
+
+jpacmanMusicInfo sMusicInfo[MUS_MAX] =
+{
+	{ nullptr, false },
+	{ "menu.mp3", true },
+	{ "gamex.mp3", true },//MUS_GAMEX
+	{ "gamex.mp3", true },//MUS_GAMEGRN
+	{ "bonus.mp3", true },//MUS_GAMEBONUS
+	{ "gamex.mp3", true },//MUS_GAMEFINAL
+	{ "intro.mp3", false },
+	{ "gameintro.mp3", false },//MUS_GAMEINTRO
+	{ "oops.mp3", false },//MUS_OOPS
+	{ "win.mp3", false },//MUS_WIN
+};
+
+BOOL InitMusic()
+{
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	for (int i = 0; i < MUS_MAX; i++)
+	{
+		audio->preloadBackgroundMusic(sMusicInfo[i].fileName);
+	}
+
+	return TRUE;
+}
+
+void UninitMusic()
+{
+
+
+}
+
+void PlayMusic(int mus)
+{
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	if (sMusicInfo[mus].fileName == nullptr)
+	{
+		audio->stopBackgroundMusic();
+	}
+	else
+	{
+		audio->playBackgroundMusic(sMusicInfo[mus].fileName, sMusicInfo[mus].loop);
+	}
+}
+
+#else // !JPACMAN_COCOS2DX
 
 #ifdef DIRECTMUSIC_SUPPORT
 
@@ -17,8 +74,6 @@ IDirectMusicSegment* lpSgtWin=NULL;
 IDirectMusicSegment* lpSgtGameIntro=NULL;
 
 #endif
-
-int MusicEnabled=TRUE,MusicOn=TRUE;
 
 BOOL InitMusic()
 {
@@ -236,3 +291,4 @@ void PlayMusic(int mus)
 #endif
 }
 
+#endif // !JPACMAN_COCOS2DX
