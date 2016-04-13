@@ -100,29 +100,13 @@ void InitMenu(int menu)
 void Menu_Setup()
 {
 	DPF(0, "Menu setup");
-	int i;
 
 	bye=0;
 	InitMenu(0);
 	Pac=AddSprite(SP_PACMAN);
 	Pac->xpos=200;
 	Pac->ypos=272;
-/*	
-	for (i=0;i<4;i++)
-	{
-		Points[i]=AddSprite(SP_POINT);
-		Points[i]->dir=1;
-	}
 
-	Points[0]->xpos=10;
-	Points[0]->ypos=10;
-	Points[1]->xpos=630;
-	Points[1]->ypos=10;
-	Points[2]->xpos=630;
-	Points[2]->ypos=470;
-	Points[3]->xpos=10;
-	Points[3]->ypos=470;
-*/
 	InputMode=1;
 	PlayMusic(MUS_MENU);
 	FadeIn();
@@ -143,38 +127,50 @@ void Menu_UpdateFrame()
 		temp[0]=StartRound+'1';
 		temp[1]=0;
 		DrawText(470,256,temp);
-		sprintf(temp,(MovPointsOn)?"Si":"No");
+		sprintf_s(temp,(MovPointsOn)?"Si":"No");
 		DrawText(470,292,temp);
 		break;
 	case MENU_IDENT:
 		DrawText(400,256,Idents[CurIdent]);
 		break;
 	case MENU_AUDIO:
-		sprintf(temp,(!MusicEnabled)?"N/A":(MusicOn)?"Si":"No");
+		sprintf_s(temp,(!MusicEnabled)?"N/A":(MusicOn)?"Si":"No");
 		DrawText(430,256,temp);
-		sprintf(temp,(!SoundEnabled)?"N/A":(SoundOn)?"Si":"No");
+		sprintf_s(temp,(!SoundEnabled)?"N/A":(SoundOn)?"Si":"No");
 		DrawText(430,292,temp);
 		break;
 	case MENU_INFO:
-		DrawText(530,170,"v 1.2"); // sep/98 -> ago/99
-		DrawText(30,300,"(c) 1998-1999  -  Juan Pablo Lastra");
-		DrawText(30,336,"Dedicado a mi muy Pacman-Adicta");
-		DrawText(30,372,"madre y a toda mi familia, y por");
-		DrawText(30,408,"supuesto, a mis grandes amigos.");
-		DrawText(180,446,"#Gracias a todos!");
+		// 1.0 sep/1998
+		// 1.2 ago/1999
+		// 1.3 abr/2016
+		{
+			DrawText(530, 170, "v 1.3");
+			const int lineSkip = 36;
+			int yPos = 300;
+			int xPos = 5;
+			DrawText(xPos, yPos, "Desarrollado por Juan Pablo Lastra");
+			yPos += lineSkip;
+			DrawText(xPos, yPos, "entre 1998-2016 para Papa Game Dev");
+			yPos += lineSkip;
+			DrawText(xPos, yPos, "Proyecto sin fines comerciales.");
+			yPos += lineSkip;
+			DrawText(xPos, yPos, "Pac-Man es marca de Namco Bandai");
+			yPos += lineSkip;
+			DrawText(xPos, yPos, "Desarrollado usando Cocos2d-x");
+		}
 		break;
 	case MENU_NEWPLYR:
 		if (nIdents==20)
-			sprintf(temp,"No mas de 20");
+			sprintf_s(temp,"No mas de 20");
 		else
-			sprintf(temp,"%s%c",NewName,(crsr<16)?' ':'-');
+			sprintf_s(temp,"%s%c",NewName,(crsr<16)?' ':'-');
 		DrawText(240,256,temp);
 		break;
 	}
 	if ((CurMenu!=MENU_INFO) && (CurMenu!=MENU_IDENT) &&
 		(CurMenu!=MENU_NEWPLYR) && (CurIdent!=0))
 	{
-		sprintf(temp,"Jug: %s", Idents[CurIdent]);
+		sprintf_s(temp,"Jug: %s", Idents[CurIdent]);
 		DrawText(150,445,temp);
 	}
 }
@@ -195,7 +191,6 @@ void Menu_DoTick()
 #endif
 				SaveConfig();
 				DPF(0,"Quitting...");
-//			PostQuitMessage(0);
 				break;
 			case ID_JUGAR:
 				SetGameMode(MODE_GAME);
@@ -314,11 +309,11 @@ salir:
 					break;
 			for (i=nIdents;i>CurIdent;i--)
 			{
-				strcpy(Idents[i],Idents[i-1]);
+				strcpy_s(Idents[i],Idents[i-1]);
 				for (j=0;j<NUM_OPTS;j++)
 					Opts[j][i]=Opts[j][i-1];
 			}
-			strcpy(Idents[i],NewName);
+			strcpy_s(Idents[i],NewName);
 			for (j=0;j<NUM_OPTS;j++)
 				Opts[j][i]=0;    
 			nIdents++;
@@ -333,7 +328,7 @@ salir:
 			nIdents--;
 			for (i=CurIdent;i<nIdents;i++)
 			{
-				strcpy(Idents[i],Idents[i+1]);
+				strcpy_s(Idents[i],Idents[i+1]);
 				for (j=0;j<NUM_OPTS;j++)
 					Opts[j][i]=Opts[j][i+1];
 			}

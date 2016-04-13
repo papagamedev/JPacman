@@ -80,7 +80,7 @@ void Puntajes_Setup()
 					MaxPuntajes[0][i]=MaxPuntajes[0][i-1];
 				}
 				MaxPuntajes[0][PosIns]=Score;
-				strcpy(MaxNames[0][PosIns],Idents[CurScr]);
+				strcpy_s(MaxNames[0][PosIns],Idents[CurScr]);
 			}
 		}
 		for (PosIns=0;PosIns<10;PosIns++)
@@ -114,21 +114,21 @@ void Puntajes_UpdateFrame()
 		DrawText(165,14,"Mejores Puntajes");
 	else
 	{
-		sprintf(temp,"Puntajes: %s",Idents[CurScr]);
+		sprintf_s(temp,"Puntajes: %s",Idents[CurScr]);
 		DrawText(50,14,temp);
 	}
 	for (i=0;i<10;i++)
 	{
-		sprintf(temp,"%d.",i+1);
+		sprintf_s(temp,"%d.",i+1);
 		DrawText(45,70+i*40+10*(i>0),temp);
 		if ((i==PosIns) && (Cursor & 16))
 		{
-			sprintf(temp,"%s-",MaxNames[CurScr][i]);
+			sprintf_s(temp,"%s-",MaxNames[CurScr][i]);
 			DrawText(95,70+i*40+10*(i>0),temp);
 		}
 		else
 			DrawText(95,70+i*40+10*(i>0),MaxNames[CurScr][i]);
-		sprintf(temp,"%d",MaxPuntajes[CurScr][i]);
+		sprintf_s(temp,"%d",MaxPuntajes[CurScr][i]);
 		DrawText(480,70+i*40+10*(i>0),temp);
 	}
 }
@@ -216,9 +216,9 @@ void LoadScores()
 		}
 
 		if (id==0)
-			strcpy(fname,"General.ptj");
+			strcpy_s(fname,"General.ptj");
 		else
-			sprintf(fname,"%s.ptj",Idents[id]);
+			sprintf_s(fname,"%s.ptj",Idents[id]);
 	
 		if ((f=_open(fname,_O_RDONLY | _O_BINARY))==-1)
 		{
@@ -273,9 +273,9 @@ void SaveScores()
 	for (id=0;id<nIdents;id++)
 	{	
 		if (id==0)
-			strcpy(fname,"General.ptj");
+			strcpy_s(fname,"General.ptj");
 		else
-			sprintf(fname,"%s.ptj",Idents[id]);
+			sprintf_s(fname,"%s.ptj",Idents[id]);
 	
 		for (i=0;i<10;i++)
 		{
@@ -327,7 +327,7 @@ void LoadConfig()
 		if (!Idents[nIdents][0]) break;
 	if (nIdents==0)
 	{
-		strcpy(Idents[0],"Invitado");
+		strcpy_s(Idents[0],"Invitado");
 		nIdents++;
 	}
 	if (_read(f,buf,20*NUM_OPTS)<20*NUM_OPTS)

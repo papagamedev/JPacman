@@ -777,7 +777,7 @@ BOOL GetDDErrorString (HRESULT hResult, LPTSTR lpszErrorBuff, DWORD cchError)
 
     if (cLen)
     {
-        strncpy (lpszErrorBuff, lpszError, cLen);
+        strncpy_s (lpszErrorBuff, 256, lpszError, cLen);
         lpszErrorBuff[cLen] = 0;
     }
 

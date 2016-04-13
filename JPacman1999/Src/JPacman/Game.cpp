@@ -158,7 +158,7 @@ void InitLevel()
 	{
 		act = AddSprite(SP_FRUIT);
 		act->dir = 0;
-		act->frame = i;
+		act->frame = (float)i;
 		act->framespeed = 0;
 		act->xpos = 620 - 18 * (i & 15);
 		act->ypos = (i & 16) ? 470 : 452;
@@ -477,21 +477,16 @@ void Game_Setup()
 void Game_UpdateFrame()
 {
 	char buf[100];
-	int i;
 
-//	DrawSprite(18,462,SP_PACMAN,DIR_RIGHT,5);
-	sprintf(buf,"x%d",Lives);
+	sprintf_s(buf,"x%d",Lives);
 	DrawText(36,446,buf);
 
-	sprintf(buf,"%d",Score);
+	sprintf_s(buf,"%d",Score);
 	DrawText(130,446,buf);
-
-//	for (i=0;i<Level;i++)
-//		DrawSprite(620-18*(i & 15),(i&16)?470:452,SP_FRUIT,0,i);
 
 	if (ScoretoAdd)
 	{
-		sprintf(buf,"%d",ScoretoAdd);
+		sprintf_s(buf,"%d",ScoretoAdd);
 		DrawText(ScoreX,ScoreY,buf);
 	}
 
@@ -505,7 +500,7 @@ void Game_UpdateFrame()
 	}
 	else if (GameTime<TICKS_SEC*2)
 	{
-		sprintf(buf,"Ronda %d",levR);
+		sprintf_s(buf,"Ronda %d",levR);
 		DrawText(TextX-63,256,buf);
 	}
 	else if (GameTime<TICKS_SEC*4)
@@ -518,7 +513,7 @@ void Game_UpdateFrame()
 			DrawText(TextX-95,256,"jajajajaja...");		
 		else
 		{
-			sprintf(buf,"Nivel %d",levL);
+			sprintf_s(buf,"Nivel %d",levL);
 			DrawText(TextX-53,256,buf);
 		}
 	}

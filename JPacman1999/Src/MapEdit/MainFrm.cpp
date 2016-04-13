@@ -234,7 +234,7 @@ void CMainFrame::OnUpdatePos(CCmdUI* pCmdUI)
 	if ((v!=NULL) && (v->xpos>=0) && (v->xpos<=39) && (v->ypos>=0) && (v->ypos<=27))
 	{
 		char temp[100];
-		sprintf(temp,"Pos: %2d,%2d",v->xpos,v->ypos);
+		sprintf_s(temp,"Pos: %2d,%2d",v->xpos,v->ypos);
 		m_wndStatusBar.SetPaneText(1,temp);
 	}
 }

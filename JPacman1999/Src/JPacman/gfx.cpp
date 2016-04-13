@@ -113,7 +113,6 @@ BOOL InitGFX()
     HRESULT	ddrval;
     DDSURFACEDESC2  ddsd;
     DDSCAPS2        ddscaps;
-	int i;
 	
 	ddrval = DirectDrawCreateEx( NULL, (VOID**)&lpDD, IID_IDirectDraw7, NULL);
 
@@ -376,7 +375,7 @@ void DrawText(int x,int y,char *text)
 			auto sprite = GetChar();
 			sprite->setPosition(x+ CharsWidth[ct]/2, 480 - y - 16);
 			sprite->setTextureRect(cocos2d::Rect(CharsLeftPos[ct] + 0.25f, CharsTopPos[ct] + 0.25f, CharsWidth[ct] - 0.5f, 31.5f));
-			sprite->setZOrder(100);
+			sprite->setLocalZOrder(100);
 
 #else // !JPACMAN_COCOS2DX
 			src.left = CharsLeftPos[ct];
@@ -408,9 +407,10 @@ void UpdateGFX()
 {
 #ifdef JPACMAN_COCOS2DX
 	ResetChars();
-#endif
+#else
     HRESULT     ddrval;
     RECT    src;
+#endif
 	SpriteData *act;
 
 	if (fademode>0)
@@ -490,7 +490,7 @@ void UpdateGFX()
 
 #ifdef _DEBUG
 	char temp[10];
-	sprintf(temp,"FPS: %3d",frames_sec);		// FRAMES POR SEGUNDO
+	sprintf_s(temp,"FPS: %3d",frames_sec);		// FRAMES POR SEGUNDO
 	DrawText(0,0,temp);
 #endif
 
@@ -522,7 +522,7 @@ SpriteData *AddSprite(int kind)
 #ifdef JPACMAN_COCOS2DX
 	sSprites[i] = cocos2d::Sprite::create("gfx_sprites.png");
 	gAppScene->addChild(sSprites[i]);
-	sSprites[i]->setZOrder(20 - kind);
+	sSprites[i]->setLocalZOrder(20 - kind);
 #endif
 	spnew->kind=kind;
 	spnew->framespeed=(float) SpriteInfo[kind].speedframes;

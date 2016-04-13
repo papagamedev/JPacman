@@ -81,16 +81,16 @@ BOOL InitMusic()
 	IDirectMusicLoader* lpLoader;
 
 	if (!lpDS)
-#endif
 	{
 	bye:
+#endif
 		MusicEnabled=FALSE;
 		MusicOn=FALSE;
 		return FALSE;
 
 
-	}
 #ifdef DIRECTMUSIC_SUPPORT
+	}
 
 	if (FAILED(CoInitialize(NULL)))
 		goto bye;
