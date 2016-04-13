@@ -61,9 +61,6 @@
     <ClInclude Include="Main.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AppMacros.h">
-      <Filter>Cocos2dxClasses</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\AppScene.h">
       <Filter>Cocos2dxClasses</Filter>
     </ClInclude>
@@ -73,36 +70,16 @@
     <ClInclude Include="..\..\JPacman\input.h">
       <Filter>JPacman</Filter>
     </ClInclude>
+    <ClInclude Include="..\Resources\resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Resources\gfx_game.png">
+    <ResourceCompile Include="..\Resources\JPacman.rc">
       <Filter>Resources</Filter>
-    </Image>
-    <Image Include="..\Resources\gfx_menu.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="..\Resources\gfx_puntajes.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="..\Resources\gfx_sprites.png">
-      <Filter>Resources</Filter>
-    </Image>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="..\..\JPacman\eyes.wav">
-      <Filter>Resources</Filter>
-    </Media>
-    <Media Include="..\..\JPacman\fruit.wav">
-      <Filter>Resources</Filter>
-    </Media>
-    <Media Include="..\..\JPacman\Point.wav">
-      <Filter>Resources</Filter>
-    </Media>
-    <Media Include="..\..\JPacman\revenge.wav">
-      <Filter>Resources</Filter>
-    </Media>
-    <Media Include="..\..\JPacman\revengetime.wav">
-      <Filter>Resources</Filter>
-    </Media>
+    <Image Include="..\Resources\JPacman.ico" />
   </ItemGroup>
 </Project>

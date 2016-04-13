@@ -14,6 +14,7 @@
     <ProjectGuid>{B8BF9E81-35FD-4582-BA1C-B85FA365BABB}</ProjectGuid>
     <RootNamespace>JPacman_Cocos2dx-win32</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>7</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -48,10 +49,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration).win32\JPacman_Cocos2dx\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\Bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration).win32\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration).win32\JPacman_Cocos2dx\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\Bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration).win32\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
@@ -95,7 +96,7 @@
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
-copy $(ProjectDir)..\Resources\*.* $(OutDir)</Command>
+</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -128,7 +129,7 @@ copy $(ProjectDir)..\Resources\*.* $(OutDir)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>copy $(EngineRoot)\build\$(Configuration).win32\*.dll $(OutDir)
-copy $(ProjectDir)..\Resources\*.* $(OutDir)</Command>
+</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -152,22 +153,15 @@ copy $(ProjectDir)..\Resources\*.* $(OutDir)</Command>
     <ClInclude Include="..\..\JPacman\input.h" />
     <ClInclude Include="..\..\JPacman\JPacman.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\AppMacros.h" />
     <ClInclude Include="..\Classes\AppScene.h" />
+    <ClInclude Include="..\Resources\resource.h" />
     <ClInclude Include="Main.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Resources\gfx_game.png" />
-    <Image Include="..\Resources\gfx_menu.png" />
-    <Image Include="..\Resources\gfx_puntajes.png" />
-    <Image Include="..\Resources\gfx_sprites.png" />
+    <ResourceCompile Include="..\Resources\JPacman.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="..\..\JPacman\eyes.wav" />
-    <Media Include="..\..\JPacman\fruit.wav" />
-    <Media Include="..\..\JPacman\Point.wav" />
-    <Media Include="..\..\JPacman\revenge.wav" />
-    <Media Include="..\..\JPacman\revengetime.wav" />
+    <Image Include="..\Resources\JPacman.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

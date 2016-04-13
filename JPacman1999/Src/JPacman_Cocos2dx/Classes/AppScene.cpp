@@ -1,6 +1,5 @@
 #include "jpacman.h"
 #include "AppScene.h"
-#include "AppMacros.h"
 
 #include "../../JPacman/JPacman.h"
 
