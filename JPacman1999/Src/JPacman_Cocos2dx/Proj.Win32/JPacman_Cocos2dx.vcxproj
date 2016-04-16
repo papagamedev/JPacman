@@ -83,7 +83,6 @@
       <PrecompiledHeaderFile>JPacman.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;..\..\..\..\External\cocos2d-x\build\$(configuration).win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -115,7 +114,6 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>glew32.lib;libcocos2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;..\..\..\..\External\cocos2d-x\build\$(configuration).win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\JPacman\input.h" />
     <ClInclude Include="..\..\JPacman\JPacman.h" />
+    <ClInclude Include="..\..\JPacman\Level.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\AppScene.h" />
     <ClInclude Include="..\Resources\resource.h" />

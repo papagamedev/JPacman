@@ -9,6 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "../JPacman/Level.h"
 
 class CMapeditDoc : public CDocument
 {
@@ -32,8 +33,7 @@ public:
 
 // Implementation
 public:
-	int Cookies;
-	CString Map[28];
+	CString Map[Level::Height];
 	virtual ~CMapeditDoc();
 #ifdef _DEBUG
 	virtual void AssertValid() const;

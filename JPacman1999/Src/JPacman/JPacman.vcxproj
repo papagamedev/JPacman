@@ -133,6 +133,7 @@
     <ClInclude Include="dsutil.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="JPacman.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

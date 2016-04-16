@@ -62,152 +62,164 @@ void CMapeditView::OnDraw(CDC* pDC)
 	ASSERT_VALID(pDoc);
 	// TODO: add draw code for native data here
 
-	int i,j;
-	int lx,ly;
-	int fx,fy;
+	int lx = -1, ly = -1;
+	int fx = -1, fy = -1;
 
-	for (i=0;i<28;i++)
-		MapView[i]=pDoc->Map[i];
-
+	for (int i = 0; i < 28; i++)
+	{
+		MapView[i] = pDoc->Map[i];
+	}
 	ApplyCursor(MapView);
 
-	CBrush brBorde(RGB(0,0,96));
-	CBrush brCamino(RGB(128,128,255));
-	CBrush brFondo(RGB(48,48,96));
-	CBrush brSalida(RGB(255,255,255));
-	CBrush brPunto(RGB(255,255,0));
-	CBrush brFruta(RGB(255,0,0));
-	CBrush brEntrada(HS_FDIAGONAL,RGB(255,255,255));
-	CBrush brLetras(HS_BDIAGONAL,RGB(0,255,255));
-	
-	pDC->SetBkColor(RGB(128,128,255));
-	CRect rect(19,19,421,301);
+	CBrush brBorde(RGB(0, 0, 96));
+	CBrush brCamino(RGB(128, 128, 255));
+	CBrush brFondo(RGB(48, 48, 96));
+	CBrush brSalida(RGB(255, 255, 255));
+	CBrush brPunto(RGB(255, 255, 0));
+	CBrush brFruta(RGB(255, 0, 0));
+	CBrush brEntrada(HS_FDIAGONAL, RGB(255, 255, 255));
+	CBrush brLetras(HS_BDIAGONAL, RGB(0, 255, 255));
 
-	pDC->FrameRect(rect,&brBorde);
+	pDC->SetBkColor(RGB(128, 128, 255));
+	CRect rect(19, 19, 421, 301);
+
+	pDC->FrameRect(rect, &brBorde);
 	rect.left--;
 	rect.top--;
 	rect.right++;
 	rect.bottom++;
-	pDC->FrameRect(rect,&brBorde);
+	pDC->FrameRect(rect, &brBorde);
 	rect.left--;
 	rect.top--;
 	rect.right++;
 	rect.bottom++;
-	pDC->FrameRect(rect,&brBorde);
-	for (i=0;i<28;i++)
-		for (j=0;j<40;j++)
+	pDC->FrameRect(rect, &brBorde);
+	for (int i = 0; i < 28; i++)
+	{
+		for (int j = 0; j < 40; j++)
 		{
-			rect.left=j*10+20;
-			rect.top=i*10+20;
-			rect.right=rect.left+10;
-			rect.bottom=rect.top+10;
-			char c=MapView[i][j];
+			rect.left = j * 10 + 20;
+			rect.top = i * 10 + 20;
+			rect.right = rect.left + 10;
+			rect.bottom = rect.top + 10;
+			char c = MapView[i][j];
 
-			if (c=='S')
+			if (c == 'S')
 			{
-				rect.left-=10;
-				pDC->FillRect(rect,&brSalida);
+				rect.left -= 10;
+				pDC->FillRect(rect, &brSalida);
 			}
-			else if (c=='T')
+			else if (c == 'T')
 			{
-				rect.top-=10;
-				pDC->FillRect(rect,&brSalida);
+				rect.top -= 10;
+				pDC->FillRect(rect, &brSalida);
 			}
-			else if (c==' ')
-				pDC->FillRect(rect,&brFondo);
-			else if ((c>='a') && (c<='t'))
+			else if (c == ' ')
+				pDC->FillRect(rect, &brFondo);
+			else if ((c >= 'a') && (c <= 't'))
 			{
-				rect.left-=10;
-				rect.top-=10;
-				c-='a';
-				c>>=1;
-				CBrush br(RGB(224-64*(c&1),224-64*((c & 2) >> 1),224-64*((c & 12) >> 2)));
-				pDC->FillRect(rect,&br);
+				rect.left -= 10;
+				rect.top -= 10;
+				c -= 'a';
+				c >>= 1;
+				CBrush br(RGB(224 - 64 * (c & 1), 224 - 64 * ((c & 2) >> 1), 224 - 64 * ((c & 12) >> 2)));
+				pDC->FillRect(rect, &br);
 			}
-			else if ((c=='#') && (i>0) && (j>0) && (MapView[i-1][j]=='#') &&
-				(MapView[i][j-1]=='#') && (MapView[i-1][j-1]=='#'))
+			else if ((c == '#') && (i > 0) && (j > 0) && (MapView[i - 1][j] == '#') &&
+				(MapView[i][j - 1] == '#') && (MapView[i - 1][j - 1] == '#'))
 			{
-				pDC->FillRect(rect,&brCamino);
-				rect.left-=1;
-				rect.top-=1;
-				rect.right-=9;
-				rect.bottom-=9;
-				pDC->FillRect(rect,&brPunto);
+				pDC->FillRect(rect, &brCamino);
+				rect.left -= 1;
+				rect.top -= 1;
+				rect.right -= 9;
+				rect.bottom -= 9;
+				pDC->FillRect(rect, &brPunto);
 			}
-			else if (c=='G')
+			else if (c == 'G')
 			{
-				pDC->FillRect(rect,&brCamino);
-				rect.left-=3;
-				rect.top+=3;
-				rect.right-=7;
-				rect.bottom-=3;
-				pDC->FillRect(rect,&brPunto);
+				pDC->FillRect(rect, &brCamino);
+				rect.left -= 3;
+				rect.top += 3;
+				rect.right -= 7;
+				rect.bottom -= 3;
+				pDC->FillRect(rect, &brPunto);
 				rect.left++;
 				rect.top--;
 				rect.right--;
 				rect.bottom++;
-				pDC->FillRect(rect,&brPunto);
+				pDC->FillRect(rect, &brPunto);
 			}
-			else if (c=='C')
+			else if (c == 'C')
 			{
-				pDC->FillRect(rect,&brCamino);
-				rect.left+=3;
-				rect.top-=3;
-				rect.right-=3;
-				rect.bottom-=7;
-				pDC->FillRect(rect,&brPunto);
+				pDC->FillRect(rect, &brCamino);
+				rect.left += 3;
+				rect.top -= 3;
+				rect.right -= 3;
+				rect.bottom -= 7;
+				pDC->FillRect(rect, &brPunto);
 				rect.left--;
 				rect.top++;
 				rect.right++;
 				rect.bottom--;
-				pDC->FillRect(rect,&brPunto);
+				pDC->FillRect(rect, &brPunto);
 			}
-			else if (c=='P')
+			else if (c == 'P')
 			{
-				pDC->FillRect(rect,&brCamino);
-				rect.left-=9;
-				rect.top-=9;
+				pDC->FillRect(rect, &brCamino);
+				rect.left -= 9;
+				rect.top -= 9;
 				rect.bottom--;
 				rect.right--;
-				CBrush *obr=pDC->SelectObject(&brPunto);
+				CBrush *obr = pDC->SelectObject(&brPunto);
 				pDC->Ellipse(rect);
 				pDC->SelectObject(obr);
 			}
-			else if (c=='E')
+			else if (c == 'E')
 			{
-				pDC->FillRect(rect,&brCamino);
-				rect.left-=10;
-				rect.top-=10;
-				pDC->FillRect(rect,&brEntrada);
+				pDC->FillRect(rect, &brCamino);
+				rect.left -= 10;
+				rect.top -= 10;
+				pDC->FillRect(rect, &brEntrada);
 			}
-			else if (c=='L')
+			else if (c == 'L')
 			{
-				lx=rect.left-60;
-				ly=rect.top;
+				lx = rect.left - 60;
+				ly = rect.top;
 			}
-			else if (c=='F')
+			else if (c == 'F')
 			{
-				pDC->FillRect(rect,&brCamino);
-				fx=rect.left-5;
-				fy=rect.top-5;
+				pDC->FillRect(rect, &brCamino);
+				fx = rect.left - 5;
+				fy = rect.top - 5;
 			}
-			else if ((c=='%') || (c=='V') || (c=='H'))
-				pDC->FillRect(rect,&brSalida);
+			else if ((c == '%') || (c == 'V') || (c == 'H'))
+			{
+				pDC->FillRect(rect, &brSalida);
+			}
 			else
-				pDC->FillRect(rect,&brCamino);
+			{
+				pDC->FillRect(rect, &brCamino);
+			}
 		}
-	rect.left=lx;
-	rect.bottom=ly+20;
-	rect.right=lx+120;
-	rect.top=ly;
-	pDC->FillRect(rect,&brLetras);
-	rect.left=fx;
-	rect.top=fy;
-	rect.bottom=fy+10;
-	rect.right=fx+10;
-	CBrush *obr=pDC->SelectObject(&brFruta);
-	pDC->Ellipse(rect);
-	pDC->SelectObject(obr);
+	}
+	if (lx != -1)
+	{
+		rect.left = lx;
+		rect.bottom = ly + 20;
+		rect.right = lx + 120;
+		rect.top = ly;
+		pDC->FillRect(rect, &brLetras);
+	}
+	if (fx != -1)
+	{
+		rect.left = fx;
+		rect.top = fy;
+		rect.bottom = fy + 10;
+		rect.right = fx + 10;
+		CBrush *obr = pDC->SelectObject(&brFruta);
+		pDC->Ellipse(rect);
+		pDC->SelectObject(obr);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

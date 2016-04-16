@@ -22,3 +22,9 @@ JPacman1999/Src/JPacman_Cocos2dx/Proj.Win32/Config.dat
 JPacman1999/Src/JPacman_Cocos2dx/Proj.Win32/General.ptj
 JPacman1999/Src/JPacman_Cocos2dx/Resources/RCa08388
 JPacman1999/Src/JPacman_Cocos2dx/Proj.Win32/JPacman_Cocos2dx.vcxproj.user
+*.ilk
+*.user
+JPacman1999/Bin/Editor/JPacman_MapEditor.exe
+JPacman1999/Bin/Editor/JPacman_MapEditor.pdb
+JPacman1999/Bin/Editor/Mapedit.pdb
+JPacman1999/Bin/Config.dat

@@ -40,6 +40,7 @@ extern HWND                    hWndMain;
 #endif // !JPACMAN_COCOS2DX
 
 #include "input.h"
+#include "Level.h"
 
 BOOL    InitializeGame( void );
 BOOL    CleanupAndExit( char *err );

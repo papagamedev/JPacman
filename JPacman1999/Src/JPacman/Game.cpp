@@ -5,43 +5,89 @@ int nPoints,fFruit,Map=0,Lives,rev_time,Level,levR,levL,PauseMode,ByeMode,TotalP
 int GoblinSpeed,BonusMode,RevengeTimeout,CookiesMove,PointsMove,PointsMult,GoblinCI,GoblinStart,GobPurp[4];
 int GameTime,LiveTime,LossTime,WinTime,ScoreX,ScoreY,ScoreSt,ScoreStX,ScoreStY,GameTune;
 unsigned ScoretoAdd,FruitScore,rev_score,Score,cnteyes,cntprp;
-int TunelsX[20],TunelsY[20],nTunels;  // MAXIMO DE DIEZ TUNELES
-int EntTunX[20],EntTunY[20],nEnts,GobInTun[4],GobMove; // MAXIMO DE 20 ENTRADAS
+int TunelsX[Level::MaxTunnels*2],TunelsY[Level::MaxTunnels * 2],nTunels;
+int EntTunX[Level::MaxEntries],EntTunY[Level::MaxEntries],nEnts,GobInTun[4],GobMove;
 int PacmanX,PacmanY,ExitX,ExitY,HouseX,HouseY,HouseKind,HouseExitDir,FruitX,FruitY,CookiesX[4],CookiesY[4],TextX,TextY; // pos. iniciales
 int MovPointsOn=TRUE;	// para habilitar el movimiento de puntos
 int StartRound=0;	// ronda inicial - 1
 
-char Maps[2][28][41]={{
-	{"                                        "},
-	{" ##################  ################## "},
-	{" ##################  ################## "},
-	{" ##      ##      ##  ##      ##      ## "},
-	{" ###################################### "},
-	{" ###################################### "},
-	{" $G      ##  ##          ##  ##      $G "},
-	{" ##      ##  ######  ######  ##      ## "},
-	{" ##########  ######  ######  ########## "},
-	{" ##########      ##  ##      ########## "},
-	{"         ## ################ ##         "},
-	{"         ## ################ ##         "},
-	{"         ## ##      S     ## ##         "},
-	{"$$$$$$$$$##### $$$$$$$$$$ #####$$$$$$$$$"},
-	{"$a$$$$$$E##### $$$$$H$$$$ #####$E$$$$$$b"},
-	{"         ## ##            ## ##         "},
-	{" ####### ## ##$$$$$$L$$$$$## ## ####### "},
-	{" ####### ## ##$$$$$$F$$$$$## ## ####### "},
-	{" $G   ## ## ##            ## ## ##   $G "},
-	{" #### #############$$############# #### "},
-	{" #### #############$P############# #### "},
-	{"   ## ##   ##              ##   ## ##   "},
-	{" #######   #######    #######   ####### "},
-	{" #######   #######    #######   ####### "},
-	{" ##             ##    ##             ## "},
-	{" ###################################### "},
-	{" ###################################### "},
-	{"                                        "}
-}};
 
+char Maps[2][Level::Height*Level::Width+1] = { 
+	 "                                        " 
+	 " ##################  ################## " 
+	 " ##################  ################## " 
+	 " ##      ##      ##  ##      ##      ## " 
+	 " ###################################### " 
+	 " ###################################### " 
+	 " $G      ##  ##          ##  ##      $G " 
+	 " ##      ##  ######  ######  ##      ## " 
+	 " ##########  ######  ######  ########## " 
+	 " ##########      ##  ##      ########## " 
+	 "         ## ################ ##         " 
+	 "         ## ################ ##         " 
+	 "         ## ##      S     ## ##         " 
+	 "$$$$$$$$$##### $$$$$$$$$$ #####$$$$$$$$$" 
+	 "$a$$$$$$E##### $$$$$H$$$$ #####$E$$$$$$b" 
+	 "         ## ##            ## ##         " 
+	 " ####### ## ##$$$$$$L$$$$$## ## ####### " 
+	 " ####### ## ##$$$$$$F$$$$$## ## ####### " 
+	 " $G   ## ## ##            ## ## ##   $G " 
+	 " #### #############$$############# #### " 
+	 " #### #############$P############# #### " 
+	 "   ## ##   ##              ##   ## ##   " 
+	 " #######   #######    #######   ####### " 
+	 " #######   #######    #######   ####### " 
+	 " ##             ##    ##             ## " 
+	 " ###################################### " 
+	 " ###################################### " 
+	 "                                        " 
+	 };
+
+bool LoadLevel(const char* fileName,char *mapBuf)
+{
+	FILE* fileHandle;
+	int err = fopen_s(&fileHandle, fileName, "rt");
+	if (err != NOERROR)
+	{
+		DPF(0, "Error loading map from %s", fileName);
+		return false;
+	}
+
+	// map file is written by MFC application as map height (28) CStrings
+	// each CString is written as 1 byte for the length and then the string without null ending char
+	// in this case, CString length is always the map width (40)
+
+	const int mapSize = Level::Height*(Level::Width+1);
+	char tempBuf[mapSize+1];
+	int readCount = fread_s(tempBuf, mapSize, 1, mapSize, fileHandle);
+	if (readCount != mapSize)
+	{
+		DPF(0, "Not enough data in %s", fileName);
+		return false;
+	}
+	tempBuf[mapSize] = 0;
+
+	// now "read" each line confirming the CString's structure
+
+	char *p = tempBuf;
+	for (int row = 0; row < Level::Height; row++)
+	{
+		char colWidth = *p++;
+		if (colWidth != Level::Width)
+		{
+			DPF(0, "Incorrect map format in %s", fileName);
+			return false;
+		}
+
+		memcpy(&mapBuf[Level::Width*row], p, Level::Width);
+		p += Level::Width;
+	}
+
+	DPF(0, "Map data read ok from %s", fileName);
+	fclose(fileHandle);
+
+	return true;
+}
 
 void AddScore(int x,int y,int s)
 {
@@ -122,30 +168,35 @@ void InitLive()
 	
 */
 
+char GetMap(int row, int col)
+{
+	return Maps[Map][row*Level::Width + col];
+}
+
 void InitLevel()
 {
-	int i,j,b,ck;
+	int b, ck;
 	SpriteData *act;
-	
+
 	PlayMusic(MUS_NONE);
 	ClearSprites();
 
-	act=AddSprite(SP_POINT);
-	act->xpos=8;
-	act->ypos=8;
-	act->framespeed=1;
-	act=AddSprite(SP_POINT);
-	act->xpos=632;
-	act->ypos=8;
-	act->framespeed=1;
-	act=AddSprite(SP_POINT);
-	act->xpos=632;
-	act->ypos=440;
-	act->framespeed=1;
-	act=AddSprite(SP_POINT);
-	act->xpos=8;
-	act->ypos=440;
-	act->framespeed=1;
+	act = AddSprite(SP_POINT);
+	act->xpos = 8;
+	act->ypos = 8;
+	act->framespeed = 1;
+	act = AddSprite(SP_POINT);
+	act->xpos = 632;
+	act->ypos = 8;
+	act->framespeed = 1;
+	act = AddSprite(SP_POINT);
+	act->xpos = 632;
+	act->ypos = 440;
+	act->framespeed = 1;
+	act = AddSprite(SP_POINT);
+	act->xpos = 8;
+	act->ypos = 440;
+	act->framespeed = 1;
 
 	act = AddSprite(SP_PACMAN);
 	act->xpos = 18;
@@ -164,225 +215,234 @@ void InitLevel()
 		act->ypos = (i & 16) ? 470 : 452;
 	}
 
-	GameTime=LossTime=WinTime=0;
-	b=Level;
-	BonusMode=CookiesMove=PointsMove=PointsMult=FALSE;
-	if (b>18)							// NIVELES DIFICILES
+	GameTime = LossTime = WinTime = 0;
+	b = Level;
+	BonusMode = CookiesMove = PointsMove = PointsMult = FALSE;
+	if (b > 18)							// NIVELES DIFICILES
 	{
-		levR=3;
-		b-=18;
-		levL=b;
-		if (b>9)
+		levR = 3;
+		b -= 18;
+		levL = b;
+		if (b > 9)
 		{
-			levL-=2;
-			GoblinSpeed=4;  //5;
-			FruitScore=500*(b-2);
-			PointsMove=2;
-			CookiesMove=1;
-			GameTune=MUS_GAMEGRN;
+			levL -= 2;
+			GoblinSpeed = 4;  //5;
+			FruitScore = 500 * (b - 2);
+			PointsMove = 2;
+			CookiesMove = 1;
+			GameTune = MUS_GAMEGRN;
 		}
-		else if (b>5)
+		else if (b > 5)
 		{
 			levL--;
-			GoblinSpeed=4;
-			FruitScore=500*(b-1);
-			PointsMove=1;
-			GameTune=MUS_GAMEGRN;
+			GoblinSpeed = 4;
+			FruitScore = 500 * (b - 1);
+			PointsMove = 1;
+			GameTune = MUS_GAMEGRN;
 		}
 		else
 		{
-			GoblinSpeed=3;
-			FruitScore=500*b;
-			GameTune=MUS_GAMEX;
+			GoblinSpeed = 3;
+			FruitScore = 500 * b;
+			GameTune = MUS_GAMEX;
 		}
-		if ((b==5) || (b==9) || (b==13))
+		if ((b == 5) || (b == 9) || (b == 13))
 		{
-			BonusMode=1;
-			FruitScore=5000;
-			GameTune=MUS_GAMEBONUS;
+			BonusMode = 1;
+			FruitScore = 5000;
+			GameTune = MUS_GAMEBONUS;
 		}
-		else if (b==12)
+		else if (b == 12)
 		{
-			FruitScore=5000;
-			PointsMult=1;
-			GameTune=MUS_GAMEFINAL;
+			FruitScore = 5000;
+			PointsMult = 1;
+			GameTune = MUS_GAMEFINAL;
 		}
-		else if (b==14)
+		else if (b == 14)
 		{
-			FruitScore=7000;
-			PointsMult=2;
-			GameTune=MUS_GAMEFINAL;
+			FruitScore = 7000;
+			PointsMult = 2;
+			GameTune = MUS_GAMEFINAL;
 		}
-		RevengeTimeout=(b==12)?1:(14-b)*TICKS_SEC+1;
-		GoblinCI=(b*3)/2+8;
-		GoblinStart=5-(b>>2);
+		RevengeTimeout = (b == 12) ? 1 : (14 - b)*TICKS_SEC + 1;
+		GoblinCI = (b * 3) / 2 + 8;
+		GoblinStart = 5 - (b >> 2);
 	}
-	else if (b>8)					// NIVELES MEDIOS
+	else if (b > 8)					// NIVELES MEDIOS
 	{
-		levR=2;
-		b-=8;
-		levL=b;
-		if (b>5)
+		levR = 2;
+		b -= 8;
+		levL = b;
+		if (b > 5)
 		{
 			levL--;
-			GoblinSpeed=4;
-			FruitScore=500*(b-1);
-			PointsMove=1;
-			GameTune=MUS_GAMEGRN;
+			GoblinSpeed = 4;
+			FruitScore = 500 * (b - 1);
+			PointsMove = 1;
+			GameTune = MUS_GAMEGRN;
 		}
 		else
 		{
-			GoblinSpeed=3;
-			FruitScore=500*b;
-			GameTune=MUS_GAMEX;
+			GoblinSpeed = 3;
+			FruitScore = 500 * b;
+			GameTune = MUS_GAMEX;
 		}
-		if ((b==5) || (b==10))
+		if ((b == 5) || (b == 10))
 		{
-			BonusMode=1;
-			FruitScore=5000;
-			GameTune=MUS_GAMEBONUS;
+			BonusMode = 1;
+			FruitScore = 5000;
+			GameTune = MUS_GAMEBONUS;
 		}
-		else if (b==9)
+		else if (b == 9)
 		{
-			FruitScore=5000;
-			PointsMult=1;
-			GameTune=MUS_GAMEFINAL;
+			FruitScore = 5000;
+			PointsMult = 1;
+			GameTune = MUS_GAMEFINAL;
 		}
-		RevengeTimeout=(b==9)?1:(14-b)*TICKS_SEC+1;
-		GoblinCI=b+2;
-		GoblinStart=6-(b>>1);
+		RevengeTimeout = (b == 9) ? 1 : (14 - b)*TICKS_SEC + 1;
+		GoblinCI = b + 2;
+		GoblinStart = 6 - (b >> 1);
 	}
 	else							// NIVELES FACILES
 	{
-		levR=1;
-		levL=b;
-		if (b>4)
+		levR = 1;
+		levL = b;
+		if (b > 4)
 		{
 			levL--;
-			GoblinSpeed=4;
-			FruitScore=500*(b-1);
-			PointsMove=TRUE;
-			GameTune=MUS_GAMEGRN;
+			GoblinSpeed = 4;
+			FruitScore = 500 * (b - 1);
+			PointsMove = TRUE;
+			GameTune = MUS_GAMEGRN;
 		}
 		else
 		{
-			GoblinSpeed=3;
-			FruitScore=500*b;
-			GameTune=MUS_GAMEX;
+			GoblinSpeed = 3;
+			FruitScore = 500 * b;
+			GameTune = MUS_GAMEX;
 		}
-		if ((b==4) || (b==8))
+		if ((b == 4) || (b == 8))
 		{
-			BonusMode=1;
-			FruitScore=5000;
-			GameTune=MUS_GAMEBONUS;
+			BonusMode = 1;
+			FruitScore = 5000;
+			GameTune = MUS_GAMEBONUS;
 		}
-		else if (b==7)
+		else if (b == 7)
 		{
-			FruitScore=5000;
-			PointsMult=1;
-			GameTune=MUS_GAMEFINAL;
+			FruitScore = 5000;
+			PointsMult = 1;
+			GameTune = MUS_GAMEFINAL;
 		}
-		RevengeTimeout=(b==7)?1:(14-b)*TICKS_SEC+1;
-		GoblinCI=b-1;
-		GoblinStart=8-b;
+		RevengeTimeout = (b == 7) ? 1 : (14 - b)*TICKS_SEC + 1;
+		GoblinCI = b - 1;
+		GoblinStart = 8 - b;
 	}
 
 	if (BonusMode)
 	{
-		RevengeTimeout+=(5*TICKS_SEC);
-		GoblinStart=1;
+		RevengeTimeout += (5 * TICKS_SEC);
+		GoblinStart = 1;
 	}
 
-	rev_score=200;
+	rev_score = 200;
 
-	nPoints=0;
-	for (i=0;i<4;i++)					// AGREGAR GALLETAS
+	nPoints = 0;
+	for (int i = 0; i < 4; i++)					// AGREGAR GALLETAS
 	{
-		Cookies[i]=AddSprite(SP_COOKIE);
+		Cookies[i] = AddSprite(SP_COOKIE);
 		nPoints++;
-		Goblins[i]=NULL;
+		Goblins[i] = NULL;
 	}
 
-	nEnts=0;
+	nEnts = 0;
 
-	for (i=0;i<10;i++)
-		TunelsX[i]=TunelsY[i]=0;
+	for (int i = 0; i < 10; i++)
+		TunelsX[i] = TunelsY[i] = 0;
 
-	TotalPoints=0;
-	ck=0;
+	TotalPoints = 0;
+	ck = 0;
 
-//	traducir mapa
+	//	traducir mapa
 
-	for (i=0;i<40;i++)
-		for (j=0;j<28;j++)
-			if ((Maps[Map][j][i]=='#') && (Maps[Map][j][i-1]=='#') && 
-				(Maps[Map][j-1][i]=='#') && (Maps[Map][j-1][i-1]=='#')
+	if (!LoadLevel("map01.map",Maps[0]))
+	{
+		CleanupAndExit("Error reading map!");
+		return;
+	}
+
+	for (int i = 0; i < 40; i++)
+	{
+		for (int j = 0; j < 28; j++)
+		{
+			if ((GetMap(j,i) == '#') && (GetMap(j,i-1) == '#') &&
+				(GetMap(j-1,i) == '#') && (GetMap(j-1,i-1) == '#')
 				&& (!BonusMode))
 			{
-				if ((act=AddSprite(SP_POINT))==NULL)
+				if ((act = AddSprite(SP_POINT)) == NULL)
 				{
 					CleanupAndExit("Error al poner un punto! (NULL)");
 					return;
 				}
-				act->xpos=i*16;
-				act->ypos=j*16;
+				act->xpos = i * 16;
+				act->ypos = j * 16;
 				nPoints++;
 				TotalPoints++;
 			}
-			else if (Maps[Map][j][i]=='E') // Entrada de "TUNELES"
+			else if (GetMap(j,i) == 'E') // Entrada de "TUNELES"
 			{
-				EntTunX[nEnts]=i;
-				EntTunY[nEnts++]=j;
+				EntTunX[nEnts] = i;
+				EntTunY[nEnts++] = j;
 			}
-			else if (Maps[Map][j][i]=='F') // Ubicacion Fruta
+			else if (GetMap(j,i) == 'F') // Ubicacion Fruta
 			{
-				FruitX=i*16;
-				FruitY=j*16;
+				FruitX = i * 16;
+				FruitY = j * 16;
 			}
-			else if (Maps[Map][j][i]=='P') // Ubicacion Pacman
+			else if (GetMap(j,i) == 'P') // Ubicacion Pacman
 			{
-				PacmanX=i*16;
-				PacmanY=j*16;
+				PacmanX = i * 16;
+				PacmanY = j * 16;
 			}
-			else if (Maps[Map][j][i]=='S') // Salida Fantasmas
+			else if (GetMap(j,i) == 'S') // Salida Fantasmas
 			{
-				ExitX=i*16;
-				ExitY=j*16;
+				ExitX = i * 16;
+				ExitY = j * 16;
 			}
-			else if (Maps[Map][j][i]=='L') // Letras
+			else if (GetMap(j,i) == 'L') // Letras
 			{
-				TextX=i*16;
-				TextY=j*16+8;
+				TextX = i * 16;
+				TextY = j * 16 + 8;
 			}
-			else if (Maps[Map][j][i]=='H') // "Casa" horizontal
+			else if (GetMap(j,i) == 'H') // "Casa" horizontal
 			{
-				HouseX=i*16;
-				HouseY=j*16;
-				HouseKind=1;
+				HouseX = i * 16;
+				HouseY = j * 16;
+				HouseKind = 1;
 			}
-			else if (Maps[Map][j][i]=='V') // "Casa" vertical
+			else if (GetMap(j,i) == 'V') // "Casa" vertical
 			{
-				HouseX=i*16;
-				HouseY=j*16;
-				HouseKind=0;
+				HouseX = i * 16;
+				HouseY = j * 16;
+				HouseKind = 0;
 			}
-			else if (Maps[Map][j][i]=='G') // Galletas (vertical)
+			else if (GetMap(j,i) == 'G') // Galletas (vertical)
 			{
-				CookiesX[ck]=i*16;
-				CookiesY[ck++]=j*16+8;
+				CookiesX[ck] = i * 16;
+				CookiesY[ck++] = j * 16 + 8;
 			}
-			else if (Maps[Map][j][i]=='C') // Galletas (horizontal)
+			else if (GetMap(j,i) == 'C') // Galletas (horizontal)
 			{
-				CookiesX[ck]=i*16+8;
-				CookiesY[ck++]=j*16;
+				CookiesX[ck] = i * 16 + 8;
+				CookiesY[ck++] = j * 16;
 			}
-			else if (Maps[Map][j][i]>='a') // AGREGAR "TUNELES"
+			else if (GetMap(j,i) >= 'a') // AGREGAR "TUNELES"
 			{
-				TunelsX[Maps[Map][j][i]-'a']=i;
-				TunelsY[Maps[Map][j][i]-'a']=j;
-				DPF(0,"Nuevo tunel #%d: x=%d y=%d",Maps[Map][j][i]-'a',i,j);
+				TunelsX[GetMap(j,i) - 'a'] = i;
+				TunelsY[GetMap(j,i) - 'a'] = j;
+				DPF(0, "Nuevo tunel #%d: x=%d y=%d", GetMap(j,i) - 'a', i, j);
 			}
-
+		}
+	}
 	for (nTunels=0;(TunelsX[nTunels]!=0) || (TunelsY[nTunels]!=0);nTunels++); // CONTAR TUNELES
 
 	DPF(0,"nTunels=%d",nTunels);
@@ -436,14 +496,26 @@ void DirsCanMove(SpriteData *spr,char *dirs)
 		{
 			mxpos=(spr->xpos) >> 4;
 			mypos=(spr->ypos) >> 4;
-			if ((Maps[Map][mypos-2][mxpos]>='!') &&
-				(Maps[Map][mypos-2][mxpos-1]>='!')) dirs[DIR_UP]=1;
-			if ((Maps[Map][mypos][mxpos-2]>='!') &&
-				(Maps[Map][mypos-1][mxpos-2]>='!')) dirs[DIR_LEFT]=1;
-			if ((Maps[Map][mypos+1][mxpos]>='!') &&
-				(Maps[Map][mypos+1][mxpos-1]>='!')) dirs[DIR_DOWN]=1;
-			if ((Maps[Map][mypos][mxpos+1]>='!') &&
-				(Maps[Map][mypos-1][mxpos+1]>='!')) dirs[DIR_RIGHT]=1;
+			if ((GetMap(mypos - 2, mxpos) >= '!') &&
+				(GetMap(mypos - 2, mxpos - 1) >= '!'))
+			{
+				dirs[DIR_UP] = 1;
+			}
+			if ((GetMap(mypos, mxpos - 2) >= '!') &&
+				(GetMap(mypos - 1, mxpos - 2) >= '!'))
+			{
+				dirs[DIR_LEFT] = 1;
+			}
+			if ((GetMap(mypos + 1, mxpos) >= '!') &&
+				(GetMap(mypos + 1, mxpos - 1) >= '!'))
+			{
+				dirs[DIR_DOWN] = 1;
+			}
+			if ((GetMap(mypos, mxpos + 1) >= '!') &&
+				(GetMap(mypos - 1, mxpos + 1) >= '!'))
+			{
+				dirs[DIR_RIGHT] = 1;
+			}
 		}
 	}
 }

@@ -73,6 +73,9 @@
     <ClInclude Include="..\Resources\resource.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\JPacman\Level.h">
+      <Filter>JPacman</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\Resources\JPacman.rc">
