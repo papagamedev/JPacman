@@ -104,7 +104,9 @@ enum
 	SP_PACMAN,
 	SP_FRUIT,
 	SP_COOKIE,
-	SP_POINT
+	SP_POINT,
+	SP_WALL,
+	SP_MAX
 };
 
 void SetGameMode(int Mode);

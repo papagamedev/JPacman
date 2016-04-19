@@ -441,6 +441,14 @@ void InitLevel()
 				TunelsY[GetMap(j,i) - 'a'] = j;
 				DPF(0, "Nuevo tunel #%d: x=%d y=%d", GetMap(j,i) - 'a', i, j);
 			}
+			else if (GetMap(j, i) == ' ')
+			{
+				SpriteData* wall = AddSprite(SP_WALL);
+				wall->dir = DIR_RIGHT;
+				wall->frame = 0;
+				wall->xpos = i * 16 + 8;
+				wall->ypos = j * 16 + 8;
+			}
 		}
 	}
 	for (nTunels=0;(TunelsX[nTunels]!=0) || (TunelsY[nTunels]!=0);nTunels++); // CONTAR TUNELES
