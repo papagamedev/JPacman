@@ -618,7 +618,7 @@ void Game_Setup()
 	for (int i = 0; i < 3; i++)
 	{
 		char mapName[100];
-		sprintf_s(mapName, "map%02d.map", i);
+		sprintf_s(mapName, "Resources\\map%02d.map", i);
 		if (!LoadLevel(mapName, Maps[i]))
 		{
 			CleanupAndExit("Error reading map!");

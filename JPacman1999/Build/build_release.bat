@@ -18,6 +18,7 @@ copy Bin\libvorbisfile.dll %tempdir%
 copy Bin\OpenAL32.dll %tempdir%
 copy Bin\sqlite3.dll %tempdir%
 copy Bin\websockets.dll %tempdir%
+copy Bin\Resources\*.map %tempdir%\Resources
 copy Bin\Resources\*.png %tempdir%\Resources
 copy Bin\Resources\*.mp3 %tempdir%\Resources
 copy Bin\Resources\*.wav %tempdir%\Resources
