@@ -12,36 +12,7 @@ int MovPointsOn=TRUE;	// para habilitar el movimiento de puntos
 int StartRound=0;	// ronda inicial - 1
 
 
-char Maps[2][Level::Height*Level::Width+1] = { 
-	 "                                        " 
-	 " ##################  ################## " 
-	 " ##################  ################## " 
-	 " ##      ##      ##  ##      ##      ## " 
-	 " ###################################### " 
-	 " ###################################### " 
-	 " $G      ##  ##          ##  ##      $G " 
-	 " ##      ##  ######  ######  ##      ## " 
-	 " ##########  ######  ######  ########## " 
-	 " ##########      ##  ##      ########## " 
-	 "         ## ################ ##         " 
-	 "         ## ################ ##         " 
-	 "         ## ##      S     ## ##         " 
-	 "$$$$$$$$$##### $$$$$$$$$$ #####$$$$$$$$$" 
-	 "$a$$$$$$E##### $$$$$H$$$$ #####$E$$$$$$b" 
-	 "         ## ##            ## ##         " 
-	 " ####### ## ##$$$$$$L$$$$$## ## ####### " 
-	 " ####### ## ##$$$$$$F$$$$$## ## ####### " 
-	 " $G   ## ## ##            ## ## ##   $G " 
-	 " #### #############$$############# #### " 
-	 " #### #############$P############# #### " 
-	 "   ## ##   ##              ##   ## ##   " 
-	 " #######   #######    #######   ####### " 
-	 " #######   #######    #######   ####### " 
-	 " ##             ##    ##             ## " 
-	 " ###################################### " 
-	 " ###################################### " 
-	 "                                        " 
-	 };
+char Maps[3][Level::Height*Level::Width+1];
 
 bool LoadLevel(const char* fileName,char *mapBuf)
 {
@@ -305,6 +276,7 @@ void InitLevel()
 	BonusMode = CookiesMove = PointsMove = PointsMult = FALSE;
 	if (b > 18)							// NIVELES DIFICILES
 	{
+		Map = 2;
 		levR = 3;
 		b -= 18;
 		levL = b;
@@ -355,6 +327,7 @@ void InitLevel()
 	}
 	else if (b > 8)					// NIVELES MEDIOS
 	{
+		Map = 1;
 		levR = 2;
 		b -= 8;
 		levL = b;
@@ -390,6 +363,7 @@ void InitLevel()
 	}
 	else							// NIVELES FACILES
 	{
+		Map = 0;
 		levR = 1;
 		levL = b;
 		if (b > 4)
@@ -448,12 +422,6 @@ void InitLevel()
 	ck = 0;
 
 	//	traducir mapa
-
-	if (!LoadLevel("map01.map",Maps[0]))
-	{
-		CleanupAndExit("Error reading map!");
-		return;
-	}
 
 	for (int i = 0; i < Level::Width; i++)
 	{
@@ -646,6 +614,18 @@ void Game_Setup()
 		Level=19;
 		break;
 	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		char mapName[100];
+		sprintf_s(mapName, "map%02d.map", i);
+		if (!LoadLevel(mapName, Maps[i]))
+		{
+			CleanupAndExit("Error reading map!");
+			return;
+		}
+	}
+
 	Lives=3;
 	Score=0;
 	Map=0;
