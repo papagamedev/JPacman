@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#define MAX_SPRITES	1000
+#define MAX_SPRITES	2000
 
 #ifdef JPACMAN_COCOS2DX
 
@@ -106,14 +106,14 @@ SpriteKind SpriteInfo[SP_MAX] = { {
 		{144,144,152,152},{144,144,152,152}
 	},{
 	0,0,0,16,16,							// PAREDES
-	{0},
-	{0},
-	{0},
-	{0},
+	{0,16,32,48,64,80,96,112},
+	{128,144,160,176,192,208,224,240},
+	{256},
+	{256},
+	{192,192,192,192,192,192,192,192 },
+	{ 192,192,192,192,192,192,192,192 },
 	{192},
-	{ 192 },
-	{ 192 },
-	{ 192 }
+	{192}
 }};
 
 BOOL InitGFX()
@@ -622,6 +622,7 @@ int DrawSprite(SpriteData* spr,int x,int y,int kind,int dir,int frame)
 			SpriteInfo[kind].right_y[dir * 8 + frame] + 0.25f, 
 			SpriteInfo[kind].width - 0.5f, 
 			SpriteInfo[kind].height - 0.5f));
+	sSprites[spr->idx]->setScale(1.04f);
 
 #else // !JPACMAN_COCOS2DX
     HRESULT ddrval;

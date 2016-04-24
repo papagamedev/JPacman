@@ -165,7 +165,108 @@ void InitLive()
 		*: solo galletas, puntaje por fantasmas en incremento...
 		J: SIN GALLETAS, PUNTOS SE MULTIPLICAN!!!
 		K: SIN GALLETAS, PUNTOS SE MULTIPLICAN MAS AUN!!
-	
+
+Wall sprites:
+
+UDLR
+0000
+###
+# #
+###
+
+UDLR
+0001
+###
+#  
+###
+
+UDLR
+0010
+###
+  #
+###
+
+UDLR
+0011
+###
+ 
+###
+
+UDLR
+0100
+###
+# #
+# #
+
+UDLR
+0101
+###
+#  
+# #
+
+UDLR
+0110
+###
+  #
+# #
+
+UDLR
+0111
+###
+   
+# #
+
+
+UDLR
+1000
+# #
+# #
+###
+
+UDLR
+1001
+# #
+#  
+###
+
+UDLR
+1010
+# #
+  #
+###
+
+UDLR
+1011
+# #
+ 
+###
+
+UDLR
+1100
+# #
+# #
+# #
+
+UDLR
+1101
+# #
+#  
+# #
+
+UDLR
+1110
+# #
+  #
+# #
+
+UDLR
+1111
+# #
+   
+# #
+
+
+
 */
 
 char GetMap(int row, int col)
@@ -181,23 +282,7 @@ void InitLevel()
 	PlayMusic(MUS_NONE);
 	ClearSprites();
 
-	act = AddSprite(SP_POINT);
-	act->xpos = 8;
-	act->ypos = 8;
-	act->framespeed = 1;
-	act = AddSprite(SP_POINT);
-	act->xpos = 632;
-	act->ypos = 8;
-	act->framespeed = 1;
-	act = AddSprite(SP_POINT);
-	act->xpos = 632;
-	act->ypos = 440;
-	act->framespeed = 1;
-	act = AddSprite(SP_POINT);
-	act->xpos = 8;
-	act->ypos = 440;
-	act->framespeed = 1;
-
+	// lives counter Pacman sprite 
 	act = AddSprite(SP_PACMAN);
 	act->xpos = 18;
 	act->ypos = 462;
@@ -370,9 +455,9 @@ void InitLevel()
 		return;
 	}
 
-	for (int i = 0; i < 40; i++)
+	for (int i = 0; i < Level::Width; i++)
 	{
-		for (int j = 0; j < 28; j++)
+		for (int j = 0; j < Level::Height; j++)
 		{
 			if ((GetMap(j,i) == '#') && (GetMap(j,i-1) == '#') &&
 				(GetMap(j-1,i) == '#') && (GetMap(j-1,i-1) == '#')
@@ -411,7 +496,7 @@ void InitLevel()
 			else if (GetMap(j,i) == 'L') // Letras
 			{
 				TextX = i * 16;
-				TextY = j * 16 + 8;
+				TextY = j * 16;
 			}
 			else if (GetMap(j,i) == 'H') // "Casa" horizontal
 			{
@@ -444,8 +529,27 @@ void InitLevel()
 			else if (GetMap(j, i) == ' ')
 			{
 				SpriteData* wall = AddSprite(SP_WALL);
-				wall->dir = DIR_RIGHT;
-				wall->frame = 0;
+				wall->dir = 0;
+
+				int frame = 0;
+				if (i == Level::Width - 1 || GetMap(j, i + 1) == ' ')
+				{
+					frame |= 1 << DIR_RIGHT;
+				}
+				if (i == 0 || GetMap(j, i - 1) == ' ')
+				{
+					frame |= 1 << DIR_LEFT;
+				}
+				if (j == Level::Height - 1 || GetMap(j + 1, i) == ' ')
+				{
+					frame |= 1 << DIR_DOWN;
+				}
+				if (j == 0 || GetMap(j - 1, i) == ' ')
+				{
+					frame |= 1 << DIR_UP;
+				}
+				DPF(0,"frame: %d", frame);
+				wall->frame = (float)frame;
 				wall->xpos = i * 16 + 8;
 				wall->ypos = j * 16 + 8;
 			}
@@ -572,29 +676,29 @@ void Game_UpdateFrame()
 
 	if (PauseMode==5)
 	{
-		DrawText(TextX-52,256,"Pausa");
+		DrawText(TextX-52,TextY,"Pausa");
 	}
 	else if ((Lives==1) && (LossTime>TICKS_SEC))
 	{
-		DrawText(TextX-107,256,"Fin del Juego");
+		DrawText(TextX-107, TextY,"Fin del Juego");
 	}
 	else if (GameTime<TICKS_SEC*2)
 	{
 		sprintf_s(buf,"Ronda %d",levR);
-		DrawText(TextX-63,256,buf);
+		DrawText(TextX-63, TextY,buf);
 	}
 	else if (GameTime<TICKS_SEC*4)
 	{
 		if (BonusMode)
-			DrawText(TextX-54,256,"Nivel X");
+			DrawText(TextX-54, TextY,"Nivel X");
 		else if (PointsMult==1)
-			DrawText(TextX-85,256,"Nivel Final");		
+			DrawText(TextX-85, TextY,"Nivel Final");
 		else if (PointsMult==2)
-			DrawText(TextX-95,256,"jajajajaja...");		
+			DrawText(TextX-95, TextY,"jajajajaja...");
 		else
 		{
 			sprintf_s(buf,"Nivel %d",levL);
-			DrawText(TextX-53,256,buf);
+			DrawText(TextX-53, TextY,buf);
 		}
 	}
 }
