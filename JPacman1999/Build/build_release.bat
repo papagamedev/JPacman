@@ -6,6 +6,7 @@ set tempdir=temp_release
 rmdir /S /Q %tempdir%
 mkdir %tempdir%
 mkdir %tempdir%\Resources
+mkdir %tempdir%\Editor
 copy Build\README.txt %tempdir%
 copy Bin\JPacman_Cocos2dx.exe %tempdir%\JPacman.exe
 copy Bin\glew32.dll %tempdir%
@@ -22,7 +23,7 @@ copy Bin\Resources\*.map %tempdir%\Resources
 copy Bin\Resources\*.png %tempdir%\Resources
 copy Bin\Resources\*.mp3 %tempdir%\Resources
 copy Bin\Resources\*.wav %tempdir%\Resources
-
+copy Bin\Editor\JPacman_MapEditor.exe %tempdir%\Editor
 cd %tempdir%
 del %target%
 "%ProgramFiles%\7-Zip\7z.exe" a -r -tZip -mx1 %target% *.*
