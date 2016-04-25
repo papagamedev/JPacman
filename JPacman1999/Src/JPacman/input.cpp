@@ -1,4 +1,5 @@
 #include "JPacman.h"
+#include <XInput.h>
 
 #ifndef JPACMAN_COCOS2DX
 
@@ -70,14 +71,19 @@ cocos2d::EventListener* InitInput()
 			bufKeys |= JPACMAN_KEY_DOWN;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
-			bufKeys |= JPACMAN_KEY_SPACE;
+			bufKeys |= JPACMAN_KEY_PAUSE;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
-			bufKeys |= JPACMAN_KEY_ENTER;
+			bufKeys |= JPACMAN_KEY_OK;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
-			bufKeys |= JPACMAN_KEY_ESC;
+			bufKeys |= JPACMAN_KEY_BACK;
 			break;
+#ifdef _DEBUG
+		case cocos2d::EventKeyboard::KeyCode::KEY_F1:
+			bufKeys |= JPACMAN_KEY_CHEAT_NEXT_LEVEL;
+			break;
+#endif
 		}
 
 		switch (keyCode) {
@@ -146,14 +152,19 @@ cocos2d::EventListener* InitInput()
 			bufKeys &= ~JPACMAN_KEY_DOWN;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
-			bufKeys &= ~JPACMAN_KEY_SPACE;
+			bufKeys &= ~JPACMAN_KEY_PAUSE;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
-			bufKeys &= ~JPACMAN_KEY_ENTER;
+			bufKeys &= ~JPACMAN_KEY_OK;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
-			bufKeys &= ~JPACMAN_KEY_ESC;
+			bufKeys &= ~JPACMAN_KEY_BACK;
 			break;
+#ifdef _DEBUG
+		case cocos2d::EventKeyboard::KeyCode::KEY_F1:
+			bufKeys &= ~JPACMAN_KEY_CHEAT_NEXT_LEVEL;
+			break;
+#endif
 		}
 	};
 	return eventListener;
@@ -172,9 +183,57 @@ void ReadKeyboardInput()
 		CurrentKey = bufCurrentKey;
 	}
 
-	if (InputMode)
-		bufKeys = 0;
+	XINPUT_STATE xInputState;
+	if (XInputGetState(0, &xInputState) == ERROR_SUCCESS)
+	{
+		static DWORD lastPacket = -1;
+		if (lastPacket != xInputState.dwPacketNumber)
+		{
+			if ((xInputState.Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE *2)
+				|| (xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT))
+			{
+				dwKeyState |= JPACMAN_KEY_LEFT;
+			}
+			else if ((xInputState.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE * 2)
+				|| (xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT))
+			{
+				dwKeyState |= JPACMAN_KEY_RIGHT;
+			}
+			if ((xInputState.Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE * 2)
+				|| (xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN))
+			{
+				dwKeyState |= JPACMAN_KEY_DOWN;
+			}
+			else if ((xInputState.Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE * 2)
+				|| (xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP))
+			{
+				dwKeyState |= JPACMAN_KEY_UP;
+			}
+			if (xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_A)
+			{
+				dwKeyState |= JPACMAN_KEY_OK;
+			}
+			if (xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_B)
+			{
+				dwKeyState |= JPACMAN_KEY_BACK;
+			}
+			if (xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_START)
+			{
+				dwKeyState |= JPACMAN_KEY_PAUSE;
+			}
+#ifdef _DEBUG
+			if (xInputState.Gamepad.wButtons & XINPUT_GAMEPAD_X)
+			{
+				dwKeyState |= JPACMAN_KEY_CHEAT_NEXT_LEVEL;
+			}
+#endif
+		}
+	}
 
+	if (InputMode)
+	{
+		bufKeys = 0;
+	}
 }
 
 #else // !JPACMAN_COCOS2DX

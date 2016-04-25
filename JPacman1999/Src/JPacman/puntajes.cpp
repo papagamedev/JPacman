@@ -139,7 +139,7 @@ void Puntajes_DoTick()
 		SetGameMode(MODE_MENU);
 	else if (PuntajesMode==1)
 	{
-		if ((dwKeyState & JPACMAN_KEY_ESC) || (dwKeyState & JPACMAN_KEY_ENTER))
+		if ((dwKeyState & JPACMAN_KEY_BACK) || (dwKeyState & JPACMAN_KEY_OK))
 		{
 			PlaySound(SND_FRUIT);
 			byep=1;
@@ -160,12 +160,12 @@ void Puntajes_DoTick()
 	{
 		Cursor++;
 		Cursor &= 31;
-		if ((dwKeyState & JPACMAN_KEY_ESC) || (dwKeyState & JPACMAN_KEY_ENTER))
+		if ((dwKeyState & JPACMAN_KEY_BACK) || (dwKeyState & JPACMAN_KEY_OK))
 		{
 			SaveScores();
 			PuntajesMode=1;
 			PlaySound(SND_FRUIT);
-			if (dwKeyState & JPACMAN_KEY_ENTER)
+			if (dwKeyState & JPACMAN_KEY_OK)
 			{
 				Cursor=0;
 			}

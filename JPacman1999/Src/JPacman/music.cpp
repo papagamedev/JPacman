@@ -18,9 +18,7 @@ jpacmanMusicInfo sMusicInfo[MUS_MAX] =
 	{ nullptr, false },
 	{ "menu.mp3", true },
 	{ "gamex.mp3", true },//MUS_GAMEX
-	{ "gamex.mp3", true },//MUS_GAMEGRN
 	{ "bonus.mp3", true },//MUS_GAMEBONUS
-	{ "gamex.mp3", true },//MUS_GAMEFINAL
 	{ "intro.mp3", false },
 	{ "gameintro.mp3", false },//MUS_GAMEINTRO
 	{ "oops.mp3", false },//MUS_OOPS
@@ -54,7 +52,20 @@ void PlayMusic(int mus)
 	else
 	{
 		audio->playBackgroundMusic(sMusicInfo[mus].fileName, sMusicInfo[mus].loop);
+		audio->resumeBackgroundMusic();
 	}
+}
+
+void PauseMusic()
+{
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	audio->pauseBackgroundMusic();
+}
+
+void ResumeMusic()
+{
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	audio->resumeBackgroundMusic();
 }
 
 #else // !JPACMAN_COCOS2DX
@@ -231,6 +242,16 @@ void UninitMusic()
 
 	CoUninitialize();
 #endif
+
+}
+
+void PauseMusic()
+{
+
+}
+
+void ResumeMusic()
+{
 
 }
 

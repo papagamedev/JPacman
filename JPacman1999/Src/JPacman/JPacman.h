@@ -1,13 +1,20 @@
 #ifndef JPACMAN_INCLUDED
 #define JPACMAN_INCLUDED
 
+#define _WIN32_WINNT _WIN32_WINNT_WIN7 
+
 #ifdef JPACMAN_COCOS2DX
 
 #include "cocos2d.h"
 
 #include "AppScene.h"
 
+#ifdef _DEBUG
 #define DPF(priority, fmt, ...) cocos2d::log(fmt,__VA_ARGS__)
+#else
+#define DPF(priority, fmt, ...) dummyLog()
+inline void dummyLog() {}
+#endif
 
 #else // JPACMAN_COCOS2DX
 
@@ -182,11 +189,15 @@ extern int PuntajesMode;
 BOOL InitMusic(void);
 void UninitMusic(void);
 void PlayMusic(int mus);
+void PauseMusic();
+void ResumeMusic();
 
 int InitSound(void);
 void UninitSound(void);
 void PlaySound(int mus);
 void StopSound(int mus);
+void PauseAllSounds();
+void ResumeAllSounds();
 
 #define NUM_OPTS 4
 
@@ -198,9 +209,7 @@ enum {
 	MUS_NONE,
 	MUS_MENU,
 	MUS_GAMEX,
-	MUS_GAMEGRN,
 	MUS_GAMEBONUS,
-	MUS_GAMEFINAL,
 	MUS_INTRO,
 	MUS_GAMEINTRO,
 	MUS_OOPS,

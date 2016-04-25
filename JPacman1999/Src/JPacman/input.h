@@ -19,13 +19,16 @@
 /*
  * keyboard commands
  */
-#define JPACMAN_KEY_ESC    0x00000001l
-#define JPACMAN_KEY_DOWN   0x00000002l
-#define JPACMAN_KEY_LEFT   0x00000004l
-#define JPACMAN_KEY_RIGHT  0x00000008l
-#define JPACMAN_KEY_UP     0x00000010l
-#define JPACMAN_KEY_ENTER  0x00000020l
-#define JPACMAN_KEY_SPACE  0x00000040l
+#define JPACMAN_KEY_BACK					0x00000001l
+#define JPACMAN_KEY_DOWN				0x00000002l
+#define JPACMAN_KEY_LEFT				0x00000004l
+#define JPACMAN_KEY_RIGHT				0x00000008l
+#define JPACMAN_KEY_UP					0x00000010l
+#define JPACMAN_KEY_OK				0x00000020l
+#define JPACMAN_KEY_PAUSE				0x00000040l
+#ifdef _DEBUG
+#define JPACMAN_KEY_CHEAT_NEXT_LEVEL	0x00000080l
+#endif
 
 //--------------------------------------------------------------------------
 

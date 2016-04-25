@@ -287,7 +287,7 @@ void InitLevel()
 			FruitScore = 500 * (b - 2);
 			PointsMove = 2;
 			CookiesMove = 1;
-			GameTune = MUS_GAMEGRN;
+			GameTune = MUS_GAMEX;
 		}
 		else if (b > 5)
 		{
@@ -295,7 +295,7 @@ void InitLevel()
 			GoblinSpeed = 4;
 			FruitScore = 500 * (b - 1);
 			PointsMove = 1;
-			GameTune = MUS_GAMEGRN;
+			GameTune = MUS_GAMEX;
 		}
 		else
 		{
@@ -313,13 +313,13 @@ void InitLevel()
 		{
 			FruitScore = 5000;
 			PointsMult = 1;
-			GameTune = MUS_GAMEFINAL;
+			GameTune = MUS_GAMEX;
 		}
 		else if (b == 14)
 		{
 			FruitScore = 7000;
 			PointsMult = 2;
-			GameTune = MUS_GAMEFINAL;
+			GameTune = MUS_GAMEX;
 		}
 		RevengeTimeout = (b == 12) ? 1 : (14 - b)*TICKS_SEC + 1;
 		GoblinCI = (b * 3) / 2 + 8;
@@ -337,7 +337,7 @@ void InitLevel()
 			GoblinSpeed = 4;
 			FruitScore = 500 * (b - 1);
 			PointsMove = 1;
-			GameTune = MUS_GAMEGRN;
+			GameTune = MUS_GAMEX;
 		}
 		else
 		{
@@ -355,7 +355,7 @@ void InitLevel()
 		{
 			FruitScore = 5000;
 			PointsMult = 1;
-			GameTune = MUS_GAMEFINAL;
+			GameTune = MUS_GAMEX;
 		}
 		RevengeTimeout = (b == 9) ? 1 : (14 - b)*TICKS_SEC + 1;
 		GoblinCI = b + 2;
@@ -372,7 +372,7 @@ void InitLevel()
 			GoblinSpeed = 4;
 			FruitScore = 500 * (b - 1);
 			PointsMove = TRUE;
-			GameTune = MUS_GAMEGRN;
+			GameTune = MUS_GAMEX;
 		}
 		else
 		{
@@ -390,7 +390,7 @@ void InitLevel()
 		{
 			FruitScore = 5000;
 			PointsMult = 1;
-			GameTune = MUS_GAMEFINAL;
+			GameTune = MUS_GAMEX;
 		}
 		RevengeTimeout = (b == 7) ? 1 : (14 - b)*TICKS_SEC + 1;
 		GoblinCI = b - 1;
@@ -654,7 +654,7 @@ void Game_UpdateFrame()
 		DrawText(ScoreX,ScoreY,buf);
 	}
 
-	if (PauseMode==5)
+	if (PauseMode>=5)
 	{
 		DrawText(TextX-52,TextY,"Pausa");
 	}
@@ -846,7 +846,7 @@ void Game_DoTick()
 		return;
 	}
 
-	if (dwKeyState & JPACMAN_KEY_ESC)
+	if (dwKeyState & JPACMAN_KEY_BACK)
 	{
 		PlayMusic(MUS_NONE);
 		StopSound(SND_EYES);
@@ -858,12 +858,21 @@ void Game_DoTick()
 	if (Lives==0) 
 		return;
 
-	if (PauseMode==5)
+	if (PauseMode>=5)
 	{
-		if (dwKeyState & JPACMAN_KEY_SPACE)
+		if (PauseMode > 5)
 		{
-			PauseMode=4;
-			InputMode=0;
+			PauseMode--;
+		}
+		else
+		{
+			if (dwKeyState & JPACMAN_KEY_PAUSE)
+			{
+				ResumeAllSounds();
+				ResumeMusic();
+				PauseMode = 4;
+				InputMode = 0;
+			}
 		}
 		return;
 	}
@@ -976,17 +985,21 @@ void Game_DoTick()
 		return;
 
 #ifdef _DEBUG
-	if (dwKeyState & JPACMAN_KEY_ENTER)
+	if (dwKeyState & JPACMAN_KEY_CHEAT_NEXT_LEVEL)
 	{
 		goto nextlevel;
 	}
 #endif
 
 	if (PauseMode)
-		PauseMode--;
-	else if (dwKeyState & JPACMAN_KEY_SPACE)
 	{
-		PauseMode=5;
+		PauseMode--;
+	}
+	else if (dwKeyState & JPACMAN_KEY_PAUSE)
+	{
+		PauseAllSounds();
+		PauseMusic();
+		PauseMode=10;
 		InputMode=1;
 	}
 
@@ -1041,20 +1054,20 @@ void Game_DoTick()
 
 	DirsCanMove(Pacman,dirs);
 
-	if ((dwKeyState & JPACMAN_KEY_UP) && (dirs[DIR_UP]))
+	if ((dwKeyState & JPACMAN_KEY_UP) && (dirs[DIR_UP]) && Pacman->dir!=DIR_UP)
 		Pacman->dir=DIR_UP;
-	else if ((dwKeyState & JPACMAN_KEY_DOWN) && (dirs[DIR_DOWN]))
+	else if ((dwKeyState & JPACMAN_KEY_DOWN) && (dirs[DIR_DOWN]) && Pacman->dir != DIR_DOWN)
 		Pacman->dir=DIR_DOWN;
-	if ((dwKeyState & JPACMAN_KEY_LEFT) && (dirs[DIR_LEFT]))
+	if ((dwKeyState & JPACMAN_KEY_LEFT) && (dirs[DIR_LEFT]) && Pacman->dir != DIR_LEFT)
 		Pacman->dir=DIR_LEFT;
-	else if ((dwKeyState & JPACMAN_KEY_RIGHT) && (dirs[DIR_RIGHT]))
+	else if ((dwKeyState & JPACMAN_KEY_RIGHT) && (dirs[DIR_RIGHT]) && Pacman->dir != DIR_RIGHT)
 		Pacman->dir=DIR_RIGHT;
 	
-	// mov. fantasmas
-
 	GobMove=-1;
 	for (k=0;k<4;k++)
 		MakeMove(Pacman,dirs);
+
+	// mov. fantasmas
 
 	for (i=0;i<4;i++)
 	{

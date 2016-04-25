@@ -184,7 +184,7 @@ void Intro_DoTick()
 		return;
 	}
 	
-	if (dwKeyState & JPACMAN_KEY_ESC)
+	if ((dwKeyState & JPACMAN_KEY_BACK) || (dwKeyState & JPACMAN_KEY_OK) || (dwKeyState & JPACMAN_KEY_PAUSE))
 	{
 		for (i=0;i<4;i++)
 			RemoveSprite(&iGoblins[i]);

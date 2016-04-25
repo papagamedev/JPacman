@@ -50,6 +50,17 @@ void UninitSound()
         lpDS = NULL;
     }
 }
+
+void PauseAllSounds()
+{
+
+}
+
+void ResumeAllSounds()
+{
+
+}
+
 #else // JPACMAN_COCOS2DX
 
 #include "Audio/include/SimpleAudioEngine.h"
@@ -108,6 +119,20 @@ void UninitSound()
 
 }
 
+void PauseAllSounds()
+{
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	audio->pauseAllEffects();
+}
+
+void ResumeAllSounds()
+{
+	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+	audio->resumeAllEffects();
+}
+
+
+
 #endif // JPACMAN_COCOS2DX
 
 
@@ -121,8 +146,8 @@ void PlaySound(int snd)
 	if (sound.loop)
 	{
 		// if sound is looping and already playing, do not start it over again
-		if (sound.engineId)
-			return;
+//		if (sound.engineId)
+//			return;
 	}
 	else
 	{

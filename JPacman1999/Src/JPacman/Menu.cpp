@@ -215,7 +215,7 @@ void Menu_DoTick()
 		if (CurSel<1) CurSel=CurMenuItems;
 		PlaySound(SND_POINT);
 	}
-	if (dwKeyState & JPACMAN_KEY_ESC)
+	if (dwKeyState & JPACMAN_KEY_BACK)
 	{
 		if (EscMenu==ID_SALIR) goto salir;
 		InitMenu(EscMenu);
@@ -259,13 +259,13 @@ void Menu_DoTick()
 			}
 			break;
 		}
-	else if ((dwKeyState & JPACMAN_KEY_ENTER) && (op>=0))
+	else if ((dwKeyState & JPACMAN_KEY_OK) && (op>=0))
 	{
 		if ((op==MENU_DELPLYR) && (CurIdent==0)) goto caca;
 		PlaySound(SND_POINT);
 		InitMenu(op);
 	}
-	else if (((dwKeyState & JPACMAN_KEY_ENTER) || (dwKeyState & JPACMAN_KEY_RIGHT)) && (op<0))
+	else if (((dwKeyState & JPACMAN_KEY_OK) || (dwKeyState & JPACMAN_KEY_RIGHT)) && (op<0))
 		switch(op)
 		{
 		case ID_SALIR:
