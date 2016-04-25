@@ -54,27 +54,40 @@ cocos2d::EventListener* InitInput()
 	eventListener->onKeyPressed = [](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
 		switch (keyCode) {
 		case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_A:
 			bufKeys |= JPACMAN_KEY_LEFT;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_D:
 			bufKeys |= JPACMAN_KEY_RIGHT;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_W:
 			bufKeys |= JPACMAN_KEY_UP;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		case cocos2d::EventKeyboard::KeyCode::KEY_S:
 			bufKeys |= JPACMAN_KEY_DOWN;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
 			bufKeys |= JPACMAN_KEY_SPACE;
-			bufCurrentKey = ' ';
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
 			bufKeys |= JPACMAN_KEY_ENTER;
-			bufCurrentKey = '\r';
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
 			bufKeys |= JPACMAN_KEY_ESC;
+			break;
+		}
+
+		switch (keyCode) {
+		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
+			bufCurrentKey = ' ';
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+			bufCurrentKey = '\r';
+			break;
+		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
 			bufCurrentKey = 27;
 			break;
 		case cocos2d::EventKeyboard::KeyCode::KEY_BACKSPACE:
