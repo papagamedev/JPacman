@@ -1,5 +1,7 @@
 #JPacman
 
+![jpacman_icon.png](https://bitbucket.org/repo/6GMoL8/images/3192814779-jpacman_icon.png)
+
 JPacman is a classic _Pac-man_ clone that runs on PC with Windows. It's a personal project I coded in 1998-1999 as a gift to my mom, a super fan of the original Pacman game.
 
 It has the same Pacman game mechanics, but I added a couple of nice extra features. 
