@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 0d16c09ee46093d439939bf7ae52be01
-timeCreated: 1483364876
+guid: e6ea789492d47604d9bc1b662537c711
+timeCreated: 1485199423
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName: {}
@@ -53,7 +53,7 @@ TextureImporter:
     serializedVersion: 2
     sprites: []
     outline: []
-  spritePackingTag: Game
+  spritePackingTag: Gane
   userData: 
   assetBundleName: 
   assetBundleVariant: 

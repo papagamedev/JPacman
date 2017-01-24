@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 178f5cc9c147755448928c064d5403fb
+timeCreated: 1485199544
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - m_background: {instanceID: 0}
+  - m_dotPrefab: {fileID: 1000010539885376, guid: ed4aacd205307294d94ac2568529e059,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

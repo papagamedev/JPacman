@@ -11,7 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 178f5cc9c147755448928c064d5403fb, type: 3}
   m_Name: Level01
   m_EditorClassIdentifier: 
-  m_background: {fileID: 21300000, guid: 0d16c09ee46093d439939bf7ae52be01, type: 3}
+  m_backgroundPrefab: {fileID: 1000010156210658, guid: a2286e65edc1c9c4699d6c811213a992,
+    type: 2}
+  m_dotPrefab: {fileID: 1000010539885376, guid: ed4aacd205307294d94ac2568529e059,
+    type: 2}
+  m_playerPrefab: {fileID: 1000013497543366, guid: 4cde42aba1461ce41bcceae1fbf1fca0,
+    type: 2}
   m_map: "                                        \r\n ##################  ##################
     \r\n ##################  ################## \r\n ##      ##      ##  ##      ##
     \     ## \r\n ###################################### \r\n ######################################

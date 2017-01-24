@@ -44,6 +44,9 @@ TagManager:
   - name: Background
     uniqueID: 348129859
     locked: 0
+  - name: Dots
+    uniqueID: 1753778391
+    locked: 0
   - name: Player
     uniqueID: 3815776517
     locked: 0
