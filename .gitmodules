@@ -1,4 +1,3 @@
-[submodule "External/cocos2d-x"]
-	path = External/cocos2d-x
-	url = https://github.com/cocos2d/cocos2d-x.git
-	branch = v3.10
+[submodule "External/axmol"]
+	path = External/axmol
+	url = https://github.com/axmolengine/axmol.git

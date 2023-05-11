@@ -43,9 +43,9 @@ extern char CurrentKey;
 
 extern void (*ReadGameInput)(void);
 
-#ifdef JPACMAN_COCOS2DX
+#ifdef JPACMAN_AXMOL
 
-cocos2d::EventListener* InitInput();
+axmol::EventListener* InitInput();
 
 #else
 
@@ -60,7 +60,7 @@ BOOL PickInputDevice(int);
 
 //--------------------------------------------------------------------------
 
-#endif // JPACMAN_COCOS2DX
+#endif // JPACMAN_AXMOL
 
 #endif // _INPUT_H
 

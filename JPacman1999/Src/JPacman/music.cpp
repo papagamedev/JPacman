@@ -3,9 +3,9 @@
 int curmus=-1;
 int MusicEnabled = TRUE, MusicOn = TRUE;
 
-#ifdef JPACMAN_COCOS2DX
+#ifdef JPACMAN_AXMOL
 
-#include "Audio/include/SimpleAudioEngine.h"
+#include "Audio/AudioEngine.h"
 
 struct jpacmanMusicInfo
 {
@@ -27,10 +27,9 @@ jpacmanMusicInfo sMusicInfo[MUS_MAX] =
 
 BOOL InitMusic()
 {
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
 	for (int i = 0; i < MUS_MAX; i++)
 	{
-		audio->preloadBackgroundMusic(sMusicInfo[i].fileName);
+		axmol::AudioEngine::preload(sMusicInfo[i].fileName);
 	}
 
 	return TRUE;
@@ -42,33 +41,31 @@ void UninitMusic()
 
 }
 
+int musicInstanceId=0;
+
 void PlayMusic(int mus)
 {
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
 	if (sMusicInfo[mus].fileName == nullptr)
 	{
-		audio->stopBackgroundMusic();
+		axmol::AudioEngine::stop(musicInstanceId);
 	}
 	else
 	{
-		audio->playBackgroundMusic(sMusicInfo[mus].fileName, sMusicInfo[mus].loop);
-		audio->resumeBackgroundMusic();
+		musicInstanceId = axmol::AudioEngine::play2d(sMusicInfo[mus].fileName, sMusicInfo[mus].loop);
 	}
 }
 
 void PauseMusic()
 {
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->pauseBackgroundMusic();
+	axmol::AudioEngine::pause(musicInstanceId);
 }
 
 void ResumeMusic()
 {
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->resumeBackgroundMusic();
+	axmol::AudioEngine::resume(musicInstanceId);
 }
 
-#else // !JPACMAN_COCOS2DX
+#else // !JPACMAN_AXMOL
 
 #ifdef DIRECTMUSIC_SUPPORT
 
@@ -312,4 +309,4 @@ void PlayMusic(int mus)
 #endif
 }
 
-#endif // !JPACMAN_COCOS2DX
+#endif // !JPACMAN_AXMOL

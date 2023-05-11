@@ -43,3 +43,12 @@ As mentioned above, in Windows 8 or newer versions, you need to run the Binaries
 Many people have coded some wrappers to fix the issue. The only one I found that works is the one coded by "Aqrit" (http://bitpatch.com/ddwrapper.html). For conveniency, I've included the "Aqrit's ddwrapper" in the "Win8+" folder, along with its readme file.
 
 Please make sure to check his website (http://bitpatch.com) and check his other cool tools.
+
+#### Setup to build the axmol version (formerly cocos2dx version)
+
+- Get the Externals/axmol submodule (git)
+- Install Python 3.7+
+- Install CMake 3.20+
+- Run python/setup.py
+- Run cmake -S . -B build -G "Visual Studio 17 2022" -A Win32
+- Build vs solution in Release mode

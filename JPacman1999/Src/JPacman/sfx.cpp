@@ -2,7 +2,7 @@
 
 int SoundOn = TRUE, SoundEnabled = TRUE;
 
-#ifndef JPACMAN_COCOS2DX
+#ifndef JPACMAN_AXMOL
 
 LPDIRECTSOUND lpDS = NULL;
 
@@ -61,9 +61,9 @@ void ResumeAllSounds()
 
 }
 
-#else // JPACMAN_COCOS2DX
+#else // JPACMAN_AXMOL
 
-#include "Audio/include/SimpleAudioEngine.h"
+#include "Audio/AudioEngine.h"
 
 struct jpacmanSndInfo
 {
@@ -106,10 +106,9 @@ jpacmanSndInfo sSoundInfo[SND_MAX]=
 
 int InitSound()
 {
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
 	for (int i = 0; i < SND_MAX; i++)
 	{
-		audio->preloadEffect(sSoundInfo[i].fileName);
+		axmol::AudioEngine::preload(sSoundInfo[i].fileName);
 	}
 	return TRUE;
 }
@@ -121,19 +120,17 @@ void UninitSound()
 
 void PauseAllSounds()
 {
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->pauseAllEffects();
+	axmol::AudioEngine::pauseAll();
 }
 
 void ResumeAllSounds()
 {
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	audio->resumeAllEffects();
+	axmol::AudioEngine::resumeAll();
 }
 
 
 
-#endif // JPACMAN_COCOS2DX
+#endif // JPACMAN_AXMOL
 
 
 void PlaySound(int snd)
@@ -141,7 +138,7 @@ void PlaySound(int snd)
 	if (!SoundOn) return;
 	if (!SoundEnabled) return;
 
-#if JPACMAN_COCOS2DX
+#if JPACMAN_AXMOL
 	jpacmanSndInfo& sound = sSoundInfo[snd];
 	if (sound.loop)
 	{
@@ -152,16 +149,15 @@ void PlaySound(int snd)
 	else
 	{
 		// if sound is not looping, make sure it already finished to avoid aborting it in the middle
-		if (sound.endTimeInMiliseconds > cocos2d::utils::getTimeInMilliseconds())
+		if (sound.endTimeInMiliseconds > axmol::utils::getTimeInMilliseconds())
 			return;
 	}
 
-	auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-	sound.engineId = audio->playEffect(sound.fileName, sound.loop);
-	sound.endTimeInMiliseconds = cocos2d::utils::getTimeInMilliseconds() + sound.durationInMiliseconds;
+	sound.engineId = axmol::AudioEngine::play2d(sound.fileName, sound.loop);
+	sound.endTimeInMiliseconds = axmol::utils::getTimeInMilliseconds() + sound.durationInMiliseconds;
 	DPF(0, "play %s", sound.fileName);
 
-#else // !JPACMAN_COCOS2DX
+#else // !JPACMAN_AXMOL
 	switch (snd)
 	{
 	case SND_FRUIT:
@@ -180,7 +176,7 @@ void PlaySound(int snd)
 		SndObjPlay(hsoEyes,DSBPLAY_LOOPING);
 		break;
 	}
-#endif // !JPACMAN_COCOS2DX
+#endif // !JPACMAN_AXMOL
 }
 
 void StopSound(int snd)
@@ -188,15 +184,14 @@ void StopSound(int snd)
 	if (!SoundOn) return;
 	if (!SoundEnabled) return;
 
-#if JPACMAN_COCOS2DX
+#if JPACMAN_AXMOL
 	jpacmanSndInfo& sound = sSoundInfo[snd];
 	if (sound.engineId)
 	{
-		auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
-		audio->stopEffect(sound.engineId);
+		axmol::AudioEngine::stop(sound.engineId);
 		sound.engineId = 0;
 	}
-#else // !JPACMAN_COCOS2DX
+#else // !JPACMAN_AXMOL
 
 	switch (snd)
 	{
@@ -216,6 +211,6 @@ void StopSound(int snd)
 		SndObjStop(hsoEyes);
 		break;
 	}
-#endif // !JPACMAN_COCOS2DX
+#endif // !JPACMAN_AXMOL
 
 }

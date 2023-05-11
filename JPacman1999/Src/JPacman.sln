@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JPacman", "JPacman\JPacman.vcxproj", "{FB6E5F88-68EF-49D8-B444-78688239CB4E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mapedit", "MapEdit\Mapedit.vcxproj", "{A319839E-234C-4604-AD36-B563BB288275}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JPacman_Cocos2dx", "JPacman_Cocos2dx\Proj.Win32\JPacman_Cocos2dx.vcxproj", "{B8BF9E81-35FD-4582-BA1C-B85FA365BABB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JPacman_Axmol", "JPacman_Axmol\Proj.Win32\JPacman_Axmol.vcxproj", "{B8BF9E81-35FD-4582-BA1C-B85FA365BABA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{B8BF9E81-35FD-4582-BA1C-B85FA365BABB}.Debug|x86.Build.0 = Debug|Win32
 		{B8BF9E81-35FD-4582-BA1C-B85FA365BABB}.Release|x86.ActiveCfg = Release|Win32
 		{B8BF9E81-35FD-4582-BA1C-B85FA365BABB}.Release|x86.Build.0 = Release|Win32
+		{B8BF9E81-35FD-4582-BA1C-B85FA365BABA}.Debug|x86.ActiveCfg = Debug|Win32
+		{B8BF9E81-35FD-4582-BA1C-B85FA365BABA}.Debug|x86.Build.0 = Debug|Win32
+		{B8BF9E81-35FD-4582-BA1C-B85FA365BABA}.Release|x86.ActiveCfg = Release|Win32
+		{B8BF9E81-35FD-4582-BA1C-B85FA365BABA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

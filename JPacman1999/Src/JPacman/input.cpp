@@ -1,7 +1,7 @@
 #include "JPacman.h"
 #include <XInput.h>
 
-#ifndef JPACMAN_COCOS2DX
+#ifndef JPACMAN_AXMOL
 
 #include "input.h"
 
@@ -44,124 +44,124 @@ extern void ReadKeyboardInput(void);
 // allocate external variables
 void (*ReadGameInput)(void) = ReadKeyboardInput;
 
-#ifdef JPACMAN_COCOS2DX
+#ifdef JPACMAN_AXMOL
 
 DWORD bufKeys = 0;
 char bufCurrentKey = 0;
 
-cocos2d::EventListener* InitInput()
+axmol::EventListener* InitInput()
 {
-	auto eventListener = cocos2d::EventListenerKeyboard::create();
-	eventListener->onKeyPressed = [](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+	auto eventListener = axmol::EventListenerKeyboard::create();
+	eventListener->onKeyPressed = [](axmol::EventKeyboard::KeyCode keyCode, axmol::Event* event) {
 		switch (keyCode) {
-		case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-		case cocos2d::EventKeyboard::KeyCode::KEY_A:
+		case axmol::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		case axmol::EventKeyboard::KeyCode::KEY_A:
 			bufKeys |= JPACMAN_KEY_LEFT;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-		case cocos2d::EventKeyboard::KeyCode::KEY_D:
+		case axmol::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		case axmol::EventKeyboard::KeyCode::KEY_D:
 			bufKeys |= JPACMAN_KEY_RIGHT;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
-		case cocos2d::EventKeyboard::KeyCode::KEY_W:
+		case axmol::EventKeyboard::KeyCode::KEY_UP_ARROW:
+		case axmol::EventKeyboard::KeyCode::KEY_W:
 			bufKeys |= JPACMAN_KEY_UP;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-		case cocos2d::EventKeyboard::KeyCode::KEY_S:
+		case axmol::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		case axmol::EventKeyboard::KeyCode::KEY_S:
 			bufKeys |= JPACMAN_KEY_DOWN;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
+		case axmol::EventKeyboard::KeyCode::KEY_SPACE:
 			bufKeys |= JPACMAN_KEY_PAUSE;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+		case axmol::EventKeyboard::KeyCode::KEY_ENTER:
 			bufKeys |= JPACMAN_KEY_OK;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+		case axmol::EventKeyboard::KeyCode::KEY_ESCAPE:
 			bufKeys |= JPACMAN_KEY_BACK;
 			break;
 #ifdef _DEBUG
-		case cocos2d::EventKeyboard::KeyCode::KEY_F1:
+		case axmol::EventKeyboard::KeyCode::KEY_F1:
 			bufKeys |= JPACMAN_KEY_CHEAT_NEXT_LEVEL;
 			break;
 #endif
 		}
 
 		switch (keyCode) {
-		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
+		case axmol::EventKeyboard::KeyCode::KEY_SPACE:
 			bufCurrentKey = ' ';
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+		case axmol::EventKeyboard::KeyCode::KEY_ENTER:
 			bufCurrentKey = '\r';
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+		case axmol::EventKeyboard::KeyCode::KEY_ESCAPE:
 			bufCurrentKey = 27;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_BACKSPACE:
+		case axmol::EventKeyboard::KeyCode::KEY_BACKSPACE:
 			bufCurrentKey = '\b';
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_EXCLAM:
+		case axmol::EventKeyboard::KeyCode::KEY_EXCLAM:
 			bufCurrentKey = '!';
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_QUESTION:
+		case axmol::EventKeyboard::KeyCode::KEY_QUESTION:
 			bufCurrentKey = '?';
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_EQUAL:
+		case axmol::EventKeyboard::KeyCode::KEY_EQUAL:
 			bufCurrentKey = '=';
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_MINUS:
+		case axmol::EventKeyboard::KeyCode::KEY_MINUS:
 			bufCurrentKey = '-';
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_PLUS:
+		case axmol::EventKeyboard::KeyCode::KEY_PLUS:
 			bufCurrentKey = '+';
 			break;
 		default:
-			if (keyCode >= cocos2d::EventKeyboard::KeyCode::KEY_0 &&
-				keyCode <= cocos2d::EventKeyboard::KeyCode::KEY_9)
+			if (keyCode >= axmol::EventKeyboard::KeyCode::KEY_0 &&
+				keyCode <= axmol::EventKeyboard::KeyCode::KEY_9)
 			{
-				bufCurrentKey = (int)keyCode - (int)cocos2d::EventKeyboard::KeyCode::KEY_0 + '0';
+				bufCurrentKey = (int)keyCode - (int)axmol::EventKeyboard::KeyCode::KEY_0 + '0';
 			}
-			else if (keyCode >= cocos2d::EventKeyboard::KeyCode::KEY_A &&
-				keyCode <= cocos2d::EventKeyboard::KeyCode::KEY_Z)
+			else if (keyCode >= axmol::EventKeyboard::KeyCode::KEY_A &&
+				keyCode <= axmol::EventKeyboard::KeyCode::KEY_Z)
 			{
-				bufCurrentKey = (int)keyCode - (int)cocos2d::EventKeyboard::KeyCode::KEY_A + 'a';
+				bufCurrentKey = (int)keyCode - (int)axmol::EventKeyboard::KeyCode::KEY_A + 'a';
 			}
-			else if (keyCode >= cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A &&
-				keyCode <= cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_Z)
+			else if (keyCode >= axmol::EventKeyboard::KeyCode::KEY_CAPITAL_A &&
+				keyCode <= axmol::EventKeyboard::KeyCode::KEY_CAPITAL_Z)
 			{
-				bufCurrentKey = (int)keyCode - (int)cocos2d::EventKeyboard::KeyCode::KEY_CAPITAL_A + 'A';
+				bufCurrentKey = (int)keyCode - (int)axmol::EventKeyboard::KeyCode::KEY_CAPITAL_A + 'A';
 			}
 		}
 		
 	};
-	eventListener->onKeyReleased = [](cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+	eventListener->onKeyReleased = [](axmol::EventKeyboard::KeyCode keyCode, axmol::Event* event) {
 		switch (keyCode) {
-		case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-		case cocos2d::EventKeyboard::KeyCode::KEY_A:
+		case axmol::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		case axmol::EventKeyboard::KeyCode::KEY_A:
 			bufKeys &= ~JPACMAN_KEY_LEFT;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-		case cocos2d::EventKeyboard::KeyCode::KEY_D:
+		case axmol::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		case axmol::EventKeyboard::KeyCode::KEY_D:
 			bufKeys &= ~JPACMAN_KEY_RIGHT;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_UP_ARROW:
-		case cocos2d::EventKeyboard::KeyCode::KEY_W:
+		case axmol::EventKeyboard::KeyCode::KEY_UP_ARROW:
+		case axmol::EventKeyboard::KeyCode::KEY_W:
 			bufKeys &= ~JPACMAN_KEY_UP;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-		case cocos2d::EventKeyboard::KeyCode::KEY_S:
+		case axmol::EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		case axmol::EventKeyboard::KeyCode::KEY_S:
 			bufKeys &= ~JPACMAN_KEY_DOWN;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_SPACE:
+		case axmol::EventKeyboard::KeyCode::KEY_SPACE:
 			bufKeys &= ~JPACMAN_KEY_PAUSE;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+		case axmol::EventKeyboard::KeyCode::KEY_ENTER:
 			bufKeys &= ~JPACMAN_KEY_OK;
 			break;
-		case cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE:
+		case axmol::EventKeyboard::KeyCode::KEY_ESCAPE:
 			bufKeys &= ~JPACMAN_KEY_BACK;
 			break;
 #ifdef _DEBUG
-		case cocos2d::EventKeyboard::KeyCode::KEY_F1:
+		case axmol::EventKeyboard::KeyCode::KEY_F1:
 			bufKeys &= ~JPACMAN_KEY_CHEAT_NEXT_LEVEL;
 			break;
 #endif
@@ -183,6 +183,7 @@ void ReadKeyboardInput()
 		CurrentKey = bufCurrentKey;
 	}
 
+	/*
 	XINPUT_STATE xInputState;
 	if (XInputGetState(0, &xInputState) == ERROR_SUCCESS)
 	{
@@ -229,14 +230,14 @@ void ReadKeyboardInput()
 #endif
 		}
 	}
-
+	*/
 	if (InputMode)
 	{
 		bufKeys = 0;
 	}
 }
 
-#else // !JPACMAN_COCOS2DX
+#else // !JPACMAN_AXMOL
 
 #ifdef DIRECTINPUT_SUPPORT
 
@@ -846,4 +847,4 @@ BOOL PickInputDevice(int n)
 #endif
 
 
-#endif // JPACMAN_COCOS2DX
+#endif // JPACMAN_AXMOL

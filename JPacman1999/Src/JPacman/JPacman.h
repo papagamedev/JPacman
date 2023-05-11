@@ -3,20 +3,20 @@
 
 #define _WIN32_WINNT _WIN32_WINNT_WIN7 
 
-#ifdef JPACMAN_COCOS2DX
+#ifdef JPACMAN_AXMOL
 
-#include "cocos2d.h"
-
+#include "axmol.h"
 #include "AppScene.h"
 
 #ifdef _DEBUG
-#define DPF(priority, fmt, ...) cocos2d::log(fmt,__VA_ARGS__)
+#define DPF(priority, fmt, ...) axmol::log(fmt,__VA_ARGS__)
 #else
 #define DPF(priority, fmt, ...) dummyLog()
 inline void dummyLog() {}
 #endif
 
-#else // JPACMAN_COCOS2DX
+
+#else // JPACMAN_AXMOL
 
 #define INITGUID
 
@@ -44,13 +44,13 @@ inline void dummyLog() {}
 extern LPDIRECTSOUND           lpDS;
 extern HWND                    hWndMain;
 
-#endif // !JPACMAN_COCOS2DX
+#endif // !JPACMAN_AXMOL
 
 #include "input.h"
 #include "Level.h"
 
 BOOL    InitializeGame( void );
-BOOL    CleanupAndExit( char *err );
+BOOL    CleanupAndExit( const char *err );
 int  randInt( int low, int high );
 double  inline randDouble( double low, double high );
 
@@ -147,7 +147,7 @@ void Puntajes_UpdateFrame();
 void Puntajes_DoTick();
 
 void InitText();
-void DrawText(int x,int y,char *text);
+void DrawText(int x,int y,const char *text);
 
 void ClearSprites();
 SpriteData *AddSprite(int kind);

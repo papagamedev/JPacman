@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef JPACMAN_COCOS2DX
+#ifndef JPACMAN_AXMOL
 
 HWND                    hWndMain;
 HINSTANCE               hInst;
@@ -37,7 +37,7 @@ double inline randDouble( double low, double high )
     return( num + low );
 }
 
-#ifndef JPACMAN_COCOS2DX
+#ifndef JPACMAN_AXMOL
 
 /*
  * MainWndproc
@@ -200,7 +200,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 } /* WinMain */
 
-#endif // JPACMAN_COCOS2DX
+#endif // !JPACMAN_AXMOL
 
 BOOL InitializeGame( void )
 {
@@ -222,14 +222,14 @@ BOOL InitializeGame( void )
     return TRUE;
 }
 
-BOOL CleanupAndExit( char *err)
+BOOL CleanupAndExit( const char *err)
 {
 
 	if (err)
 		DPF(0,"CleanupAndExit  err = %s", err );
 	else
 		DPF(0,"Cleaning up...");
-#ifndef JPACMAN_COCOS2DX
+#ifndef JPACMAN_AXMOL
 	// make the cursor visible
     SetCursor(LoadCursor( NULL, IDC_ARROW ));
 #endif
@@ -247,10 +247,10 @@ BOOL CleanupAndExit( char *err)
 
 	DPF(0,"UninitSound OK");
 
-#ifndef JPACMAN_COCOS2DX
+#ifndef JPACMAN_AXMOL
 	// clean up DirectInput objects
     CleanupInput();
-#endif // JPACMAN_COCOS2DX
+#endif // JPACMAN_AXMOL
 
 	DPF(0,"CleanupInput OK");
     //
@@ -258,9 +258,9 @@ BOOL CleanupAndExit( char *err)
     //
 	if (err)
 	{
-#ifndef JPACMAN_COCOS2DX
+#ifndef JPACMAN_AXMOL
 		MessageBox(hWndMain, err, "ERROR", MB_OK);
-#endif // JPACMAN_COCOS2DX
+#endif // JPACMAN_AXMOL
 	}
 	return FALSE;
 }
@@ -297,8 +297,8 @@ void SetGameMode(int Mode)
 	}
 	RestoreGFX();
 	Setup();
-#ifndef JPACMAN_COCOS2DX
+#ifndef JPACMAN_AXMOL
 	objTickCount=GetTickCount();
-#endif // JPACMAN_COCOS2DX
+#endif // JPACMAN_AXMOL
 }
 

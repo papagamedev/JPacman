@@ -150,13 +150,13 @@ void Menu_UpdateFrame()
 			int xPos = 5;
 			DrawText(xPos, yPos, "Desarrollado por Juan Pablo Lastra");
 			yPos += lineSkip;
-			DrawText(xPos, yPos, "entre 1998-2016 para Papa Game Dev");
+			DrawText(xPos, yPos, "entre 1998-2023 para Papa Game Dev");
 			yPos += lineSkip;
 			DrawText(xPos, yPos, "Proyecto sin fines comerciales.");
 			yPos += lineSkip;
 			DrawText(xPos, yPos, "Pac-Man es marca de Namco Bandai");
 			yPos += lineSkip;
-			DrawText(xPos, yPos, "Desarrollado usando Cocos2d-x");
+			DrawText(xPos, yPos, "Desarrollado usando Axmol");
 		}
 		break;
 	case MENU_NEWPLYR:
@@ -184,8 +184,8 @@ void Menu_DoTick()
 		switch (bye)
 		{
 			case ID_SALIR:
-#ifdef JPACMAN_COCOS2DX
-				cocos2d::Director::getInstance()->end();
+#ifdef JPACMAN_AXMOL
+				axmol::Director::getInstance()->end();
 #else
 				PostMessage( hWndMain, WM_CLOSE, 0, 0 );
 #endif

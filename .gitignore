@@ -32,3 +32,9 @@ JPacmanUnity/JPacmanUnity.userprefs
 JPacman1999/Src/JPacman.VC.db
 JPacmanUnity/Assembly-CSharp.csproj
 JPacmanUnity/JPacmanUnity.sln
+JPacmanUnity/Logs/
+JPacmanUnity/UserSettings/
+JPacman1999/Src/.vs/
+*.user
+JPacman1999/Src/JPacman_Axmol/Proj.Win32/Release.win32/
+JPacman1999/Src/JPacman_Axmol/Proj.Win32/Debug.win32/

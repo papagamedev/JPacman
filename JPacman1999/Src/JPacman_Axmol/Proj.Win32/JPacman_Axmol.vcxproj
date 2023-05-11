@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B8BF9E81-35FD-4582-BA1C-B85FA365BABA}</ProjectGuid>
+    <RootNamespace>JPacman_Axmol-win32</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0'">v120</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v120_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0'">v120</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '12.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v120_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v140_xp</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration).win32\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\Bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration).win32\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Classes;C:\Dev\jpacman\External\axmol\templates\cpp-template-default\Source;C:\Dev\jpacman\External\axmol;C:\Dev\jpacman\External\axmol\thirdparty;C:\Dev\jpacman\External\axmol\extensions;C:\Dev\jpacman\External\axmol\core;C:\Dev\jpacman\External\axmol\core\platform;C:\Dev\jpacman\External\axmol\core\base;C:\Dev\jpacman\External\axmol\core\audio;C:\Dev\jpacman\External\axmol\core\platform\win32;C:\Dev\jpacman\External\axmol\thirdparty\robin-map\include;C:\Dev\jpacman\External\axmol\thirdparty\freetype\include;C:\Dev\jpacman\External\axmol\thirdparty\glfw\include\GLFW;C:\Dev\jpacman\External\axmol\thirdparty\fmt\include;C:\Dev\jpacman\External\axmol\thirdparty\png;C:\Dev\jpacman\External\axmol\thirdparty\box2d\include;C:\Dev\jpacman\External\axmol\thirdparty\chipmunk\include;C:\Dev\jpacman\External\axmol\build\engine\thirdparty\freetype\include;C:\Dev\jpacman\External\axmol\thirdparty\recast\..;C:\Dev\jpacman\External\axmol\thirdparty\bullet\.;C:\Dev\jpacman\External\axmol\thirdparty\webp\src\webp;C:\Dev\jpacman\External\axmol\thirdparty\pugixml;C:\Dev\jpacman\External\axmol\thirdparty\xxhash\.;C:\Dev\jpacman\External\axmol\thirdparty\lz4\.;C:\Dev\jpacman\External\axmol\thirdparty\clipper2\include;C:\Dev\jpacman\External\axmol\thirdparty\ConvertUTF\.;C:\Dev\jpacman\External\axmol\thirdparty\poly2tri\..;C:\Dev\jpacman\External\axmol\thirdparty\astcenc\..;C:\Dev\jpacman\External\axmol\thirdparty\openal\include;C:\Dev\jpacman\External\axmol\thirdparty\openal\include\AL;C:\Dev\jpacman\External\axmol\thirdparty\ogg\include;C:\Dev\jpacman\External\axmol\thirdparty\glad\include;C:\Dev\jpacman\External\axmol\thirdparty\glfw\include;C:\Dev\jpacman\External\axmol\thirdparty\unzip\.;C:\Dev\jpacman\External\axmol\thirdparty\llhttp\include;C:\Dev\jpacman\External\axmol\extensions\cocostudio;C:\Dev\jpacman\External\axmol\extensions\spine\runtime\include;C:\Dev\jpacman\External\axmol\extensions\fairygui;C:\Dev\jpacman\External\axmol\extensions\GUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>JPACMAN_AXMOL;%(PreprocessorDefinitions);WIN32;_WINDOWS;AX_ENABLE_MFMEDIA=1;AX_ENABLE_MSEDGE_WEBVIEW2=1;_AX_DEBUG=1;_WIN32;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;AX_STATIC;_AX_HAVE_WEBVIEW2;OPENSSL_SUPPRESS_DEPRECATED=1;AX_USE_ALSOFT=1;FMT_HEADER_ONLY=1;PNG_INTEL_SSE_OPT=1;CP_USE_CGTYPES=0;CP_USE_DOUBLES=0;BT_USE_SSE_IN_API=1;P2T_STATIC_EXPORTS;ASTCENC_NEON=0;ASTCENC_SSE=20;ASTCENC_AVX=0;ASTCENC_POPCNT=0;ASTCENC_F16C=0;LLHTTP_STRICT_MODE=0;AX_STATIC=1;AX_BUILD_WITH_SPINE=1;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PrecompiledHeaderFile>JPacman.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;..\..\..\..\External\axmol\build\lib\$(configuration);..\..\..\..\External\axmol\thirdparty\jpeg-turbo\prebuilt\win\x86;..\..\..\..\External\axmol\thirdparty\zlib\prebuilt\win\x86;..\..\..\..\External\axmol\thirdparty\openssl\prebuilt\win\x86;..\..\..\..\External\axmol\thirdparty\curl\prebuilt\win\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>axmol.lib;cocostudio.lib;ImGui.lib;fairygui.lib;DragonBones.lib;spine.lib;physics-nodes.lib;particle3d.lib;assets-manager.lib;GUI.lib;thirdparty.lib;zlib.lib;box2d.lib;chipmunk.lib;freetype.lib;png.lib;recast.lib;bullet.lib;jpeg-static.lib;libcrypto.lib;libssl.lib;webp.lib;pugixml.lib;xxhash.lib;lz4.lib;clipper2.lib;ConvertUTF.lib;poly2tri.lib;astcenc.lib;libcurl_imp.lib;OpenAL32.lib;ogg.lib;glad.lib;glfw.lib;unzip.lib;llhttp.lib;ws2_32.lib;userenv.lib;psapi.lib;winmm.lib;Version.lib;Iphlpapi.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\..\..\External\axmol\build\bin\$(Configuration)\*.dll $(TargetDir)</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\Classes;C:\Dev\jpacman\External\axmol\templates\cpp-template-default\Source;C:\Dev\jpacman\External\axmol;C:\Dev\jpacman\External\axmol\thirdparty;C:\Dev\jpacman\External\axmol\extensions;C:\Dev\jpacman\External\axmol\core;C:\Dev\jpacman\External\axmol\core\platform;C:\Dev\jpacman\External\axmol\core\base;C:\Dev\jpacman\External\axmol\core\audio;C:\Dev\jpacman\External\axmol\core\platform\win32;C:\Dev\jpacman\External\axmol\thirdparty\robin-map\include;C:\Dev\jpacman\External\axmol\thirdparty\freetype\include;C:\Dev\jpacman\External\axmol\thirdparty\glfw\include\GLFW;C:\Dev\jpacman\External\axmol\thirdparty\fmt\include;C:\Dev\jpacman\External\axmol\thirdparty\png;C:\Dev\jpacman\External\axmol\thirdparty\box2d\include;C:\Dev\jpacman\External\axmol\thirdparty\chipmunk\include;C:\Dev\jpacman\External\axmol\build\engine\thirdparty\freetype\include;C:\Dev\jpacman\External\axmol\thirdparty\recast\..;C:\Dev\jpacman\External\axmol\thirdparty\bullet\.;C:\Dev\jpacman\External\axmol\thirdparty\webp\src\webp;C:\Dev\jpacman\External\axmol\thirdparty\pugixml;C:\Dev\jpacman\External\axmol\thirdparty\xxhash\.;C:\Dev\jpacman\External\axmol\thirdparty\lz4\.;C:\Dev\jpacman\External\axmol\thirdparty\clipper2\include;C:\Dev\jpacman\External\axmol\thirdparty\ConvertUTF\.;C:\Dev\jpacman\External\axmol\thirdparty\poly2tri\..;C:\Dev\jpacman\External\axmol\thirdparty\astcenc\..;C:\Dev\jpacman\External\axmol\thirdparty\openal\include;C:\Dev\jpacman\External\axmol\thirdparty\openal\include\AL;C:\Dev\jpacman\External\axmol\thirdparty\ogg\include;C:\Dev\jpacman\External\axmol\thirdparty\glad\include;C:\Dev\jpacman\External\axmol\thirdparty\glfw\include;C:\Dev\jpacman\External\axmol\thirdparty\unzip\.;C:\Dev\jpacman\External\axmol\thirdparty\llhttp\include;C:\Dev\jpacman\External\axmol\extensions\cocostudio;C:\Dev\jpacman\External\axmol\extensions\spine\runtime\include;C:\Dev\jpacman\External\axmol\extensions\fairygui;C:\Dev\jpacman\External\axmol\extensions\GUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>JPACMAN_AXMOL;%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;AX_ENABLE_MFMEDIA=1;AX_ENABLE_MSEDGE_WEBVIEW2=1;_WIN32;UNICODE;_UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;AX_STATIC;_AX_HAVE_WEBVIEW2;OPENSSL_SUPPRESS_DEPRECATED=1;AX_USE_ALSOFT=1;FMT_HEADER_ONLY=1;PNG_INTEL_SSE_OPT=1;CP_USE_CGTYPES=0;CP_USE_DOUBLES=0;BT_USE_SSE_IN_API=1;P2T_STATIC_EXPORTS;ASTCENC_NEON=0;ASTCENC_SSE=20;ASTCENC_AVX=0;ASTCENC_POPCNT=0;ASTCENC_F16C=0;LLHTTP_STRICT_MODE=0;AX_STATIC=1;AX_BUILD_WITH_SPINE=1;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PrecompiledHeaderFile>JPacman.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>axmol.lib;cocostudio.lib;ImGui.lib;fairygui.lib;DragonBones.lib;spine.lib;physics-nodes.lib;particle3d.lib;assets-manager.lib;GUI.lib;thirdparty.lib;zlib.lib;box2d.lib;chipmunk.lib;freetype.lib;png.lib;recast.lib;bullet.lib;jpeg-static.lib;libcrypto.lib;libssl.lib;webp.lib;pugixml.lib;xxhash.lib;lz4.lib;clipper2.lib;ConvertUTF.lib;poly2tri.lib;astcenc.lib;libcurl_imp.lib;OpenAL32.lib;ogg.lib;glad.lib;glfw.lib;unzip.lib;llhttp.lib;ws2_32.lib;userenv.lib;psapi.lib;winmm.lib;Version.lib;Iphlpapi.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)$(Configuration).win32;..\..\..\..\External\axmol\build\lib\$(configuration);..\..\..\..\External\axmol\thirdparty\jpeg-turbo\prebuilt\win\x86;..\..\..\..\External\axmol\thirdparty\zlib\prebuilt\win\x86;..\..\..\..\External\axmol\thirdparty\openssl\prebuilt\win\x86;..\..\..\..\External\axmol\thirdparty\curl\prebuilt\win\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\..\..\External\axmol\build\bin\$(Configuration)\OpenAl.dll $(TargetDir)
+copy ..\..\..\..\External\axmol\thirdparty\zlib\prebuilt\win\x86\zlib1.dll $(TargetDir)
+copy ..\..\..\..\External\axmol\thirdparty\openssl\prebuilt\win\x86\libssl-3.dll $(TargetDir)
+copy ..\..\..\..\External\axmol\thirdparty\openssl\prebuilt\win\x86\libcrypto-3.dll $(TargetDir)
+</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\JPacman\Game.cpp" />
+    <ClCompile Include="..\..\JPacman\gfx.cpp" />
+    <ClCompile Include="..\..\JPacman\input.cpp" />
+    <ClCompile Include="..\..\JPacman\intro.cpp" />
+    <ClCompile Include="..\..\JPacman\JPacman.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\JPacman\Menu.cpp" />
+    <ClCompile Include="..\..\JPacman\music.cpp" />
+    <ClCompile Include="..\..\JPacman\puntajes.cpp" />
+    <ClCompile Include="..\..\JPacman\sfx.cpp" />
+    <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\AppScene.cpp" />
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\JPacman\input.h" />
+    <ClInclude Include="..\..\JPacman\JPacman.h" />
+    <ClInclude Include="..\..\JPacman\Level.h" />
+    <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\AppScene.h" />
+    <ClInclude Include="..\Resources\resource.h" />
+    <ClInclude Include="Main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Resources\JPacman.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\JPacman.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
