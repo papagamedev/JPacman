@@ -254,7 +254,7 @@ BOOL RestoreGFX()
 	}
 
 	char fileToLoad[MAX_PATH];
-	sprintf_s(fileToLoad, "%s.png", GFXFile);
+	sprintf_s(fileToLoad, "Resources\\%s.png", GFXFile);
 	sSpriteFondo = axmol::Sprite::create(fileToLoad, axmol::Rect(0, 0, 640, 480));
 	if (sSpriteFondo)
 	{
@@ -356,7 +356,7 @@ axmol::Sprite* GetChar()
 {
 	if (sUsedChars == sChars.size())
 	{
-		auto sp = axmol::Sprite::create("gfx_sprites.png");
+		auto sp = axmol::Sprite::create("Resources\\gfx_sprites.png");
 		gAppScene->addChild(sp);
 		sChars.push_back(sp);
 	}
@@ -531,7 +531,7 @@ SpriteData *AddSprite(int kind)
 	SpriteOcc[i]=TRUE;
 
 #ifdef JPACMAN_AXMOL
-	sSprites[i] = axmol::Sprite::create("gfx_sprites.png");
+	sSprites[i] = axmol::Sprite::create("Resources\\gfx_sprites.png");
 	gAppScene->addChild(sSprites[i]);
 	sSprites[i]->setLocalZOrder(20 - kind);
 #endif

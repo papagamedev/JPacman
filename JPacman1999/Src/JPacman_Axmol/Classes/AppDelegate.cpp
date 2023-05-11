@@ -46,9 +46,9 @@ bool AppDelegate::applicationDidFinishLaunching()
 #if (AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX)
         glView = GLViewImpl::createWithRect(
-            "HelloCpp", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+            "JPacman", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
-        glView = GLViewImpl::create("HelloCpp");
+        glView = GLViewImpl::create("JPacman");
 #endif
         director->setOpenGLView(glView);
     }
@@ -56,8 +56,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     // turn on display FPS
     director->setStatsDisplay(true);
 
-    // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0f / 60);
+    director->setAnimationInterval(1.0f / 30);
 
     // Set the design resolution
     glView->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height,

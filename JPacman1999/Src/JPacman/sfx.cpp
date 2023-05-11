@@ -77,27 +77,27 @@ struct jpacmanSndInfo
 jpacmanSndInfo sSoundInfo[SND_MAX]=
 {
 	{
-		"fruit.wav",
+		"Resources\\fruit.wav",
 		false,
 		2000,
 	},
 	{
-		"point.wav",
+		"Resources\\point.wav",
 		false,
 		170,
 	},
 	{
-		"revenge.wav",
+		"Resources\\revenge.wav",
 		false,
 		1000,
 	},
 	{
-		"revengetime.wav",
+		"Resources\\revengetime.wav",
 		true,
 		0,
 	},
 	{
-		"eyes.wav",
+		"Resources\\eyes.wav",
 		true,
 		0,
 	},

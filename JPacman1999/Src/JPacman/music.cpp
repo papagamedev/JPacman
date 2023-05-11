@@ -16,18 +16,18 @@ struct jpacmanMusicInfo
 jpacmanMusicInfo sMusicInfo[MUS_MAX] =
 {
 	{ nullptr, false },
-	{ "menu.mp3", true },
-	{ "gamex.mp3", true },//MUS_GAMEX
-	{ "bonus.mp3", true },//MUS_GAMEBONUS
-	{ "intro.mp3", false },
-	{ "gameintro.mp3", false },//MUS_GAMEINTRO
-	{ "oops.mp3", false },//MUS_OOPS
-	{ "win.mp3", false },//MUS_WIN
+	{ "Resources\\menu.mp3", true },
+	{ "Resources\\gamex.mp3", true },//MUS_GAMEX
+	{ "Resources\\bonus.mp3", true },//MUS_GAMEBONUS
+	{ "Resources\\intro.mp3", false },
+	{ "Resources\\gameintro.mp3", false },//MUS_GAMEINTRO
+	{ "Resources\\oops.mp3", false },//MUS_OOPS
+	{ "Resources\\win.mp3", false },//MUS_WIN
 };
 
 BOOL InitMusic()
 {
-	for (int i = 0; i < MUS_MAX; i++)
+	for (int i = 1; i < MUS_MAX; i++)
 	{
 		axmol::AudioEngine::preload(sMusicInfo[i].fileName);
 	}
