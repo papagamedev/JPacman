@@ -37,19 +37,20 @@ BOOL InitMusic()
 
 void UninitMusic()
 {
-
-
+	PlayMusic(0);
 }
 
-int musicInstanceId=0;
+int musicInstanceId=-1;
 
 void PlayMusic(int mus)
 {
-	if (sMusicInfo[mus].fileName == nullptr)
+	if (musicInstanceId != -1)
 	{
 		axmol::AudioEngine::stop(musicInstanceId);
+		musicInstanceId = -1;
 	}
-	else
+
+	if (sMusicInfo[mus].fileName != nullptr)
 	{
 		musicInstanceId = axmol::AudioEngine::play2d(sMusicInfo[mus].fileName, sMusicInfo[mus].loop);
 	}

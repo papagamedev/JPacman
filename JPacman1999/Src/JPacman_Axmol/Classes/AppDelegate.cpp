@@ -10,10 +10,10 @@
 
 USING_NS_AX;
 
-static ax::Size designResolutionSize = ax::Size(1280, 720);
+static ax::Size designResolutionSize = ax::Size(640, 480);
 static ax::Size smallResolutionSize = ax::Size(480, 320);
-static ax::Size mediumResolutionSize = ax::Size(1024, 768);
-static ax::Size largeResolutionSize = ax::Size(2048, 1536);
+static ax::Size mediumResolutionSize = ax::Size(640, 480);
+static ax::Size largeResolutionSize = ax::Size(640, 480);
 
 AppDelegate::AppDelegate() {}
 
@@ -46,7 +46,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 #if (AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX)
         glView = GLViewImpl::createWithRect(
-            "JPacman", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+            "JPacman", ax::Rect(0, 0, 1280, 960));
 #else
         glView = GLViewImpl::create("JPacman");
 #endif
