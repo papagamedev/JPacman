@@ -10,12 +10,12 @@ using UnityEngine;
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(PlayerSystem))]
-public partial struct MovableSystem : ISystem
+public partial struct CollectibleSystem : ISystem
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<Movable>();
+        state.RequireForUpdate<Collectible>();
         state.RequireForUpdate<Main>();
     }
 
@@ -26,10 +26,17 @@ public partial struct MovableSystem : ISystem
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var mainAspect = SystemAPI.GetComponentRO<Main>(mainEntity);
         ref var mapData = ref mainAspect.ValueRO.MapConfigBlob.Value;
-        new MoveEntityJob
+        var player = SystemAPI.GetSingletonEntity<PlayerAspect>();
+        var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
+        var playerWorldPos = playerAspect.GetWorldPos();
+        var playerMapPos = mapData.WorldToMapPos(playerWorldPos);
+        var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+        new CollectJob
         {
             DeltaTime = deltaTime,
-            MapData = mapData
+            MapData = mapData,
+            PlayerMapPos = playerMapPos,
+            ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
     }
 
@@ -40,14 +47,16 @@ public partial struct MovableSystem : ISystem
     }
 }
 
-public partial struct MoveEntityJob : IJobEntity
+public partial struct CollectJob : IJobEntity
 {
     public float DeltaTime;
     public MapConfigData MapData;
+    public float2 PlayerMapPos;
+    public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(MovableAspect movable)
+    private void Execute(CollectibleAspect collectible, [EntityIndexInQuery] int sortKey)
     {
-        movable.Move(ref MapData, DeltaTime);
+        collectible.CheckPlayer(ref MapData, PlayerMapPos, sortKey, ECB);
     }
 }
 

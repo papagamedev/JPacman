@@ -31,6 +31,8 @@ public struct MapConfigData
     public float3 MapToWorldPos(float x, float y) => new float3(x - Width * 0.5f, Height * 0.5f - y, 0);
     public float3 MapToWorldPos(int x, int y) => MapToWorldPos((float)x, (float)y);
     public float3 MapToWorldPos(float2 mapPos) => MapToWorldPos(mapPos.x, mapPos.y);
+
+    public float2 WorldToMapPos(float3 worldPos) => new float2(worldPos.x + Width * 0.5f, Height * 0.5f - worldPos.y);
 }
 
 public struct Main : IComponentData
