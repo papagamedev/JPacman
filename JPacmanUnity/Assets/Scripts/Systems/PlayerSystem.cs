@@ -28,6 +28,7 @@ public partial struct PlayerSystem : ISystem
         var entity = SystemAPI.GetSingletonEntity<PlayerAspect>();
         var playerAspect = SystemAPI.GetAspect<PlayerAspect>(entity);
         playerAspect.UpdateInput(desiredDirection);
+        playerAspect.ApplyAddScore();
     }
 
     [BurstCompile]

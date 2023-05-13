@@ -8,6 +8,14 @@ using UnityEngine;
 public struct Player : IComponentData
 {
     public float Lives;
+    public int Score;
+}
+
+public struct PlayerAddScoreBufferElement : IBufferElementData
+{
+    public float2 MapPos;
+    public int Score;
+    public bool ScoreAnimation;
 }
 
 public readonly partial struct PlayerAspect : IAspect
@@ -15,17 +23,32 @@ public readonly partial struct PlayerAspect : IAspect
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
-    private readonly RefRO<Player> m_player;
+    private readonly RefRW<Player> m_player;
+    private readonly DynamicBuffer<PlayerAddScoreBufferElement> m_addScoreBuffer;
 
     public readonly float3 GetWorldPos() => m_transform.ValueRO.Position;
 
     public void UpdateInput(float2 desiredDirection)
     {
-        m_movable.ValueRW.Direction = desiredDirection;
+        if (math.abs(desiredDirection.x) < 0.3f && math.abs(desiredDirection.y) < 0.3f)
+        {
+            return;
+        }
+      
+        m_movable.ValueRW.DesiredDirection = desiredDirection;
     }
 
-    public void CheckCollectible(CollectibleAspect collectible, ref MapConfigData map, float deltaTime)
+    public void ApplyAddScore()
     {
+        foreach (var score in m_addScoreBuffer)
+        {
+            m_player.ValueRW.Score += score.Score;
 
+            if (score.ScoreAnimation)
+            {
+                // send score animation event!
+            }
+        }
+        m_addScoreBuffer.Clear();
     }
 }

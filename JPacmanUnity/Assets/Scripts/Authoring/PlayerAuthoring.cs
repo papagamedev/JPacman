@@ -17,6 +17,7 @@ public class PlayerAuthoring : MonoBehaviour
             {
                 Lives = authoring.Lives
             });
+            AddBuffer<PlayerAddScoreBufferElement>(entity);
         }
     }
 }

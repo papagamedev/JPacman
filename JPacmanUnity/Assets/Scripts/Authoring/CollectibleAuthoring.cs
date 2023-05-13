@@ -7,6 +7,7 @@ using UnityEngine;
 public class CollectibleAuthoring : MonoBehaviour
 {
     public int Score;
+    public bool ScoreAnimation;
 
     public class Baker : Baker<CollectibleAuthoring>
     {
@@ -15,7 +16,8 @@ public class CollectibleAuthoring : MonoBehaviour
             var entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new Collectible
             {
-                Score = authoring.Score
+                Score = authoring.Score,
+                ScoreAnimation = authoring.ScoreAnimation
             });
         }
     }
