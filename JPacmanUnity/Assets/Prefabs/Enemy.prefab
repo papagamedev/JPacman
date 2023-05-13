@@ -9,12 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000012554833930}
-  - component: {fileID: 3975492277769969852}
   - component: {fileID: -9012875969711117739}
   - component: {fileID: 114000013215607894}
   - component: {fileID: 212000014164008444}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,19 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3975492277769969852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000013497543366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7560bbf1a4d7b96429674e528963f475, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Lives: 3
 --- !u!114 &-9012875969711117739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,7 +111,7 @@ SpriteRenderer:
   m_SortingLayerID: -479190779
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
+  m_Sprite: {fileID: -372764251, guid: 0ee68f0b7da1b8a47935d8fa3f871336, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
