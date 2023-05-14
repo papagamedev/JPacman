@@ -68,11 +68,7 @@ public partial struct LevelSpawnSystem : ISystem
                 Rotation = quaternion.identity
             });
 
-        var musicEvent = new MusicEventBufferElement()
-        {
-            MusicType = AudioEvents.MusicType.LevelStart
-        };
-        ecb.AppendToBuffer(mainEntity, musicEvent);
+        ecb.AddComponent<LevelStartPhaseTag>(mainEntity);
 
         ecb.Playback(state.EntityManager);
     }

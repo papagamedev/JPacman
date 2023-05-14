@@ -15,6 +15,7 @@ public partial struct CollectibleSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
+        state.RequireForUpdate<LevelPlayingPhaseTag>();
         state.RequireForUpdate<Collectible>();
         state.RequireForUpdate<Main>();
     }

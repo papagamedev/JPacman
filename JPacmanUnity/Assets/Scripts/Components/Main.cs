@@ -54,6 +54,16 @@ public struct Main : IComponentData
     public BlobAssetReference<MapConfigData> MapConfigBlob;
 }
 
+public struct LevelStartPhaseTag : IComponentData {}
+
+public struct LevelPlayingPhaseTag : IComponentData { }
+
+public struct LevelDeadPhaseTag : IComponentData { }
+
+public struct LevelWinPhaseTag : IComponentData { }
+
+public struct LevelGameOverPhaseTag : IComponentData { }
+
 public readonly partial struct MainAspect : IAspect
 {
     public readonly Entity Entity;

@@ -15,6 +15,7 @@ public partial struct MovableSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
+        state.RequireForUpdate<LevelPlayingPhaseTag>();
         state.RequireForUpdate<Movable>();
         state.RequireForUpdate<Main>();
     }
