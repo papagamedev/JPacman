@@ -23,6 +23,8 @@ public class MainAuthoring : MonoBehaviour
                 PlayerPrefab = GetEntity(authoring.PlayerPrefab, TransformUsageFlags.None),
                 MapConfigBlob = CreateMapConfigBlob(authoring)
             });
+            AddBuffer<SoundEventBufferElement>(entity);
+            AddBuffer<MusicEventBufferElement>(entity);
         }
 
         private BlobAssetReference<MapConfigData> CreateMapConfigBlob(MainAuthoring authoring)

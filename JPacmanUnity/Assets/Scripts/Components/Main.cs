@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 using UnityEngine;
 
 public struct MapConfigData
@@ -35,10 +36,28 @@ public struct MapConfigData
     public float2 WorldToMapPos(float3 worldPos) => new float2(worldPos.x + Width * 0.5f, Height * 0.5f - worldPos.y);
 }
 
+public struct SoundEventBufferElement : IBufferElementData
+{
+    public AudioEvents.SoundType SoundType;
+}
+
+public struct MusicEventBufferElement : IBufferElementData
+{
+    public AudioEvents.MusicType MusicType;
+}
+
 public struct Main : IComponentData
 {
     public Entity DotPrefab;
     public Entity PlayerPrefab;
     public Entity EnemyPrefab;
     public BlobAssetReference<MapConfigData> MapConfigBlob;
+}
+
+public readonly partial struct MainAspect : IAspect
+{
+    public readonly Entity Entity;
+    private readonly RefRO<Main> m_main;
+    public readonly DynamicBuffer<SoundEventBufferElement> SoundEventBuffer;
+    public readonly DynamicBuffer<MusicEventBufferElement> MusicEventBuffer;
 }

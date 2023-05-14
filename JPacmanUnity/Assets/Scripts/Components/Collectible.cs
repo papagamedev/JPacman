@@ -17,7 +17,7 @@ public readonly partial struct CollectibleAspect : IAspect
     private readonly RefRO<LocalTransform> m_transform;
     private readonly RefRO<Collectible> m_collectible;
 
-    public void CheckPlayer(ref MapConfigData mapData, float2 playerMapPos, int sortKey, Entity player, EntityCommandBuffer.ParallelWriter ecb)
+    public void CheckPlayer(ref MapConfigData mapData, float2 playerMapPos, int sortKey, Entity player, Entity main, EntityCommandBuffer.ParallelWriter ecb)
     {
         var collectibleWorldPos = m_transform.ValueRO.Position;
         var collectibleMapPos = mapData.WorldToMapPos(collectibleWorldPos);
@@ -34,6 +34,12 @@ public readonly partial struct CollectibleAspect : IAspect
                 ScoreAnimation = m_collectible.ValueRO.ScoreAnimation
             };
             ecb.AppendToBuffer(sortKey, player, scoreBufferElement);
+
+            var soundEventBufferElement = new SoundEventBufferElement()
+            {
+                SoundType = AudioEvents.SoundType.PlayerEatDot
+            };
+            ecb.AppendToBuffer(sortKey, main, soundEventBufferElement);
         }
     }
 }

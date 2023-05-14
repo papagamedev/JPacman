@@ -24,16 +24,16 @@ public partial struct LevelSpawnSystem : ISystem
         state.Enabled = false;
 
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var mainAspect = SystemAPI.GetComponentRO<Main>(mainEntity);
+        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
-        ref var mapData = ref mainAspect.ValueRO.MapConfigBlob.Value;
+        ref var mapData = ref mainComponent.ValueRO.MapConfigBlob.Value;
         for (var y = 0; y < mapData.Height; y++)
         {
             for (var x = 0; x < mapData.Width; x++)
             {
                 if (mapData.IsDot(x, y))
                 {
-                    var dot = ecb.Instantiate(mainAspect.ValueRO.DotPrefab);
+                    var dot = ecb.Instantiate(mainComponent.ValueRO.DotPrefab);
                     ecb.SetComponent(dot,
                         new LocalTransform()
                         {
@@ -46,7 +46,7 @@ public partial struct LevelSpawnSystem : ISystem
                 {
                     for (var i = 0; i < 4; i++)
                     {
-                        var enemy = ecb.Instantiate(mainAspect.ValueRO.EnemyPrefab);
+                        var enemy = ecb.Instantiate(mainComponent.ValueRO.EnemyPrefab);
                         ecb.SetComponent(enemy,
                             new LocalTransform()
                             {
@@ -59,7 +59,7 @@ public partial struct LevelSpawnSystem : ISystem
             }
         }
 
-        var player = ecb.Instantiate(mainAspect.ValueRO.PlayerPrefab);
+        var player = ecb.Instantiate(mainComponent.ValueRO.PlayerPrefab);
         ecb.SetComponent(player, 
             new LocalTransform() 
             { 
@@ -67,6 +67,12 @@ public partial struct LevelSpawnSystem : ISystem
                 Scale = 1.0f, 
                 Rotation = quaternion.identity
             });
+
+        var musicEvent = new MusicEventBufferElement()
+        {
+            MusicType = AudioEvents.MusicType.LevelStart
+        };
+        ecb.AppendToBuffer(mainEntity, musicEvent);
 
         ecb.Playback(state.EntityManager);
     }

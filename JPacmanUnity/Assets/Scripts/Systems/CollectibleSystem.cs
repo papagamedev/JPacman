@@ -37,6 +37,7 @@ public partial struct CollectibleSystem : ISystem
             MapData = mapData,
             PlayerMapPos = playerMapPos,
             Player = player,
+            Main = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
     }
@@ -54,11 +55,12 @@ public partial struct CollectJob : IJobEntity
     public MapConfigData MapData;
     public float2 PlayerMapPos;
     public Entity Player;
+    public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(CollectibleAspect collectible, [EntityIndexInQuery] int sortKey)
     {
-        collectible.CheckPlayer(ref MapData, PlayerMapPos, sortKey, Player, ECB);
+        collectible.CheckPlayer(ref MapData, PlayerMapPos, sortKey, Player, Main, ECB);
     }
 }
 

@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5872093518150721207
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4427394495621411551}
+  - component: {fileID: 1745595340659822298}
+  m_Layer: 0
+  m_Name: AudioEvents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4427394495621411551
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5872093518150721207}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1745595340659822298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5872093518150721207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 394cd7ac0603fde4393c14d4b4e8e5ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SoundPlayerEatDot:
+    m_audioClip: {fileID: 8300000, guid: 7cfda2ee54aafa342823a6b72c2e8e81, type: 3}
+    m_loop: 0
+  SoundPlayerEatPowerup:
+    m_audioClip: {fileID: 8300000, guid: dab07c3ec5e4bb0409743692b9f9694b, type: 3}
+    m_loop: 0
+  SoundPlayerEatFruit:
+    m_audioClip: {fileID: 8300000, guid: dab07c3ec5e4bb0409743692b9f9694b, type: 3}
+    m_loop: 0
+  SoundPlayerEatEnemy:
+    m_audioClip: {fileID: 8300000, guid: f309c04cf87b81448b2877835d88596f, type: 3}
+    m_loop: 0
+  SoundEnemyScared:
+    m_audioClip: {fileID: 8300000, guid: dccc3673624e67f40bdcf9d00f606bef, type: 3}
+    m_loop: 1
+  SoundEnemyReturnHome:
+    m_audioClip: {fileID: 8300000, guid: 3d83b7e7d5d9d014e8ee6f6db38b4d93, type: 3}
+    m_loop: 1
+  MusicDead:
+    m_audioClip: {fileID: 8300000, guid: 9a427680434e8fe40aa93baf2cc24e07, type: 3}
+    m_loop: 0
+  MusicIntro:
+    m_audioClip: {fileID: 8300000, guid: e309c728fccd6574693e4daac0d6c18e, type: 3}
+    m_loop: 0
+  MusicMenu:
+    m_audioClip: {fileID: 8300000, guid: dee330155bceff74bb97db23c6299d4f, type: 3}
+    m_loop: 1
+  MusicLevelStart:
+    m_audioClip: {fileID: 8300000, guid: 663924864423d59458370593b8afafe5, type: 3}
+    m_loop: 0
+  MusicLevel:
+    m_audioClip: {fileID: 8300000, guid: 200699ba81b9d954097aac9503ee36c6, type: 3}
+    m_loop: 1
+  MusicLevelEnd:
+    m_audioClip: {fileID: 8300000, guid: a216f2435b9793843a8c317b7404eadc, type: 3}
+    m_loop: 0
+  MusicLevelBonus:
+    m_audioClip: {fileID: 8300000, guid: 7af825c43707cf44b9d9b48378ceda63, type: 3}
+    m_loop: 1
