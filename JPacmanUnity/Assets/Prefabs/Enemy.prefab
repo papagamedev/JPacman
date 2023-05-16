@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4000012554833930}
   - component: {fileID: -9012875969711117739}
-  - component: {fileID: 114000013215607894}
   - component: {fileID: 212000014164008444}
+  - component: {fileID: 3206961425001295963}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -47,29 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 1.5
---- !u!114 &114000013215607894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000013497543366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8effc9b6dc344184aaf7604bea776516, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_animationFrames:
-  - {fileID: 21300000, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
-  - {fileID: 21300002, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
-  - {fileID: 21300004, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
-  - {fileID: 21300006, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
-  - {fileID: 21300008, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
-  - {fileID: 21300010, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
-  - {fileID: 21300012, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
-  - {fileID: 21300014, guid: 3fd1689d92857f647a171c8c697518b1, type: 3}
-  m_animationLength: 0.3
-  m_wrapMode: 4
 --- !u!212 &212000014164008444
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -122,3 +99,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3206961425001295963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013497543366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88281dfc9ccbcfe44819baabcf16bf98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationFrames:
+  - {fileID: -372764251, guid: 0ee68f0b7da1b8a47935d8fa3f871336, type: 3}
+  - {fileID: 1545756205, guid: 0ee68f0b7da1b8a47935d8fa3f871336, type: 3}
+  AnimationLength: 0.1
+  WrapMode: 4
+  StartPlaying: 1
