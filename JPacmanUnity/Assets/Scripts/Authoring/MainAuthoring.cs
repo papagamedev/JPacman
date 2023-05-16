@@ -25,6 +25,10 @@ public class MainAuthoring : MonoBehaviour
             });
             AddBuffer<SoundEventBufferElement>(entity);
             AddBuffer<MusicEventBufferElement>(entity);
+            AddBuffer<SetLivesTextBufferElement>(entity);
+            AddBuffer<SetScoreTextBufferElement>(entity);
+            AddBuffer<SetLabelTextBufferElement>(entity);
+            AddBuffer<StartScoreAnimationBufferElement>(entity);
         }
 
         private BlobAssetReference<MapConfigData> CreateMapConfigBlob(MainAuthoring authoring)

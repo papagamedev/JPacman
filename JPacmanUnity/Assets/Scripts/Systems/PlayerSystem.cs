@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -15,12 +16,14 @@ public partial struct PlayerSystem : ISystem
     {
         state.RequireForUpdate<LevelPlayingPhaseTag>();
         state.RequireForUpdate<Player>();
+        state.RequireForUpdate<Main>();
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var deltaTime = SystemAPI.Time.DeltaTime;
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var ecb = new EntityCommandBuffer(Allocator.Temp);
 
         float inputX = Input.GetAxis("Horizontal");
         float inputY = Input.GetAxis("Vertical");
@@ -29,7 +32,9 @@ public partial struct PlayerSystem : ISystem
         var entity = SystemAPI.GetSingletonEntity<PlayerAspect>();
         var playerAspect = SystemAPI.GetAspect<PlayerAspect>(entity);
         playerAspect.UpdateInput(desiredDirection);
-        playerAspect.ApplyAddScore();
+        playerAspect.ApplyAddScore(mainEntity, ecb);
+
+        ecb.Playback(state.EntityManager);
     }
 
     [BurstCompile]

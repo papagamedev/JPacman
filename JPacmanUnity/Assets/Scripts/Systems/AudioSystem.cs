@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-[UpdateBefore(typeof(MovableSystem))]
+[UpdateAfter(typeof(CollectibleSystem))]
 public partial class AudioSystem : SystemBase
 {
     public Action<AudioEvents.SoundType> OnPlaySound;

@@ -33,10 +33,8 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
 
         ecb.Playback(state.EntityManager);
 
-        timer = 0;
     }
 
-    float timer;
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {

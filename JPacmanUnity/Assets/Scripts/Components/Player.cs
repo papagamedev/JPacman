@@ -38,8 +38,9 @@ public readonly partial struct PlayerAspect : IAspect
         m_movable.ValueRW.DesiredDirection = desiredDirection;
     }
 
-    public void ApplyAddScore()
+    public void ApplyAddScore(Entity mainEntity, EntityCommandBuffer ecb)
     {
+        bool scoreAdded = false;
         foreach (var score in m_addScoreBuffer)
         {
             m_player.ValueRW.Score += score.Score;
@@ -48,7 +49,18 @@ public readonly partial struct PlayerAspect : IAspect
             {
                 // send score animation event!
             }
+            scoreAdded = true;
         }
+
+        if (scoreAdded)
+        {
+            var element = new SetScoreTextBufferElement()
+            {
+                Value = m_player.ValueRO.Score
+            };
+            ecb.AppendToBuffer(mainEntity, element);
+        }
+
         m_addScoreBuffer.Clear();
     }
 }
