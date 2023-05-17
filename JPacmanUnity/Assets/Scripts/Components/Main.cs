@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using static LevelStartPhaseSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 public struct MapConfigData
 {
@@ -36,6 +37,46 @@ public struct MapConfigData
     public float3 MapToWorldPos(float2 mapPos) => MapToWorldPos(mapPos.x, mapPos.y);
 
     public float2 WorldToMapPos(float3 worldPos) => new float2(worldPos.x + Width * 0.5f, Height * 0.5f - worldPos.y);
+
+    public bool IsDirectionAllowed(int x, int y, Movable.Direction direction)
+    {
+        switch (direction)
+        {
+            case Movable.Direction.Left:
+                if (x > 1
+                    && !IsChar(x - 2, y, kWallChar)
+                    && !IsChar(x - 2, y - 1, kWallChar))
+                {
+                    return true;
+                }
+                break;
+            case Movable.Direction.Right:
+                if (x < Width - 1
+                    && !IsChar(x + 1, y, kWallChar)
+                    && !IsChar(x + 1, y - 1, kWallChar))
+                {
+                    return true;
+                }
+                break;
+            case Movable.Direction.Up:
+                if (y > 1
+                    && !IsChar(x, y - 2, kWallChar)
+                    && !IsChar(x - 1, y - 2, kWallChar))
+                {
+                    return true;
+                }
+                break;
+            case Movable.Direction.Down:
+                if (y < Height - 1
+                    && !IsChar(x, y + 1, kWallChar)
+                    && !IsChar(x - 1, y + 1, kWallChar))
+                {
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
 }
 
 public struct SoundEventBufferElement : IBufferElementData
@@ -97,4 +138,6 @@ public readonly partial struct MainAspect : IAspect
     public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
     public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;
     public readonly DynamicBuffer<StartScoreAnimationBufferElement> StartScoreAnimationBuffer;
+
+    public readonly ref MapConfigData MapData => ref m_main.ValueRO.MapConfigBlob.Value;
 }

@@ -52,7 +52,13 @@ public partial struct LevelSpawnSystem : ISystem
                             {
                                 Position = mapData.MapToWorldPos(x + i * 2.5f - 3.75f, y),
                                 Scale = 1.0f,
-                                Rotation = quaternion.identity
+                                Rotation = quaternion.identity,
+                            });
+                        ecb.AddComponent(enemy,
+                            new Enemy()
+                            {
+                                Id = i,
+                                Scared = false
                             });
                     }
                 }

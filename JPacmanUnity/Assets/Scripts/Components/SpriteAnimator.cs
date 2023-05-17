@@ -14,6 +14,8 @@ public struct SpriteAnimator : IComponentData, IEnableableComponent
 {
     public float StartTime;
     public int Frame;
+    public int StartFrame;
+    public int LastFrame;
     public int FramesCount;
     public float AnimationLength;
     public WrapMode WrapMode;
@@ -71,10 +73,10 @@ public readonly partial struct SpriteAnimatorAspect : IAspect
 
     int UpdateAnimationFrame(float currentTime)
     {
-        int frameCount = m_animator.ValueRO.FramesCount;
-        if (m_animator.ValueRO.WrapMode == WrapMode.PingPong)
+        int frameCount = m_animator.ValueRO.LastFrame - m_animator.ValueRO.StartFrame;
+        if (m_animator.ValueRO.WrapMode != WrapMode.PingPong)
         {
-            frameCount--;
+            frameCount++;
         }
         int frame = (int)(currentTime * frameCount / m_animator.ValueRO.AnimationLength);
         if (frame >= frameCount)
@@ -85,6 +87,6 @@ public readonly partial struct SpriteAnimatorAspect : IAspect
         {
             frame = frameCount - frame;
         }
-        return frame;
+        return frame + m_animator.ValueRO.StartFrame;
     }
 }

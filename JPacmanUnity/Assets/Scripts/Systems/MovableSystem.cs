@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -25,12 +26,11 @@ public partial struct MovableSystem : ISystem
     {
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var mainAspect = SystemAPI.GetComponentRO<Main>(mainEntity);
-        ref var mapData = ref mainAspect.ValueRO.MapConfigBlob.Value;
+        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         new MoveEntityJob
         {
             DeltaTime = deltaTime,
-            MapData = mapData
+            BlobMapRef = mainComponent.ValueRO.MapConfigBlob
         }.ScheduleParallel();
     }
 
@@ -44,11 +44,11 @@ public partial struct MovableSystem : ISystem
 public partial struct MoveEntityJob : IJobEntity
 {
     public float DeltaTime;
-    public MapConfigData MapData;
+    public BlobAssetReference<MapConfigData> BlobMapRef;
 
     private void Execute(MovableAspect movable)
     {
-        movable.Move(ref MapData, DeltaTime);
+       movable.Move(BlobMapRef, DeltaTime);
     }
 }
 

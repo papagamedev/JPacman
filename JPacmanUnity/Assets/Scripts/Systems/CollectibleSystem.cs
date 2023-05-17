@@ -25,17 +25,18 @@ public partial struct CollectibleSystem : ISystem
     {
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var mainAspect = SystemAPI.GetComponentRO<Main>(mainEntity);
-        ref var mapData = ref mainAspect.ValueRO.MapConfigBlob.Value;
+        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         var player = SystemAPI.GetSingletonEntity<PlayerAspect>();
         var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
         var playerWorldPos = playerAspect.GetWorldPos();
+        var mapBlobRef = mainComponent.ValueRO.MapConfigBlob;
+        ref var mapData = ref mapBlobRef.Value;
         var playerMapPos = mapData.WorldToMapPos(playerWorldPos);
         var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
         new CollectJob
         {
             DeltaTime = deltaTime,
-            MapData = mapData,
+            BlobMapRef = mapBlobRef,
             PlayerMapPos = playerMapPos,
             Player = player,
             Main = mainEntity,
@@ -53,7 +54,7 @@ public partial struct CollectibleSystem : ISystem
 public partial struct CollectJob : IJobEntity
 {
     public float DeltaTime;
-    public MapConfigData MapData;
+    public BlobAssetReference<MapConfigData> BlobMapRef;
     public float2 PlayerMapPos;
     public Entity Player;
     public Entity Main;
@@ -61,7 +62,7 @@ public partial struct CollectJob : IJobEntity
 
     private void Execute(CollectibleAspect collectible, [EntityIndexInQuery] int sortKey)
     {
-        collectible.CheckPlayer(ref MapData, PlayerMapPos, sortKey, Player, Main, ECB);
+        collectible.CheckPlayer(BlobMapRef, PlayerMapPos, sortKey, Player, Main, ECB);
     }
 }
 

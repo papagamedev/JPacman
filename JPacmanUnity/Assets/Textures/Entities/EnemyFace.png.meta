@@ -1,31 +1,7 @@
 fileFormatVersion: 2
-guid: da106bf762ef15943a7f6b3dc3108dd6
+guid: da5c4b390e9b3a74ca402a52992007ec
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 21300000
-    second: PlayerLeft_0
-  - first:
-      213: 21300002
-    second: PlayerLeft_1
-  - first:
-      213: 21300004
-    second: PlayerLeft_2
-  - first:
-      213: 21300006
-    second: PlayerLeft_3
-  - first:
-      213: 21300008
-    second: PlayerLeft_4
-  - first:
-      213: 21300010
-    second: PlayerLeft_5
-  - first:
-      213: 21300012
-    second: PlayerLeft_6
-  - first:
-      213: 21300014
-    second: PlayerLeft_7
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -44,21 +20,22 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
     filterMode: 1
-    aniso: 16
+    aniso: 1
     mipBias: 0
     wrapU: 1
     wrapV: 1
@@ -86,8 +63,9 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
-  cookieLightType: 1
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -125,23 +103,11 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerLeft_0
+      name: EnemyFace_0
       rect:
         serializedVersion: 2
         x: 0
@@ -155,14 +121,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 02305410000000000800000000000000
-      internalID: 21300000
+      spriteID: d97b2d26a2980104f9d7a586dad672e9
+      internalID: -372764251
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerLeft_1
+      name: EnemyFace_1
       rect:
         serializedVersion: 2
         x: 32
@@ -176,14 +142,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 22305410000000000800000000000000
-      internalID: 21300002
+      spriteID: ff225f948090be8458194010fd63dc77
+      internalID: 1545756205
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerLeft_2
+      name: EnemyFace_2
       rect:
         serializedVersion: 2
         x: 64
@@ -197,14 +163,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 42305410000000000800000000000000
-      internalID: 21300004
+      spriteID: 3aea1f53885b88c4692cf12474789693
+      internalID: -950096682
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerLeft_3
+      name: EnemyFace_3
       rect:
         serializedVersion: 2
         x: 96
@@ -218,14 +184,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 62305410000000000800000000000000
-      internalID: 21300006
+      spriteID: 6a0a141d821e91242a34f836a0b491ff
+      internalID: -1452331978
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerLeft_4
+      name: EnemyFace_4
       rect:
         serializedVersion: 2
         x: 128
@@ -239,14 +205,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 82305410000000000800000000000000
-      internalID: 21300008
+      spriteID: 020176ac65e7c3840b5c1c4772a1a4fc
+      internalID: -1076434351
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerLeft_5
+      name: EnemyFace_5
       rect:
         serializedVersion: 2
         x: 160
@@ -260,14 +226,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a2305410000000000800000000000000
-      internalID: 21300010
+      spriteID: 6cfb9156c53aad548a574589e24bcb3b
+      internalID: 2011991732
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerLeft_6
+      name: EnemyFace_6
       rect:
         serializedVersion: 2
         x: 192
@@ -281,14 +247,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c2305410000000000800000000000000
-      internalID: 21300012
+      spriteID: 243d717f14d3cf64bb4235dd1338da25
+      internalID: 363800357
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerLeft_7
+      name: EnemyFace_7
       rect:
         serializedVersion: 2
         x: 224
@@ -302,8 +268,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e2305410000000000800000000000000
-      internalID: 21300014
+      spriteID: 20780523793717f43b5f44507fe33e80
+      internalID: -1412646747
       vertices: []
       indices: 
       edges: []
@@ -311,7 +277,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -319,17 +285,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PlayerLeft_5: 21300010
-      PlayerLeft_3: 21300006
-      PlayerLeft_6: 21300012
-      PlayerLeft_7: 21300014
-      PlayerLeft_2: 21300004
-      PlayerLeft_1: 21300002
-      PlayerLeft_4: 21300008
-      PlayerLeft_0: 21300000
-  spritePackingTag: Game
+      EnemyFace_0: 195643933
+      EnemyFace_1: -372764251
+      EnemyFace_2: 1545756205
+      EnemyFace_3: -950096682
+      EnemyFace_4: -1452331978
+      EnemyFace_5: -1076434351
+      EnemyFace_6: 2011991732
+      EnemyFace_7: 363800357
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

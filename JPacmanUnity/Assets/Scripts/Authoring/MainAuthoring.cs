@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class MainAuthoring : MonoBehaviour
@@ -52,5 +53,6 @@ public class MainAuthoring : MonoBehaviour
             builder.Dispose();
             return result;
         }
+
     }
 }

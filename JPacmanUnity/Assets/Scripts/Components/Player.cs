@@ -34,8 +34,23 @@ public readonly partial struct PlayerAspect : IAspect
         {
             return;
         }
-      
-        m_movable.ValueRW.DesiredDirection = desiredDirection;
+
+        if (desiredDirection.x > 0)
+        {
+            m_movable.ValueRW.DesiredDir = Movable.Direction.Right;
+        }
+        else if (desiredDirection.y > 0)
+        {
+            m_movable.ValueRW.DesiredDir = Movable.Direction.Down;
+        }
+        else if (desiredDirection.x < 0)
+        {
+            m_movable.ValueRW.DesiredDir = Movable.Direction.Left;
+        }
+        else if (desiredDirection.y < 0)
+        {
+            m_movable.ValueRW.DesiredDir = Movable.Direction.Up;
+        }
     }
 
     public void ApplyAddScore(Entity mainEntity, EntityCommandBuffer ecb)

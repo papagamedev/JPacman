@@ -17,8 +17,9 @@ public readonly partial struct CollectibleAspect : IAspect
     private readonly RefRO<LocalTransform> m_transform;
     private readonly RefRO<Collectible> m_collectible;
 
-    public void CheckPlayer(ref MapConfigData mapData, float2 playerMapPos, int sortKey, Entity player, Entity main, EntityCommandBuffer.ParallelWriter ecb)
+    public void CheckPlayer(BlobAssetReference<MapConfigData> mapBlobRef, float2 playerMapPos, int sortKey, Entity player, Entity main, EntityCommandBuffer.ParallelWriter ecb)
     {
+        ref var mapData = ref mapBlobRef.Value;
         var collectibleWorldPos = m_transform.ValueRO.Position;
         var collectibleMapPos = mapData.WorldToMapPos(collectibleWorldPos);
         

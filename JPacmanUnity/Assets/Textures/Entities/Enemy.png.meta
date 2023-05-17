@@ -107,7 +107,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: EnemyRed_0
+      name: Enemy_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,7 +128,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemyRed_1
+      name: Enemy_1
       rect:
         serializedVersion: 2
         x: 32
@@ -149,7 +149,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemyRed_2
+      name: Enemy_2
       rect:
         serializedVersion: 2
         x: 64
@@ -170,7 +170,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemyRed_3
+      name: Enemy_3
       rect:
         serializedVersion: 2
         x: 96
@@ -191,7 +191,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemyRed_4
+      name: Enemy_4
       rect:
         serializedVersion: 2
         x: 128
@@ -212,7 +212,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemyRed_5
+      name: Enemy_5
       rect:
         serializedVersion: 2
         x: 160
@@ -233,7 +233,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemyRed_6
+      name: Enemy_6
       rect:
         serializedVersion: 2
         x: 192
@@ -254,7 +254,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EnemyRed_7
+      name: Enemy_7
       rect:
         serializedVersion: 2
         x: 224
@@ -285,14 +285,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      EnemyRed_0: 195643933
-      EnemyRed_1: -372764251
-      EnemyRed_2: 1545756205
-      EnemyRed_3: -950096682
-      EnemyRed_4: -1452331978
-      EnemyRed_5: -1076434351
-      EnemyRed_6: 2011991732
-      EnemyRed_7: 363800357
+      Enemy_0: 195643933
+      Enemy_1: -372764251
+      Enemy_2: 1545756205
+      Enemy_3: -950096682
+      Enemy_4: -1452331978
+      Enemy_5: -1076434351
+      Enemy_6: 2011991732
+      Enemy_7: 363800357
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

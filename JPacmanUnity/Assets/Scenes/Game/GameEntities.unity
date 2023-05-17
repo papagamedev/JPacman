@@ -173,3 +173,8 @@ MonoBehaviour:
   EnemyPrefab: {fileID: 1000013497543366, guid: afb12eae9b9482b468b045135b2e9984,
     type: 3}
   m_levelConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  m_enemyColors:
+  - {r: 1, g: 0.06442392, b: 0, a: 0}
+  - {r: 1, g: 0.694045, b: 0, a: 0}
+  - {r: 0, g: 1, b: 0.035450935, a: 0}
+  - {r: 1, g: 0, b: 0.99065256, a: 0}

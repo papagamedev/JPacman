@@ -24,6 +24,8 @@ public class SpriteAnimatorAuthoring : MonoBehaviour
             {
                 Frame = 0,
                 FramesCount = authoring.AnimationFrames.Length,
+                StartFrame = 0,
+                LastFrame = authoring.AnimationFrames.Length - 1,
                 AnimationLength = authoring.AnimationLength,
                 WrapMode = authoring.WrapMode,
                 Backwards = false,

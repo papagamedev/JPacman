@@ -21,6 +21,8 @@ public class HudEvents : MonoBehaviour
         hudSystem.OnSetLivesText += OnSetLivesText;
         hudSystem.OnSetScoreText += OnSetScoreText;
         hudSystem.OnStartScoreAnimation += OnStartScoreAnimation;
+
+        Application.targetFrameRate = 60;
     }
 
     private void OnDisable()
