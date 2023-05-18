@@ -55,10 +55,16 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
         {
             ecb.DestroyEntity(entity);
         }
-        foreach (var (enemy, entity) in SystemAPI.Query<SpriteAnimatorDef>().WithEntityAccess())
+        foreach (var (enemy, entity) in SystemAPI.Query<SpriteAnimator>().WithEntityAccess())
         {
             ecb.DestroyEntity(entity);
         }
+        foreach (var (wall, entity) in SystemAPI.Query<SpriteSetFrame>().WithEntityAccess())
+        {
+            ecb.DestroyEntity(entity);
+        }
+        var player = SystemAPI.GetSingletonEntity<Player>();
+        ecb.DestroyEntity(player);
     }
 
     private void SwitchToLevelStartPhase(Entity mainEntity, EntityCommandBuffer ecb)

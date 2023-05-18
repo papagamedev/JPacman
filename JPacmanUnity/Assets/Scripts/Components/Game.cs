@@ -203,7 +203,8 @@ public readonly partial struct GameAspect : IAspect
             {
                 Frame = frame
             });
-        ecb.RemoveComponent(wall, typeof(SpriteAnimator));
+        ecb.RemoveComponent<SpriteAnimator>(wall);
+
     }
 
     private void CreateDot(EntityCommandBuffer ecb, ref int collectibleCount, ref MapConfigData mapData, int x, int y)
