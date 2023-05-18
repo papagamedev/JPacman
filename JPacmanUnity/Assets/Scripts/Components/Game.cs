@@ -5,7 +5,6 @@ using Unity.Entities;
 using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public struct Game : IComponentData
@@ -134,7 +133,6 @@ public readonly partial struct GameAspect : IAspect
     {
         var collectibleCount = 0;
         ref var mapData = ref GetCurrentMapData();
-        Debug.Log("Width " + mapData.Width);
         for (var y = 0; y < mapData.Height; y++)
         {
             for (var x = 0; x < mapData.Width; x++)
