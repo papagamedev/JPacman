@@ -7,15 +7,6 @@ using UnityEngine;
 
 public struct Player : IComponentData
 {
-    public float Lives;
-    public int Score;
-}
-
-public struct PlayerAddScoreBufferElement : IBufferElementData
-{
-    public float2 MapPos;
-    public int Score;
-    public bool ScoreAnimation;
 }
 
 public readonly partial struct PlayerAspect : IAspect
@@ -23,8 +14,9 @@ public readonly partial struct PlayerAspect : IAspect
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
-    private readonly RefRW<Player> m_player;
-    private readonly DynamicBuffer<PlayerAddScoreBufferElement> m_addScoreBuffer;
+#pragma warning disable IDE0052 // Remove unread private members
+    private readonly RefRW<Player> _;
+#pragma warning restore IDE0052 // Remove unread private members
 
     public readonly float3 GetWorldPos() => m_transform.ValueRO.Position;
 
@@ -53,29 +45,4 @@ public readonly partial struct PlayerAspect : IAspect
         }
     }
 
-    public void ApplyAddScore(Entity mainEntity, EntityCommandBuffer ecb)
-    {
-        bool scoreAdded = false;
-        foreach (var score in m_addScoreBuffer)
-        {
-            m_player.ValueRW.Score += score.Score;
-
-            if (score.ScoreAnimation)
-            {
-                // send score animation event!
-            }
-            scoreAdded = true;
-        }
-
-        if (scoreAdded)
-        {
-            var element = new SetScoreTextBufferElement()
-            {
-                Value = m_player.ValueRO.Score
-            };
-            ecb.AppendToBuffer(mainEntity, element);
-        }
-
-        m_addScoreBuffer.Clear();
-    }
 }

@@ -57,6 +57,7 @@ public class AudioEvents : MonoBehaviour
     {
         var audioSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<AudioSystem>();
         audioSystem.OnPlaySound += OnPlaySound;
+        audioSystem.OnStopSound += OnStopSound;
         audioSystem.OnPlayMusic += OnPlayMusic;
 
         var soundSourcesCount = Enum.GetValues(typeof(SoundType)).Length;
@@ -123,6 +124,16 @@ public class AudioEvents : MonoBehaviour
         source.loop = config.m_loop;
         source.clip = config.m_audioClip;
         source.Play();
+    }
+
+    private void OnStopSound(SoundType sound)
+    {
+        var source = m_soundSource[(int)sound];
+        if (!source.isPlaying)
+        {
+            return;
+        }
+        source.Stop();
     }
 
     private void OnPlayMusic(MusicType music)

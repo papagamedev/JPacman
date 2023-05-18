@@ -11,6 +11,7 @@ using UnityEngine;
 public partial class AudioSystem : SystemBase
 {
     public Action<AudioEvents.SoundType> OnPlaySound;
+    public Action<AudioEvents.SoundType> OnStopSound;
     public Action<AudioEvents.MusicType> OnPlayMusic;
 
     protected override void OnCreate()
@@ -33,7 +34,12 @@ public partial class AudioSystem : SystemBase
         {
             OnPlaySound(sound.SoundType);
         }
+        foreach (var sound in mainAspect.SoundStopEventBuffer)
+        {
+            OnStopSound(sound.SoundType);
+        }
         mainAspect.MusicEventBuffer.Clear();
         mainAspect.SoundEventBuffer.Clear();
+        mainAspect.SoundStopEventBuffer.Clear();
     }
 }

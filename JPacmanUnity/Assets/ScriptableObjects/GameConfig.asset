@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72d0a4c181f1a2747b1062af9f609836, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: 
+  DotPrefab: {fileID: 1000010539885376, guid: ed4aacd205307294d94ac2568529e059, type: 3}
+  PlayerPrefab: {fileID: 1000013497543366, guid: 4cde42aba1461ce41bcceae1fbf1fca0,
+    type: 3}
+  EnemyPrefab: {fileID: 1000013497543366, guid: afb12eae9b9482b468b045135b2e9984,
+    type: 3}
+  LevelConfigs:
+  - RoundNumber: 1
+    LevelNumber: 1
+    PlayerSpeed: 7.5
+    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  - RoundNumber: 2
+    LevelNumber: 4
+    PlayerSpeed: 7.5
+    MapConfig: {fileID: 11400000, guid: 0e60dad1c3d25be41b67f4c82abbb020, type: 2}
+  - RoundNumber: 3
+    LevelNumber: 5
+    PlayerSpeed: 7.5
+    MapConfig: {fileID: 11400000, guid: 26d0008ff471acf4581dcdda2ee98986, type: 2}

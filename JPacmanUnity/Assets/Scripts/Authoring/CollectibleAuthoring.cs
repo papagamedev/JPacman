@@ -8,6 +8,7 @@ public class CollectibleAuthoring : MonoBehaviour
 {
     public int Score;
     public bool ScoreAnimation;
+    public AudioEvents.SoundType SoundType;
 
     public class Baker : Baker<CollectibleAuthoring>
     {
@@ -17,7 +18,8 @@ public class CollectibleAuthoring : MonoBehaviour
             AddComponent(entity, new Collectible
             {
                 Score = authoring.Score,
-                ScoreAnimation = authoring.ScoreAnimation
+                ScoreAnimation = authoring.ScoreAnimation,
+                SoundType = authoring.SoundType
             });
         }
     }

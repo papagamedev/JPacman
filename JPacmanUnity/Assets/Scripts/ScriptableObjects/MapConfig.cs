@@ -3,13 +3,13 @@ using UnityEditor;
 using System.Collections.Generic;
 
 [CreateAssetMenu(fileName="LevelConfig", menuName = "JPacman Data/Level Config")]
-public class LevelConfig : ScriptableObject {
+public class MapConfig : ScriptableObject
+{
 
-#region Serialized Fields
 	[SerializeField,Multiline(30)]
 	string m_map;
 
-	public class MapData
+    public class MapData
 	{
 		public Vector2 m_playerPos;
 		public int m_width;
@@ -17,10 +17,9 @@ public class LevelConfig : ScriptableObject {
 		public char[,] m_data;
 	}
 
-	MapData m_mapData;
-#endregion
+	private MapData m_mapData;
 
-#region Public Accesors
+
 
 	public MapData Map
 	{
@@ -33,7 +32,6 @@ public class LevelConfig : ScriptableObject {
 			return m_mapData;
 		}
 	}
-#endregion
 
 	MapData LoadMap()
 	{
@@ -55,7 +53,6 @@ public class LevelConfig : ScriptableObject {
 				{
                     data.m_playerPos = new Vector2(x, y);
                 }
-
                 x++;
 			}
 			y++;

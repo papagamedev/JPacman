@@ -27,10 +27,14 @@ public partial struct MovableSystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
+        ref var map = ref gameAspect.GetCurrentMapData();
         new MoveEntityJob
         {
             DeltaTime = deltaTime,
-            BlobMapRef = mainComponent.ValueRO.MapConfigBlob
+            BlobMapsRef = mapsBlobRef,
+            MapId = map.Id,
         }.ScheduleParallel();
     }
 
@@ -44,11 +48,12 @@ public partial struct MovableSystem : ISystem
 public partial struct MoveEntityJob : IJobEntity
 {
     public float DeltaTime;
-    public BlobAssetReference<MapConfigData> BlobMapRef;
+    public BlobAssetReference<MapsConfigData> BlobMapsRef;
+    public int MapId;
 
     private void Execute(MovableAspect movable)
     {
-       movable.Move(BlobMapRef, DeltaTime);
+       movable.Move(BlobMapsRef, MapId, DeltaTime);
     }
 }
 

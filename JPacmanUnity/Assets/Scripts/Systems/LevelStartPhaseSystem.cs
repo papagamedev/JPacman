@@ -13,9 +13,10 @@ using UnityEngine.UIElements;
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
 {
+    private const float kFadeInTime = 0.5f;
     private const float kLabelSwapTime = 2.0f;
     private const float kTotalIntroTime = 4.0f;
-
+        
     public enum LabelMode
     {
         Round,
@@ -26,31 +27,40 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
     private LabelMode m_labelMode;
     private float m_phaseTimer;
 
-
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<Main>();
         state.RequireForUpdate<LevelStartPhaseTag>();
+        state.RequireForUpdate<Main>();
+        state.RequireForUpdate<Game>();
     }
 
     [BurstCompile]
     public void OnStartRunning(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-
+        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        var musicEvent = new MusicEventBufferElement()
+        ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
         {
             MusicType = AudioEvents.MusicType.LevelStart
-        };
-        ecb.AppendToBuffer(mainEntity, musicEvent);
-
-        var setLabel = new SetLabelTextBufferElement()
+        });
+        ecb.AppendToBuffer(mainEntity, new SetLabelTextBufferElement()
         {
-            Value = LabelMode.Round
-        };
-        ecb.AppendToBuffer(mainEntity, setLabel);
+            Value = HudEvents.LabelMessage.Round
+        });
+        ecb.AppendToBuffer(mainEntity, new SetLivesTextBufferElement()
+        {
+            Value = gameAspect.Lives
+        });
+        ecb.AppendToBuffer(mainEntity, new FadeAnimationBufferElement()
+        {
+            Duration = kFadeInTime,
+            IsFadeIn = true
+        });
+
+        gameAspect.CreateLevel(ecb);
 
         ecb.Playback(state.EntityManager);
 
@@ -101,7 +111,7 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
     {
         var setLabel = new SetLabelTextBufferElement()
         {
-            Value = LabelMode.Message
+            Value = HudEvents.LabelMessage.Level
         };
         ecb.AppendToBuffer(mainEntity, setLabel);
         m_labelMode = LabelMode.Message;
@@ -111,11 +121,14 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
     {
         var setLabel = new SetLabelTextBufferElement()
         {
-            Value = LabelMode.None
+            Value = HudEvents.LabelMessage.None
         };
         ecb.AppendToBuffer(mainEntity, setLabel);
         ecb.RemoveComponent<LevelStartPhaseTag>(mainEntity);
         ecb.AddComponent<LevelPlayingPhaseTag>(mainEntity);
     }
+
+    
+
 }
 

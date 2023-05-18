@@ -15,9 +15,7 @@ public class PlayerAuthoring : MonoBehaviour
             var entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new Player
             {
-                Lives = authoring.Lives
             });
-            AddBuffer<PlayerAddScoreBufferElement>(entity);
         }
     }
 }

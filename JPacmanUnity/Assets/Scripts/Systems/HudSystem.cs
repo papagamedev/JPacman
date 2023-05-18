@@ -4,48 +4,92 @@ using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(CollectibleSystem))]
 public partial class HudSystem : SystemBase
 {
-    public Action<LevelStartPhaseSystem.LabelMode> OnSetLabelText;
+    enum Message
+    {
+
+    }
+
+
+    public Action<HudEvents.LabelMessage, int> OnSetLabelText;
     public Action<int> OnSetLivesText;
     public Action<int> OnSetScoreText;
     public Action<int, float3> OnStartScoreAnimation;
+    public Action<bool, float> OnFadeAnimation;
+
+    private int m_levelNumber;
+    private int m_roundNumber;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        RequireForUpdate<Main>();
+        RequireForUpdate<Game>();
            
     }
 
     protected override void OnUpdate()
     {
         var main = SystemAPI.GetSingletonEntity<Main>();
-        var mainAspect = SystemAPI.GetAspect<MainAspect>(main);
-        foreach (var element in mainAspect.SetLivesTextBuffer)
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(main);
+        m_levelNumber = gameAspect.LevelData.LevelNumber;
+        m_roundNumber = gameAspect.LevelData.RoundNumber;
+        if (OnSetLivesText != null)
         {
-            OnSetLivesText(element.Value);
+            foreach (var element in gameAspect.SetLivesTextBuffer)
+            {
+                OnSetLivesText(element.Value);
+            }
         }
-        foreach (var element in mainAspect.SetScoreTextBuffer)
+        if (OnSetScoreText != null)
         {
-            OnSetScoreText(element.Value);
+            foreach (var element in gameAspect.SetScoreTextBuffer)
+            {
+                OnSetScoreText(element.Value);
+            }
         }
-        foreach (var element in mainAspect.SetLabelTextBuffer)
+        if (OnSetLabelText != null)
         {
-            OnSetLabelText(element.Value);
+            foreach (var element in gameAspect.SetLabelTextBuffer)
+            {
+                int value = 0;
+                switch (element.Value)
+                {
+                    case HudEvents.LabelMessage.Round:
+                        value = m_roundNumber;
+                        break;
+
+                    case HudEvents.LabelMessage.Level:
+                        value = m_levelNumber;
+                        break;
+                }
+                OnSetLabelText(element.Value, value);
+            }
         }
-        foreach (var element in mainAspect.StartScoreAnimationBuffer)
+        if (OnStartScoreAnimation != null)
         {
-            OnStartScoreAnimation(element.Score, element.WorldPos);
+            foreach (var element in gameAspect.StartScoreAnimationBuffer)
+            {
+                OnStartScoreAnimation(element.Score, element.WorldPos);
+            }
         }
-        mainAspect.SetLivesTextBuffer.Clear();
-        mainAspect.SetScoreTextBuffer.Clear();
-        mainAspect.SetLabelTextBuffer.Clear();
-        mainAspect.StartScoreAnimationBuffer.Clear();
+        if (OnFadeAnimation != null)
+        {
+            foreach (var element in gameAspect.FadeAnimationBuffer)
+            {
+                OnFadeAnimation(element.IsFadeIn, element.Duration);
+            }
+        }
+        gameAspect.SetLivesTextBuffer.Clear();
+        gameAspect.SetScoreTextBuffer.Clear();
+        gameAspect.SetLabelTextBuffer.Clear();
+        gameAspect.StartScoreAnimationBuffer.Clear();
+        gameAspect.FadeAnimationBuffer.Clear();
     }
 }

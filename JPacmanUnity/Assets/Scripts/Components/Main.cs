@@ -5,8 +5,24 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-using static LevelStartPhaseSystem;
-using static UnityEngine.Rendering.DebugUI;
+
+public struct LevelsConfigData
+{
+    public BlobArray<LevelConfigData> LevelsData;
+}
+
+public struct LevelConfigData
+{
+    public int LevelNumber;
+    public int RoundNumber;
+    public float PlayerSpeed;
+    public int MapId;
+}
+
+public struct MapsConfigData
+{
+    public BlobArray<MapConfigData> MapsData;
+}
 
 public struct MapConfigData
 {
@@ -23,6 +39,7 @@ public struct MapConfigData
     public const char kWallChar = ' ';
     public const char kTunnelFirstChar = 'a';
 
+    public int Id;
     public int Width;
     public int Height;
     public float2 PlayerPos;
@@ -84,30 +101,14 @@ public struct SoundEventBufferElement : IBufferElementData
     public AudioEvents.SoundType SoundType;
 }
 
+public struct SoundStopEventBufferElement : IBufferElementData
+{
+    public AudioEvents.SoundType SoundType;
+}
+
 public struct MusicEventBufferElement : IBufferElementData
 {
     public AudioEvents.MusicType MusicType;
-}
-
-public struct SetLivesTextBufferElement : IBufferElementData
-{
-    public int Value;
-}
-
-public struct SetScoreTextBufferElement : IBufferElementData
-{
-    public int Value;
-}
-
-public struct SetLabelTextBufferElement : IBufferElementData
-{
-    public LabelMode Value;
-}
-
-public struct StartScoreAnimationBufferElement : IBufferElementData
-{
-    public int Score;
-    public float3 WorldPos;
 }
 
 public struct Main : IComponentData
@@ -115,29 +116,15 @@ public struct Main : IComponentData
     public Entity DotPrefab;
     public Entity PlayerPrefab;
     public Entity EnemyPrefab;
-    public BlobAssetReference<MapConfigData> MapConfigBlob;
+    public BlobAssetReference<LevelsConfigData> LevelsConfigBlob;
+    public BlobAssetReference<MapsConfigData> MapsConfigBlob;
 }
-
-public struct LevelStartPhaseTag : IComponentData {}
-
-public struct LevelPlayingPhaseTag : IComponentData { }
-
-public struct LevelDeadPhaseTag : IComponentData { }
-
-public struct LevelWinPhaseTag : IComponentData { }
-
-public struct LevelGameOverPhaseTag : IComponentData { }
 
 public readonly partial struct MainAspect : IAspect
 {
     public readonly Entity Entity;
     private readonly RefRO<Main> m_main;
     public readonly DynamicBuffer<SoundEventBufferElement> SoundEventBuffer;
+    public readonly DynamicBuffer<SoundStopEventBufferElement> SoundStopEventBuffer;
     public readonly DynamicBuffer<MusicEventBufferElement> MusicEventBuffer;
-    public readonly DynamicBuffer<SetLivesTextBufferElement> SetLivesTextBuffer;
-    public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
-    public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;
-    public readonly DynamicBuffer<StartScoreAnimationBufferElement> StartScoreAnimationBuffer;
-
-    public readonly ref MapConfigData MapData => ref m_main.ValueRO.MapConfigBlob.Value;
 }

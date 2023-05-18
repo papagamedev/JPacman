@@ -99,3 +99,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Score: 10
   ScoreAnimation: 0
+  SoundType: 0

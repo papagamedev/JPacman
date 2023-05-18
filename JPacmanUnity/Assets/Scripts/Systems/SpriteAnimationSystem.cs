@@ -36,7 +36,7 @@ public partial class SpriteAnimationSystem : SystemBase
             sprite.sprite = spriteDef.AnimationFrames[spriteAnimator.Frame];
         }).WithoutBurst().Run();
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyColorDef enemyDef, Enemy enemy) =>
+        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyColorDef enemyDef, in Enemy enemy) =>
         {
             sprite.color = enemy.Scared ? enemyDef.EnemyScaredColor : enemyDef.EnemyColors[enemy.Id];
         }).WithoutBurst().Run();

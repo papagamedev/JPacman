@@ -5,7 +5,6 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-using static LevelConfig;
 
 public struct Movable : IComponentData
 {
@@ -56,10 +55,10 @@ public readonly partial struct MovableAspect : IAspect
         m_transform.ValueRW.Position = map.MapToWorldPos(mapPos);
     }
 
-    public void Move(BlobAssetReference<MapConfigData> mapBlobRef, float deltaTime)
+    public void Move(BlobAssetReference<MapsConfigData> mapBlobRef, int mapId, float deltaTime)
     {
         // check if we are in a cell edge; if that's the case, check if movement direction is changed
-        ref var map = ref mapBlobRef.Value;
+        ref var map = ref mapBlobRef.Value.MapsData[mapId];
         var mapPos = map.WorldToMapPos(m_transform.ValueRO.Position);
         float2 mapPosAbs = math.abs(math.frac(mapPos));
         bool atCellEdge = (mapPosAbs.x < 0.001 && mapPosAbs.y < 0.001);
@@ -122,7 +121,7 @@ public readonly partial struct MovableAspect : IAspect
         deltaTime -= moveDistance / speed;
         if (deltaTime > 0.001)
         {
-            Move(mapBlobRef, deltaTime);
+            Move(mapBlobRef, mapId, deltaTime);
         }
     }
 
