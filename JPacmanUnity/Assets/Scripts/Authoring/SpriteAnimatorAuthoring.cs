@@ -22,6 +22,7 @@ public class SpriteAnimatorAuthoring : MonoBehaviour
             });
             AddComponent(entity, new SpriteAnimator()
             {
+                StartTime = 0,
                 Frame = 0,
                 FramesCount = authoring.AnimationFrames.Length,
                 StartFrame = 0,

@@ -41,8 +41,11 @@ public readonly partial struct SpriteAnimatorAspect : IAspect
     private float UpdateAnimationTime(float time)
     {
         float currentTime = time - m_animator.ValueRO.StartTime;
-        if (currentTime > m_animator.ValueRO.AnimationLength)
+        float animLength = m_animator.ValueRO.AnimationLength;
+        if (currentTime > animLength)
         {
+            var offset = currentTime - math.fmod(currentTime, animLength);
+
             switch (m_animator.ValueRO.WrapMode)
             {
                 case WrapMode.Default:
@@ -56,13 +59,13 @@ public readonly partial struct SpriteAnimatorAspect : IAspect
                     break;
 
                 case WrapMode.Loop:
-                    currentTime -= m_animator.ValueRO.AnimationLength;
-                    m_animator.ValueRW.StartTime += m_animator.ValueRO.AnimationLength;
+                    currentTime -= offset;
+                    m_animator.ValueRW.StartTime += offset;
                     break;
 
                 case WrapMode.PingPong:
-                    currentTime -= m_animator.ValueRO.AnimationLength;
-                    m_animator.ValueRW.StartTime += m_animator.ValueRO.AnimationLength;
+                    currentTime -= offset;
+                    m_animator.ValueRW.StartTime += offset;
                     m_animator.ValueRW.Backwards = !m_animator.ValueRO.Backwards;
                     break;
             }
