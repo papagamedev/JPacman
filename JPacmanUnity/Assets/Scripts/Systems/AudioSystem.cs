@@ -19,24 +19,32 @@ public partial class AudioSystem : SystemBase
         base.OnCreate();
 
         RequireForUpdate<Main>();
-           
     }
 
     protected override void OnUpdate()
     {
         var main = SystemAPI.GetSingletonEntity<Main>();
         var mainAspect = SystemAPI.GetAspect<MainAspect>(main);
-        foreach (var music in mainAspect.MusicEventBuffer)
+        if (OnPlayMusic != null)
         {
-            OnPlayMusic(music.MusicType);
+            foreach (var music in mainAspect.MusicEventBuffer)
+            {
+                OnPlayMusic(music.MusicType);
+            }
         }
-        foreach (var sound in mainAspect.SoundEventBuffer)
+        if (OnPlaySound != null)
         {
-            OnPlaySound(sound.SoundType);
+            foreach (var sound in mainAspect.SoundEventBuffer)
+            {
+                OnPlaySound(sound.SoundType);
+            }
         }
-        foreach (var sound in mainAspect.SoundStopEventBuffer)
+        if (OnStopSound != null)
         {
-            OnStopSound(sound.SoundType);
+            foreach (var sound in mainAspect.SoundStopEventBuffer)
+            {
+                OnStopSound(sound.SoundType);
+            }
         }
         mainAspect.MusicEventBuffer.Clear();
         mainAspect.SoundEventBuffer.Clear();

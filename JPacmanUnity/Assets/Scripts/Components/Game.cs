@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public struct Game : IComponentData
@@ -132,41 +134,22 @@ public readonly partial struct GameAspect : IAspect
     {
         var collectibleCount = 0;
         ref var mapData = ref GetCurrentMapData();
+        Debug.Log("Width " + mapData.Width);
         for (var y = 0; y < mapData.Height; y++)
         {
             for (var x = 0; x < mapData.Width; x++)
             {
                 if (mapData.IsDot(x, y))
                 {
-                    var dot = ecb.Instantiate(m_main.ValueRO.DotPrefab);
-                    ecb.SetComponent(dot,
-                        new LocalTransform()
-                        {
-                            Position = mapData.MapToWorldPos(x, y),
-                            Scale = 1.0f,
-                            Rotation = quaternion.identity
-                        });
-                    collectibleCount++;
+                    CreateDot(ecb, ref collectibleCount, ref mapData, x, y);
                 }
-                else if (mapData.IsGhostsHorizontalHome(x, y))
+                else if (mapData.IsEnemyHorizontalHome(x, y))
                 {
-                    for (var i = 0; i < 4; i++)
-                    {
-                        var enemy = ecb.Instantiate(m_main.ValueRO.EnemyPrefab);
-                        ecb.SetComponent(enemy,
-                            new LocalTransform()
-                            {
-                                Position = mapData.MapToWorldPos(x + i * 2.5f - 3.75f, y),
-                                Scale = 1.0f,
-                                Rotation = quaternion.identity,
-                            });
-                        ecb.AddComponent(enemy,
-                            new Enemy()
-                            {
-                                Id = i,
-                                Scared = false
-                            });
-                    }
+                    CreateEnemyHorizontalHome(ecb, ref mapData, x, y);
+                }
+                else if (mapData.IsWall(x,y))
+                {
+                    CreateWall(ecb, ref mapData, x, y);
                 }
             }
         }
@@ -180,6 +163,83 @@ public readonly partial struct GameAspect : IAspect
                 Scale = 1.0f,
                 Rotation = quaternion.identity
             });
+
+
+    }
+
+    private void CreateWall(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
+    {
+        int frame = 0;
+        if (x == mapData.Width - 1 || mapData.IsWall(x + 1, y))
+        {
+            frame |= 1 << (int) Movable.Direction.Right;
+        }
+        if (x == 0 || mapData.IsWall(x - 1, y))
+        {
+            frame |= 1 << (int)Movable.Direction.Left;
+        }
+        if (y == mapData.Height - 1 || mapData.IsWall(x, y + 1))
+        {
+            frame |= 1 << (int)Movable.Direction.Down;
+        }
+        if (y == 0 || mapData.IsWall(x, y - 1))
+        {
+            frame |= 1 << (int)Movable.Direction.Up;
+        }
+        if (frame == 15)
+        {
+            // means an empty sprite, this is a wall surrounded by walls
+            return;
+        }
+
+        var wall = ecb.Instantiate(m_main.ValueRO.WallPrefab);
+        ecb.SetComponent(wall,
+            new LocalTransform()
+            {
+                Position = mapData.MapToWorldPos(x + 0.5f, y + 0.5f),
+                Scale = 1.05f,
+                Rotation = quaternion.identity
+            });
+        ecb.AddComponent(wall,
+            new SpriteSetFrame()
+            {
+                Frame = frame
+            });
+        ecb.RemoveComponent(wall, typeof(SpriteAnimator));
+    }
+
+    private void CreateDot(EntityCommandBuffer ecb, ref int collectibleCount, ref MapConfigData mapData, int x, int y)
+    {
+        var dot = ecb.Instantiate(m_main.ValueRO.DotPrefab);
+        ecb.SetComponent(dot,
+            new LocalTransform()
+            {
+                Position = mapData.MapToWorldPos(x, y),
+                Scale = 1.0f,
+                Rotation = quaternion.identity
+            });
+        collectibleCount++;
+    }
+
+    private void CreateEnemyHorizontalHome(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
+    {
+        for (var i = 0; i < 4; i++)
+        {
+            var enemy = ecb.Instantiate(m_main.ValueRO.EnemyPrefab);
+            ecb.SetComponent(enemy,
+                new LocalTransform()
+                {
+                    Position = mapData.MapToWorldPos(x + i * 2.5f - 3.75f, y),
+                    Scale = 1.0f,
+                    Rotation = quaternion.identity,
+                });
+            ecb.AddComponent(enemy,
+                new Enemy()
+                {
+                    Id = i,
+                    Scared = false
+                });
+        }
     }
 }
 

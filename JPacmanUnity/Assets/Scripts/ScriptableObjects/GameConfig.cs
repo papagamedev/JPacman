@@ -17,6 +17,7 @@ public class GameConfig : ScriptableObject
     public GameObject DotPrefab;
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
+    public GameObject WallPrefab;
     public LevelConfig[] LevelConfigs;
     
     public void AssignMapIds()

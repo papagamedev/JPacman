@@ -22,6 +22,7 @@ public class MainAuthoring : MonoBehaviour
                 DotPrefab = GetEntity(authoring.Config.DotPrefab, TransformUsageFlags.None),
                 EnemyPrefab = GetEntity(authoring.Config.EnemyPrefab, TransformUsageFlags.None),
                 PlayerPrefab = GetEntity(authoring.Config.PlayerPrefab, TransformUsageFlags.None),
+                WallPrefab = GetEntity(authoring.Config.WallPrefab, TransformUsageFlags.None),
                 LevelsConfigBlob = levelsConfigBlob,
                 MapsConfigBlob = mapsConfigBlob
             });

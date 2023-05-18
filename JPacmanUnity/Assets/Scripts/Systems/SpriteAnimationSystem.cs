@@ -31,7 +31,12 @@ public partial class SpriteAnimationSystem : SystemBase
             sprite.UpdateAnimFrame(EntityManager);
         }).WithoutBurst().Run();
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, SpriteAnimatorDef spriteDef, ref SpriteAnimator spriteAnimator) =>
+        Entities.ForEach((Entity entity, SpriteRenderer sprite, SpriteAnimatorDef spriteDef, in SpriteSetFrame set) =>
+        {
+            sprite.sprite = spriteDef.AnimationFrames[set.Frame];
+        }).WithoutBurst().Run();
+
+        Entities.ForEach((Entity entity, SpriteRenderer sprite, SpriteAnimatorDef spriteDef, in SpriteAnimator spriteAnimator) =>
         {
             sprite.sprite = spriteDef.AnimationFrames[spriteAnimator.Frame];
         }).WithoutBurst().Run();

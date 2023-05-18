@@ -39,7 +39,7 @@ public class MapConfig : ScriptableObject
 
 		// convert text into a chars matrix
 
-		string[] lines = m_map.Split ('\n');
+		string[] lines = m_map.Split ("\r\n");
 		int height = lines.Length;
 		int width = lines[0].Length;
 		char[,] mapChars = new char[width,height];

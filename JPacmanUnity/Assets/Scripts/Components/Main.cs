@@ -30,12 +30,12 @@ public struct MapConfigData
     public const char kPlayerChar = 'P';
     public const char kTunnelEntranceChar = 'E';
     public const char kFruitChar = 'F';
-    public const char kGhostsExitChar = 'S';
+    public const char kEnemyExitChar = 'S';
     public const char kLabelsChar = 'L';
-    public const char kGhostsHorizontalHomeChar = 'H';
-    public const char kGhostsVerticalHomeChar = 'V';
-    public const char kCookiesVerticalChar = 'G';
-    public const char kCookiesHorizontalChar = 'C';
+    public const char kEnemyHorizontalHomeChar = 'H';
+    public const char kEnemyVerticalHomeChar = 'V';
+    public const char kPowerupVerticalChar = 'G';
+    public const char kPowerupHorizontalChar = 'C';
     public const char kWallChar = ' ';
     public const char kTunnelFirstChar = 'a';
 
@@ -46,7 +46,8 @@ public struct MapConfigData
     public BlobArray<char> MapData;
 
     public bool IsDot(int x, int y) => x > 0 && y > 0 && IsChar(x, y, kDotChar) && IsChar(x - 1, y, kDotChar) && IsChar(x, y - 1, kDotChar) && IsChar(x - 1, y - 1, kDotChar);
-    public bool IsGhostsHorizontalHome(int x, int y) => IsChar(x, y, kGhostsHorizontalHomeChar);
+    public bool IsEnemyHorizontalHome(int x, int y) => IsChar(x, y, kEnemyHorizontalHomeChar);
+    public bool IsWall(int x, int y) => IsChar(x, y, kWallChar);
     private bool IsChar(int x, int y, char c) => MapData[y * Width + x] == c;
 
     public float3 MapToWorldPos(float x, float y) => new float3(x - Width * 0.5f, Height * 0.5f - y, 0);
@@ -116,6 +117,7 @@ public struct Main : IComponentData
     public Entity DotPrefab;
     public Entity PlayerPrefab;
     public Entity EnemyPrefab;
+    public Entity WallPrefab;
     public BlobAssetReference<LevelsConfigData> LevelsConfigBlob;
     public BlobAssetReference<MapsConfigData> MapsConfigBlob;
 }
