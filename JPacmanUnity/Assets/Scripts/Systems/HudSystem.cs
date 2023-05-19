@@ -11,13 +11,8 @@ using UnityEngine;
 [UpdateAfter(typeof(CollectibleSystem))]
 public partial class HudSystem : SystemBase
 {
-    enum Message
-    {
-
-    }
-
-
     public Action<HudEvents.LabelMessage, int> OnSetLabelText;
+    public Action<float3> OnSetLabelPos; 
     public Action<int> OnSetLivesText;
     public Action<int> OnSetScoreText;
     public Action<int, float3> OnStartScoreAnimation;
@@ -72,6 +67,13 @@ public partial class HudSystem : SystemBase
                 OnSetLabelText(element.Value, value);
             }
         }
+        if (OnSetLabelPos != null)
+        {
+            foreach (var element in gameAspect.SetLabelPosBuffer)
+            {
+                OnSetLabelPos(element.Value);
+            }
+        }
         if (OnStartScoreAnimation != null)
         {
             foreach (var element in gameAspect.StartScoreAnimationBuffer)
@@ -89,6 +91,7 @@ public partial class HudSystem : SystemBase
         gameAspect.SetLivesTextBuffer.Clear();
         gameAspect.SetScoreTextBuffer.Clear();
         gameAspect.SetLabelTextBuffer.Clear();
+        gameAspect.SetLabelPosBuffer.Clear();
         gameAspect.StartScoreAnimationBuffer.Clear();
         gameAspect.FadeAnimationBuffer.Clear();
     }

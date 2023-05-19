@@ -25,11 +25,12 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
     public void OnStartRunning(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        gameAspect.StartLive();
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
         {
-            MusicType = AudioEvents.MusicType.Level
+            MusicType = gameAspect.LevelData.BonusLevel ? AudioEvents.MusicType.LevelBonus : AudioEvents.MusicType.Level
         });
         ecb.Playback(state.EntityManager);
 
@@ -40,6 +41,7 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        gameAspect.UpdateLive(SystemAPI.Time.DeltaTime);
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         if (gameAspect.IsLevelCompleted() || Input.GetKeyDown(KeyCode.W))
         {

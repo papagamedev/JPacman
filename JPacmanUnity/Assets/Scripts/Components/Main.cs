@@ -4,7 +4,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 public struct LevelsConfigData
 {
@@ -13,9 +12,18 @@ public struct LevelsConfigData
 
 public struct LevelConfigData
 {
-    public int LevelNumber;
     public int RoundNumber;
+    public int LevelNumber;
+    public bool BonusLevel;
+    public bool MoveDots;
+    public int MultiplyDots;
+    public bool MovePowerups;
     public float PlayerSpeed;
+    public float EnemySpeed;
+    public float EnemyInHomeTime;
+    public float EnemyScaredTime;
+    public int EnemyCI;
+    public int FruitScore;
     public int MapId;
 }
 
@@ -43,10 +51,15 @@ public struct MapConfigData
     public int Width;
     public int Height;
     public float2 PlayerPos;
+    public float2 EnemyHousePos;
+    public float2 EnemyExitPos;
+    public float2 LabelMessagePos;
+    public Movable.Direction EnemyExitDir;
     public BlobArray<char> MapData;
 
     public bool IsDot(int x, int y) => x > 0 && y > 0 && IsChar(x, y, kDotChar) && IsChar(x - 1, y, kDotChar) && IsChar(x, y - 1, kDotChar) && IsChar(x - 1, y - 1, kDotChar);
     public bool IsEnemyHorizontalHome(int x, int y) => IsChar(x, y, kEnemyHorizontalHomeChar);
+    public bool IsEnemyVerticalHome(int x, int y) => IsChar(x, y, kEnemyVerticalHomeChar);
     public bool IsWall(int x, int y) => IsChar(x, y, kWallChar);
     private bool IsChar(int x, int y, char c) => MapData[y * Width + x] == c;
 
@@ -55,6 +68,8 @@ public struct MapConfigData
     public float3 MapToWorldPos(float2 mapPos) => MapToWorldPos(mapPos.x, mapPos.y);
 
     public float2 WorldToMapPos(float3 worldPos) => new float2(worldPos.x + Width * 0.5f, Height * 0.5f - worldPos.y);
+
+    public bool CheckCollision(float2 pos1, float2 pos2) =>(math.abs(pos1.x - pos2.x) < 0.5f && math.abs(pos1.y - pos2.y) < 0.5f);
 
     public bool IsDirectionAllowed(int x, int y, Movable.Direction direction)
     {
@@ -120,6 +135,7 @@ public struct Main : IComponentData
     public Entity WallPrefab;
     public BlobAssetReference<LevelsConfigData> LevelsConfigBlob;
     public BlobAssetReference<MapsConfigData> MapsConfigBlob;
+    public uint RandomSeed;
 }
 
 public readonly partial struct MainAspect : IAspect

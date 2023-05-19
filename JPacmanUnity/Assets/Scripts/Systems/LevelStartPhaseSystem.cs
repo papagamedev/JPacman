@@ -39,7 +39,6 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
     public void OnStartRunning(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
@@ -60,7 +59,8 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
             IsFadeIn = true
         });
 
-        gameAspect.CreateLevel(ecb);
+        uint randSeed = gameAspect.RandomSeed;
+        gameAspect.CreateLevel(ecb, mainEntity, randSeed);
 
         ecb.Playback(state.EntityManager);
 
@@ -72,6 +72,7 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
         m_phaseTimer += SystemAPI.Time.DeltaTime;
@@ -80,7 +81,7 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
             case LabelMode.Round:
                 if (m_phaseTimer >= kLabelSwapTime)
                 {
-                    SetLabelMessage(mainEntity, ecb);
+                    SetLabelMessage(mainEntity, gameAspect, ecb);
                 }
                 break;
 
@@ -107,11 +108,11 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
 
     }
 
-    private void SetLabelMessage(Entity mainEntity, EntityCommandBuffer ecb)
+    private void SetLabelMessage(Entity mainEntity, GameAspect gameAspect, EntityCommandBuffer ecb)
     {
         var setLabel = new SetLabelTextBufferElement()
         {
-            Value = HudEvents.LabelMessage.Level
+            Value = gameAspect.LevelData.BonusLevel ? HudEvents.LabelMessage.Bonus : HudEvents.LabelMessage.Level
         };
         ecb.AppendToBuffer(mainEntity, setLabel);
         m_labelMode = LabelMode.Message;

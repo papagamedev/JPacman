@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 public struct Game : IComponentData
 {
@@ -13,6 +13,7 @@ public struct Game : IComponentData
     public int Score;
     public int LevelId;
     public int CollectibleCount;
+    public float LiveTime;
 }
 
 public struct LevelStartPhaseTag : IComponentData { }
@@ -42,6 +43,11 @@ public struct SetLabelTextBufferElement : IBufferElementData
     public HudEvents.LabelMessage Value;
 }
 
+public struct SetLabelPosBufferElement : IBufferElementData
+{
+    public float3 Value;
+}
+
 public struct StartScoreAnimationBufferElement : IBufferElementData
 {
     public int Score;
@@ -65,11 +71,12 @@ public struct AddScoreBufferElement : IBufferElementData
 public readonly partial struct GameAspect : IAspect
 {
     public readonly Entity Entity;
-    private readonly RefRO<Main> m_main;
+    private readonly RefRW<Main> m_main;
     private readonly RefRW<Game> m_game;
     public readonly DynamicBuffer<SetLivesTextBufferElement> SetLivesTextBuffer;
     public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
     public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;
+    public readonly DynamicBuffer<SetLabelPosBufferElement> SetLabelPosBuffer;
     public readonly DynamicBuffer<StartScoreAnimationBufferElement> StartScoreAnimationBuffer;
     public readonly DynamicBuffer<FadeAnimationBufferElement> FadeAnimationBuffer;
     private readonly DynamicBuffer<AddScoreBufferElement> m_addScoreBuffer;
@@ -110,6 +117,12 @@ public readonly partial struct GameAspect : IAspect
     public ref LevelConfigData LevelData => ref m_main.ValueRO.LevelsConfigBlob.Value.LevelsData[m_game.ValueRO.LevelId];
 
     public int Lives => m_game.ValueRO.Lives;
+    public float LiveTime => m_game.ValueRO.LiveTime;
+    public uint RandomSeed => m_main.ValueRW.RandomSeed;
+
+    public void StartLive() => m_game.ValueRW.LiveTime = 0;
+
+    public void UpdateLive(float deltaTime) => m_game.ValueRW.LiveTime += deltaTime;
 
     public void SetNextLevel()
     {
@@ -129,23 +142,28 @@ public readonly partial struct GameAspect : IAspect
         return ref mapData;
     }
 
-    public void CreateLevel(EntityCommandBuffer ecb)
+    public void CreateLevel(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
     {
         var collectibleCount = 0;
         ref var mapData = ref GetCurrentMapData();
+        bool isBonusLevel = LevelData.BonusLevel;
         for (var y = 0; y < mapData.Height; y++)
         {
             for (var x = 0; x < mapData.Width; x++)
             {
-                if (mapData.IsDot(x, y))
+                if (!isBonusLevel && mapData.IsDot(x, y))
                 {
                     CreateDot(ecb, ref collectibleCount, ref mapData, x, y);
                 }
                 else if (mapData.IsEnemyHorizontalHome(x, y))
                 {
-                    CreateEnemyHorizontalHome(ecb, ref mapData, x, y);
+                    CreateEnemyHorizontalHome(ecb, ref mapData, x, y, randSeed++);
                 }
-                else if (mapData.IsWall(x,y))
+                else if (mapData.IsEnemyVerticalHome(x, y))
+                {
+                    CreateEnemyVerticalHome(ecb, ref mapData, x, y, randSeed++);
+                }
+                else if (mapData.IsWall(x, y))
                 {
                     CreateWall(ecb, ref mapData, x, y);
                 }
@@ -153,6 +171,17 @@ public readonly partial struct GameAspect : IAspect
         }
         m_game.ValueRW.CollectibleCount = collectibleCount;
 
+        CreatePlayer(ecb, ref mapData, randSeed++);
+
+        var labelWorldPos = mapData.MapToWorldPos(mapData.LabelMessagePos);
+        ecb.AppendToBuffer(mainEntity, new SetLabelPosBufferElement()
+        {
+            Value = labelWorldPos
+        });
+    }
+
+    private void CreatePlayer(EntityCommandBuffer ecb, ref MapConfigData mapData, uint randSeed)
+    {
         var player = ecb.Instantiate(m_main.ValueRO.PlayerPrefab);
         ecb.SetComponent(player,
             new LocalTransform()
@@ -161,8 +190,13 @@ public readonly partial struct GameAspect : IAspect
                 Scale = 1.0f,
                 Rotation = quaternion.identity
             });
-
-
+        ecb.AddComponent(player,
+                new Movable()
+                {
+                    Speed = LevelData.PlayerSpeed,
+                    AllowChangeDirInMidCell = true,
+                    Rand = new Random(randSeed)
+                });
     }
 
     private void CreateWall(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
@@ -220,26 +254,46 @@ public readonly partial struct GameAspect : IAspect
         collectibleCount++;
     }
 
-    private void CreateEnemyHorizontalHome(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
+    private void CreateEnemyHorizontalHome(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y, uint randSeed)
     {
         for (var i = 0; i < 4; i++)
         {
-            var enemy = ecb.Instantiate(m_main.ValueRO.EnemyPrefab);
-            ecb.SetComponent(enemy,
-                new LocalTransform()
-                {
-                    Position = mapData.MapToWorldPos(x + i * 2.5f - 3.75f, y),
-                    Scale = 1.0f,
-                    Rotation = quaternion.identity,
-                });
-            ecb.AddComponent(enemy,
-                new Enemy()
-                {
-                    Id = i,
-                    Scared = false
-                });
+            CreateEnemy(ecb, ref mapData, x + i * 2.5f - 3.75f, y, i < 2 ? Movable.Direction.Right : Movable.Direction.Left, i, randSeed++);
         }
     }
+
+    private void CreateEnemyVerticalHome(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y, uint randSeed)
+    {
+        for (var i = 0; i < 4; i++)
+        {
+            CreateEnemy(ecb, ref mapData, x, y + i * 2.5f - 3.75f, i < 2 ? Movable.Direction.Down : Movable.Direction.Up, i, randSeed++);
+        }
+    }
+
+    private void CreateEnemy(EntityCommandBuffer ecb, ref MapConfigData mapData, float x, float y, Movable.Direction direction, int id, uint randSeed)
+    {
+        var enemy = ecb.Instantiate(m_main.ValueRO.EnemyPrefab);
+        ecb.SetComponent(enemy,
+            new LocalTransform()
+            {
+                Position = mapData.MapToWorldPos(x, y),
+                Scale = 1.0f,
+                Rotation = quaternion.identity,
+            });
+        ecb.AddComponent(enemy,
+            new Movable()
+            {
+                Speed = LevelData.EnemySpeed,
+                AllowChangeDirInMidCell = false,
+                CurrentDir = direction,
+                DesiredDir = Movable.Direction.None,
+                Rand = new Random(randSeed)
+            });
+        ecb.AddComponent(enemy,
+            new Enemy()
+            {
+                Id = id,
+            });
+        ecb.AddComponent(enemy, new EnemyHome() { });
+    }
 }
-
-

@@ -1,27 +1,129 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 public class EnemyColorDef : IComponentData
 {
-    public Color[] EnemyColors;
-    public Color EnemyScaredColor;
+    public UnityEngine.Color[] EnemyColors;
+    public UnityEngine.Color EnemyScaredColor;
 }
 
 public struct Enemy : IComponentData
 {
     public int Id;
-    public bool Scared;
 }
 
-public readonly partial struct EnemyAspect : IAspect
+public struct EnemyHome : IComponentData
+{
+}
+
+public struct EnemyFollowPlayer : IComponentData
+{
+}
+
+public struct EnemyScared : IComponentData
+{
+}
+
+
+
+public readonly partial struct EnemyHomeAspect : IAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
-    private readonly RefRW<Enemy> m_enemy;
+    private readonly RefRO<Enemy> m_enemy;
+    private readonly RefRO<EnemyHome> m_enemyHome;
+
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, float liveTime, float exitHomeTime, EntityCommandBuffer.ParallelWriter ecb)
+    {
+        ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
+
+        if (liveTime > exitHomeTime * m_enemy.ValueRO.Id 
+            && m_movable.ValueRO.NextCellEdgeMapPos.Equals(mapData.EnemyHousePos))
+        {
+            m_movable.ValueRW.ForcedDir = true;
+            m_movable.ValueRW.DesiredDir = mapData.EnemyExitDir;
+            ecb.RemoveComponent<EnemyHome>(sortKey, Entity);
+            ecb.AddComponent(sortKey, Entity, new EnemyFollowPlayer() { });
+            return;
+        }
+
+        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
+        if (nextAvailableDirs.Count == 1)
+        {
+            m_movable.ValueRW.DesiredDir = nextAvailableDirs.First;
+        }
+    }
+
+    
 }
+
+public readonly partial struct EnemyFollowPlayerAspect : IAspect
+{
+    public readonly Entity Entity;
+    private readonly RefRW<LocalTransform> m_transform;
+    private readonly RefRW<Movable> m_movable;
+    private readonly RefRO<Enemy> m_enemy;
+    private readonly RefRO<EnemyFollowPlayer> m_enemyFollowPLayer;
+
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, int sortKey, int enemyCI, EntityCommandBuffer.ParallelWriter ecb)
+    {
+        ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
+        var enemyWorldPos = m_transform.ValueRO.Position;
+        var enemyMapPos = mapData.WorldToMapPos(enemyWorldPos);
+
+        if (mapData.CheckCollision(enemyMapPos, playerMapPos))
+        {
+            // capture player!!
+
+            return;
+        }
+        
+        var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
+        var currentDir = m_movable.ValueRO.CurrentDir;
+        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
+        if (nextAvailableDirs.Count > 2 || !nextAvailableDirs.Check(currentDir))
+        {
+            UnityEngine.Debug.Log("available:" + nextAvailableDirs.Count + " " + nextAvailableDirs.ToFixedString() + " currentDirCheck:" + nextAvailableDirs.Check(currentDir));
+            m_movable.ValueRW.DesiredDir = MovableAspect.ComputeFollowTargetDir(nextCellPos, currentDir, playerMapPos, nextAvailableDirs, m_enemy.ValueRO.Id + enemyCI, ref m_movable.ValueRW.Rand);
+        }
+    }
+}
+
+public readonly partial struct EnemyScaredAspect : IAspect
+{
+    public readonly Entity Entity;
+    private readonly RefRW<LocalTransform> m_transform;
+    private readonly RefRW<Movable> m_movable;
+    private readonly RefRO<Enemy> m_enemy;
+    private readonly RefRO<EnemyScared> m_enemyScared;
+
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
+    {
+        ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
+        var enemyWorldPos = m_transform.ValueRO.Position;
+        var enemyMapPos = mapData.WorldToMapPos(enemyWorldPos);
+
+        if (mapData.CheckCollision(enemyMapPos, playerMapPos))
+        {
+            // enemy captured by player!!
+
+            return;
+        }
+
+        /*
+                DirsCanMove(Goblins[i],dirs);
+				if ((dirs[0]+dirs[1]+dirs[2]+dirs[3]>2) || (!dirs[Goblins[i]->dir]))
+					FollowPos(Goblins[i],HouseX,HouseY,dirs,5);
+				MakeMove(Goblins[i],dirs);
+        */
+    }
+
+}
+
+

@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 public struct Movable : IComponentData
 {
+
+
     static FixedList32Bytes<int> m_dirX = new FixedList32Bytes<int>()
     {
         1, -1, 0, 0
@@ -23,7 +25,8 @@ public struct Movable : IComponentData
         new float2(1, 0),
         new float2(-1, 0),
         new float2(0, 1),
-        new float2(0, -1)
+        new float2(0, -1),
+        new float2(0, 0)
     };
 
     public enum Direction
@@ -35,9 +38,77 @@ public struct Movable : IComponentData
         None
     };
 
+    public static Direction OppositeDir(Direction dir)
+    {
+        return dir switch
+        {
+            Direction.Left => Direction.Right,
+            Direction.Up => Direction.Down,
+            Direction.Down => Direction.Up,
+            Direction.Right => Direction.Left,
+            _ => Direction.None,
+        };
+    }
+
+    public struct AvailableDirections
+    {
+        public bool Right;
+        public bool Left;
+        public bool Down;
+        public bool Up;
+
+        public int Count => (Right ? 1 : 0) + (Left ? 1 : 0) + (Down ? 1 : 0) + (Up ? 1 : 0);
+        public Direction First => Right ? Direction.Right : Left ? Direction.Left : Down ? Direction.Down : Up ? Direction.Up : Direction.None;
+        public bool Check(Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Right => Right,
+                Direction.Left => Left,
+                Direction.Down => Down,
+                Direction.Up => Up,
+                _ => false,
+            };
+        }
+        public Direction RandomNotOpposite(Direction currentDir, ref Random random)
+        {
+            var oppositeDir = OppositeDir(currentDir);
+            if (Count <= 1)
+            {
+                var first = First;
+                return oppositeDir == first ? Direction.None : first;
+            }
+
+            var dir = random.NextInt(4);
+            while (!Check((Direction)dir) || dir == (int) oppositeDir)
+            {
+                dir = (dir + 1) % 4;
+            }
+            return (Direction)dir;
+        }
+
+        public FixedString32Bytes ToFixedString()
+        {
+            var str = new FixedString32Bytes();
+            if (Right) str.Append("R");
+            if (Left) str.Append("L");
+            if (Down) str.Append("D");
+            if (Up) str.Append("U");
+            if (Count == 0) str.Append("-");
+            return str;
+        }
+    }
+
     public float Speed;
+    public bool AllowChangeDirInMidCell;
     public Direction CurrentDir;
     public Direction DesiredDir;
+    public bool ForcedDir;
+    public float2 NextCellEdgeMapPos;
+    public AvailableDirections NextCellEdgeAvailableDirections;
+    public float2 LastCellEdgeMapPos;
+    public bool Init;
+    public Random Rand;
 
     public int GetDirX(Direction dir) => m_dirX[(int)dir];
     public int GetDirY(Direction dir) => m_dirY[(int)dir];
@@ -62,16 +133,31 @@ public readonly partial struct MovableAspect : IAspect
         var mapPos = map.WorldToMapPos(m_transform.ValueRO.Position);
         float2 mapPosAbs = math.abs(math.frac(mapPos));
         bool atCellEdge = (mapPosAbs.x < 0.001 && mapPosAbs.y < 0.001);
-
-        if (CheckDirectionChange(ref map, mapPos, atCellEdge) && atCellEdge)
+        if (atCellEdge || !m_movable.ValueRO.Init)
         {
-            // if direction was changed at a cell edge, snap to the cell pos
-            mapPos = math.round(mapPos);
-            SetMapPos(ref map, mapPos);
+            m_movable.ValueRW.Init = true;
+            m_movable.ValueRW.LastCellEdgeMapPos = math.round(mapPos);
+        }
+
+        if (m_movable.ValueRO.AllowChangeDirInMidCell || atCellEdge)
+        {
+            var dirChanged = CheckDirectionChange(ref map, mapPos, atCellEdge);
+            if (dirChanged)
+            {
+                UnityEngine.Debug.Log("New dir: " + m_movable.ValueRO.CurrentDir);
+            }
+
+            if (dirChanged && atCellEdge)
+            {
+                // if direction was changed at a cell edge, snap to the cell pos
+                mapPos = math.round(mapPos);
+                SetMapPos(ref map, mapPos);
+            }
         }
 
         // if the new direction is none, no more movement this frame
         var currentDir = m_movable.ValueRO.CurrentDir;
+        UpdateNextCellEdgeInfo(ref map, currentDir);
         if (currentDir == Movable.Direction.None)
         {
             return;
@@ -131,9 +217,11 @@ public readonly partial struct MovableAspect : IAspect
         int mapX = (int)mapPosExact.x;
         int mapY = (int)mapPosExact.y;
 
-        // if desired direction is different than current, evaluate if that direction is allowed
+        var forcedDir = m_movable.ValueRO.ForcedDir;
         var desiredDir = m_movable.ValueRO.DesiredDir;
         var currentDir = m_movable.ValueRO.CurrentDir;
+
+        // if desired direction is different than current, evaluate if that direction is allowed
         if (desiredDir != Movable.Direction.None && currentDir != desiredDir)
         {
             bool bChangeAllowed = false;
@@ -168,6 +256,11 @@ public readonly partial struct MovableAspect : IAspect
                         break;
                 }
             }
+            else if (forcedDir)
+            {
+                m_movable.ValueRW.ForcedDir = false;
+                bChangeAllowed = true;
+            }
             else
             {
                 bChangeAllowed = map.IsDirectionAllowed(mapX, mapY, desiredDir);
@@ -196,4 +289,142 @@ public readonly partial struct MovableAspect : IAspect
         // no direction change
         return false;
     }
+
+    public void UpdateNextCellEdgeInfo(ref MapConfigData map, Movable.Direction currentDir)
+    {
+        var nextMapPos = m_movable.ValueRO.LastCellEdgeMapPos + m_movable.ValueRO.GetDirVector(currentDir);
+        m_movable.ValueRW.NextCellEdgeMapPos = nextMapPos;
+        m_movable.ValueRW.NextCellEdgeAvailableDirections = GetAvailableDirections(ref map, nextMapPos);
+    }
+
+    public Movable.AvailableDirections GetAvailableDirections(ref MapConfigData map, float2 mapPos)
+    {
+        int x = (int) mapPos.x;
+        int y = (int) mapPos.y;
+        return new Movable.AvailableDirections()
+        {
+            Left = map.IsDirectionAllowed(x, y, Movable.Direction.Left),
+            Right = map.IsDirectionAllowed(x, y, Movable.Direction.Right),
+            Up = map.IsDirectionAllowed(x, y, Movable.Direction.Up),
+            Down = map.IsDirectionAllowed(x, y, Movable.Direction.Down)
+        };
+    }
+
+    public static Movable.Direction ComputeFollowTargetDir(float2 movablePos, Movable.Direction currentDir, float2 targetPos, Movable.AvailableDirections nextAvailableDirs, int movableCI, ref Random random)
+    {
+        if (nextAvailableDirs.Count == 1)
+        {
+            return nextAvailableDirs.First;
+        }
+
+        UnityEngine.Debug.Log("movable CI:" + movableCI);
+
+        if (movableCI < 4 || random.NextInt(movableCI) < 4)
+        {
+            return nextAvailableDirs.RandomNotOpposite(currentDir, ref random);
+        }
+/*
+        var vectorToTarget = targetPos - movablePos;
+        var absToTarget = math.abs(vectorToTarget);
+        if (absToTarget.x < absToTarget.y)
+        {
+            /*
+            if (!ChooseFollowTargetVertDir())
+            {
+                if (!ChooseFollowTargetHorizontalDir())
+                {
+                    return nextAvailableDirs.RandomDir(currentDir, random);
+                }
+            }
+        }
+            */
+        return currentDir;
+
+    }
+
+    /*
+     * 
+     * 
+void FollowPos(SpriteData *spr,int xt,int yt,char *dirs,int ci)
+{
+	int d,tr=0;
+	int dx,dy;
+	
+	if (dirs[0]+dirs[1]+dirs[2]+dirs[3]==1)
+	{
+		for (d=0;d<4;d++)
+			if (dirs[d]) break;
+	}
+	else if ((ci<4) || (randInt(0,ci)<4))
+	{
+azar:	
+		d=randInt(0,3);
+		while ((!dirs[d]) || (spr->dir==(d^1)))
+		{
+			d++;
+			d&=3;
+		}
+	}
+	else
+	{
+		dx=spr->xpos-xt;
+		dy=spr->ypos-yt;
+		d=spr->dir;
+		if (abs((int)dx)<abs((int)dy))
+		{
+checkvert:
+			if (dy<0)
+			{
+				if ((!dirs[DIR_DOWN]) || ((d==DIR_UP) && (ci<14)))
+				{
+					if (tr) goto azar;
+					tr=1;
+					goto checkhoriz;
+				}
+				else
+					d=DIR_DOWN;
+			}
+			else
+			{
+				if ((!dirs[DIR_UP]) || ((d==DIR_DOWN) && (ci<14)))
+				{
+					if (tr) goto azar;
+					tr=1;
+					goto checkhoriz;
+				}
+				else
+					d=DIR_UP;
+			}
+		}
+		else
+		{
+checkhoriz:
+			if (dx<0)
+			{
+				if ((!dirs[DIR_RIGHT]) || ((d==DIR_LEFT) && (ci<14)))
+				{
+					if (tr) goto azar;
+					tr=1;
+					goto checkvert;
+				}
+				else
+					d=DIR_RIGHT;
+			}
+			else
+			{
+				if ((!dirs[DIR_LEFT]) || ((d==DIR_RIGHT) && (ci<14)))
+				{
+					if (tr) goto azar;
+					tr=1;
+					goto checkvert;
+				}
+				else
+					d=DIR_LEFT;
+			}
+		}
+	}
+	spr->dir=d;
+}
+     * 
+     */
 }

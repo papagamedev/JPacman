@@ -24,7 +24,8 @@ public class MainAuthoring : MonoBehaviour
                 PlayerPrefab = GetEntity(authoring.Config.PlayerPrefab, TransformUsageFlags.None),
                 WallPrefab = GetEntity(authoring.Config.WallPrefab, TransformUsageFlags.None),
                 LevelsConfigBlob = levelsConfigBlob,
-                MapsConfigBlob = mapsConfigBlob
+                MapsConfigBlob = mapsConfigBlob,
+                RandomSeed = (uint)(System.DateTime.Now.Ticks % 1000000000)
             });
             AddBuffer<SoundEventBufferElement>(entity);
             AddBuffer<SoundStopEventBufferElement>(entity);
@@ -32,6 +33,7 @@ public class MainAuthoring : MonoBehaviour
             AddBuffer<SetLivesTextBufferElement>(entity);
             AddBuffer<SetScoreTextBufferElement>(entity);
             AddBuffer<SetLabelTextBufferElement>(entity);
+            AddBuffer<SetLabelPosBufferElement>(entity);
             AddBuffer<StartScoreAnimationBufferElement>(entity);
             AddBuffer<FadeAnimationBufferElement>(entity);
             AddBuffer<AddScoreBufferElement>(entity);
@@ -49,7 +51,17 @@ public class MainAuthoring : MonoBehaviour
             {
                 arrayBuilder[i].LevelNumber = levelsConfig[i].LevelNumber;
                 arrayBuilder[i].RoundNumber = levelsConfig[i].RoundNumber;
+                arrayBuilder[i].BonusLevel = levelsConfig[i].BonusLevel;
+                arrayBuilder[i].MoveDots = levelsConfig[i].MoveDots;
+                arrayBuilder[i].MultiplyDots = levelsConfig[i].MultiplyDots;
+                arrayBuilder[i].MovePowerups = levelsConfig[i].MovePowerups;
                 arrayBuilder[i].PlayerSpeed = levelsConfig[i].PlayerSpeed;
+                arrayBuilder[i].EnemySpeed = levelsConfig[i].EnemySpeed;
+                arrayBuilder[i].EnemyInHomeTime = levelsConfig[i].EnemyInHomeTime;
+                arrayBuilder[i].EnemyScaredTime = levelsConfig[i].EnemyScaredTime;
+                arrayBuilder[i].EnemyCI = levelsConfig[i].EnemyCI;
+                arrayBuilder[i].FruitScore = levelsConfig[i].FruitScore;
+
                 var map = levelsConfig[i].MapConfig;
                 if (!mapsDictionary.TryGetValue(map, out var mapId))
                 {
@@ -77,15 +89,63 @@ public class MainAuthoring : MonoBehaviour
                 mapsArrayBuilder[i].Id = i;
                 mapsArrayBuilder[i].Width = map.m_width;
                 mapsArrayBuilder[i].Height = map.m_height;
-                mapsArrayBuilder[i].PlayerPos = map.m_playerPos;
                 var arrayBuilder = builder.Allocate(ref mapsArrayBuilder[i].MapData, mapDataSize);
+                float2 enemyHousePos = new float2(0, 0);
+                float2 enemyExitPos = new float2(0, 0);
                 for (int y = 0; y < map.m_height; y++)
                 {
                     for (int x = 0; x < map.m_width; x++)
                     {
-                        arrayBuilder[y * map.m_width + x] = map.m_data[x, y];
+                        var c = map.m_data[x, y];
+                        arrayBuilder[y * map.m_width + x] = c;
+
+                        if (c == MapConfigData.kPlayerChar)
+                        {
+                            mapsArrayBuilder[i].PlayerPos = new float2(x, y);
+                        }
+                        else if (c == MapConfigData.kLabelsChar)
+                        {
+                            mapsArrayBuilder[i].LabelMessagePos = new float2(x, y);
+                        }
+                        else if (c == MapConfigData.kEnemyExitChar)
+                        {
+                            enemyExitPos = new float2(x, y);
+                        }
+                        else if (c == MapConfigData.kEnemyHorizontalHomeChar ||
+                            c == MapConfigData.kEnemyVerticalHomeChar)
+                        {
+                            enemyHousePos = new float2(x, y);
+                        }
                     }
                 }
+
+                if (enemyHousePos.x == enemyExitPos.x)
+                {
+                    if (enemyHousePos.y > enemyExitPos.y)
+                    {
+                        mapsArrayBuilder[i].EnemyExitDir = Movable.Direction.Up;
+                        mapsArrayBuilder[i].EnemyExitPos = new float2(enemyExitPos.x, enemyExitPos.y - 1);
+                    }
+                    else
+                    {
+                        mapsArrayBuilder[i].EnemyExitDir = Movable.Direction.Down;
+                        mapsArrayBuilder[i].EnemyExitPos = new float2(enemyExitPos.x, enemyExitPos.y + 2);
+                    }
+                }
+                else
+                {
+                    if (enemyHousePos.x > enemyExitPos.x)
+                    {
+                        mapsArrayBuilder[i].EnemyExitDir = Movable.Direction.Left;
+                        mapsArrayBuilder[i].EnemyExitPos = new float2(enemyExitPos.x - 1, enemyExitPos.y);
+                    }
+                    else
+                    {
+                        mapsArrayBuilder[i].EnemyExitDir = Movable.Direction.Right;
+                        mapsArrayBuilder[i].EnemyExitPos = new float2(enemyExitPos.x + 2, enemyExitPos.y);
+                    }
+                }
+                mapsArrayBuilder[i].EnemyHousePos = enemyHousePos;
             }
             var result = builder.CreateBlobAssetReference<MapsConfigData>(Allocator.Persistent);
             builder.Dispose();

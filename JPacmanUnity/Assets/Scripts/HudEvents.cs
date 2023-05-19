@@ -56,6 +56,7 @@ public class HudEvents : MonoBehaviour
     {
         var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
         hudSystem.OnSetLabelText += OnSetLabelText;
+        hudSystem.OnSetLabelPos += OnSetLabelPos;
         hudSystem.OnSetLivesText += OnSetLivesText;
         hudSystem.OnSetScoreText += OnSetScoreText;
         hudSystem.OnStartScoreAnimation += OnStartScoreAnimation;
@@ -77,6 +78,7 @@ public class HudEvents : MonoBehaviour
         {
             var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
             hudSystem.OnSetLabelText -= OnSetLabelText;
+            hudSystem.OnSetLabelPos -= OnSetLabelPos;
             hudSystem.OnSetLivesText -= OnSetLivesText;
             hudSystem.OnSetScoreText -= OnSetScoreText;
             hudSystem.OnStartScoreAnimation -= OnStartScoreAnimation;
@@ -118,9 +120,14 @@ public class HudEvents : MonoBehaviour
                 m_messageLabel.text = "Nivel " + value;
                 return;
             case LabelMessage.Bonus:
-                m_messageLabel.text = "Nivel Bonus";
+                m_messageLabel.text = "Nivel X";
                 return;
         }
+    }
+
+    private void OnSetLabelPos(float3 worldPos)
+    {
+        m_messageLabel.rectTransform.localPosition = new Vector2(worldPos.x * 16, (worldPos.y - 1) * 16);
     }
 
     private void OnFadeAnimation(bool isFadeIn, float duration)

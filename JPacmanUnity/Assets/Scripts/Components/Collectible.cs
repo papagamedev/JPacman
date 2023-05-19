@@ -24,8 +24,7 @@ public readonly partial struct CollectibleAspect : IAspect
         var collectibleWorldPos = m_transform.ValueRO.Position;
         var collectibleMapPos = mapData.WorldToMapPos(collectibleWorldPos);
         
-        if (math.abs(collectibleMapPos.x - playerMapPos.x) < 0.5f &&
-            math.abs(collectibleMapPos.y - playerMapPos.y) < 0.5f)
+        if (mapData.CheckCollision(collectibleMapPos,playerMapPos))
         {
             ecb.DestroyEntity(sortKey, Entity);
 

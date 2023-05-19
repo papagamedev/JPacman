@@ -21,13 +21,105 @@ MonoBehaviour:
   LevelConfigs:
   - RoundNumber: 1
     LevelNumber: 1
-    PlayerSpeed: 7.5
+    BonusLevel: 0
+    MoveDots: 0
+    MultiplyDots: 0
+    MovePowerups: 0
+    PlayerSpeed: 8
+    EnemySpeed: 6
+    EnemyInHomeTime: 7
+    EnemyScaredTime: 13
+    EnemyCI: 0
+    FruitScore: 500
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
-  - RoundNumber: 2
+  - RoundNumber: 1
+    LevelNumber: 2
+    BonusLevel: 0
+    MoveDots: 0
+    MultiplyDots: 0
+    MovePowerups: 0
+    PlayerSpeed: 8
+    EnemySpeed: 6
+    EnemyInHomeTime: 7
+    EnemyScaredTime: 12
+    EnemyCI: 1
+    FruitScore: 1000
+    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  - RoundNumber: 1
+    LevelNumber: 3
+    BonusLevel: 0
+    MoveDots: 0
+    MultiplyDots: 0
+    MovePowerups: 0
+    PlayerSpeed: 8
+    EnemySpeed: 6
+    EnemyInHomeTime: 7
+    EnemyScaredTime: 11
+    EnemyCI: 2
+    FruitScore: 1500
+    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  - RoundNumber: 1
+    LevelNumber: 0
+    BonusLevel: 1
+    MoveDots: 0
+    MultiplyDots: 0
+    MovePowerups: 0
+    PlayerSpeed: 8
+    EnemySpeed: 6
+    EnemyInHomeTime: 7
+    EnemyScaredTime: 10
+    EnemyCI: 3
+    FruitScore: 5000
+    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  - RoundNumber: 1
     LevelNumber: 4
-    PlayerSpeed: 7.5
-    MapConfig: {fileID: 11400000, guid: 0e60dad1c3d25be41b67f4c82abbb020, type: 2}
-  - RoundNumber: 3
+    BonusLevel: 0
+    MoveDots: 1
+    MultiplyDots: 0
+    MovePowerups: 0
+    PlayerSpeed: 8
+    EnemySpeed: 8
+    EnemyInHomeTime: 7
+    EnemyScaredTime: 9
+    EnemyCI: 4
+    FruitScore: 2000
+    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  - RoundNumber: 1
     LevelNumber: 5
-    PlayerSpeed: 7.5
-    MapConfig: {fileID: 11400000, guid: 26d0008ff471acf4581dcdda2ee98986, type: 2}
+    BonusLevel: 0
+    MoveDots: 1
+    MultiplyDots: 0
+    MovePowerups: 0
+    PlayerSpeed: 8
+    EnemySpeed: 8
+    EnemyInHomeTime: 7
+    EnemyScaredTime: 8
+    EnemyCI: 5
+    FruitScore: 2500
+    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  - RoundNumber: 1
+    LevelNumber: 6
+    BonusLevel: 0
+    MoveDots: 1
+    MultiplyDots: 1
+    MovePowerups: 0
+    PlayerSpeed: 8
+    EnemySpeed: 8
+    EnemyInHomeTime: 7
+    EnemyScaredTime: 0
+    EnemyCI: 6
+    FruitScore: 5000
+    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  - RoundNumber: 1
+    LevelNumber: 0
+    BonusLevel: 1
+    MoveDots: 1
+    MultiplyDots: 0
+    MovePowerups: 0
+    PlayerSpeed: 8
+    EnemySpeed: 8
+    EnemyInHomeTime: 7
+    EnemyScaredTime: 6
+    EnemyCI: 7
+    FruitScore: 5000
+    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}

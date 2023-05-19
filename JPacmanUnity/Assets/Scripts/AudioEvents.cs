@@ -129,7 +129,7 @@ public class AudioEvents : MonoBehaviour
     private void OnStopSound(SoundType sound)
     {
         var source = m_soundSource[(int)sound];
-        if (!source.isPlaying)
+        if (source == null || !source.isPlaying)
         {
             return;
         }

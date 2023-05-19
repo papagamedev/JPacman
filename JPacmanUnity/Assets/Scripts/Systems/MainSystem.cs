@@ -4,8 +4,6 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEngine;
 
 [BurstCompile]
 [UpdateInGroup(typeof(InitializationSystemGroup))]
@@ -24,7 +22,6 @@ public partial struct MainSystem : ISystem, ISystemStartStop
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         StartGame(1, mainEntity, ecb);
-
         ecb.Playback(state.EntityManager);
     }
 
