@@ -4,15 +4,17 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngine;
 
 [BurstCompile]
 [UpdateInGroup(typeof(InitializationSystemGroup))]
-public partial struct MainSystem : ISystem, ISystemStartStop
+public partial struct MenuSystem : ISystem, ISystemStartStop
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<Main>();
+        state.RequireForUpdate<MenuPhaseTag>();
     }
 
 
@@ -21,20 +23,28 @@ public partial struct MainSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        StartGame(1, mainEntity, ecb);
+        ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
+        {
+            UI = HudEvents.ShowUIType.Menu
+        });
         ecb.Playback(state.EntityManager);
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-
+        if (Input.anyKeyDown)
+        {
+            var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+            var ecb = new EntityCommandBuffer(Allocator.Temp);
+            StartGame(0, mainEntity, ecb);
+            ecb.Playback(state.EntityManager);
+        }
     }
 
     [BurstCompile]
     public void OnStopRunning(ref SystemState state)
     {
-
     }
 
     [BurstCompile]
@@ -45,11 +55,12 @@ public partial struct MainSystem : ISystem, ISystemStartStop
 
     private void StartGame(int levelIndex, Entity mainEntity, EntityCommandBuffer ecb)
     {
+        ecb.RemoveComponent<MenuPhaseTag>(mainEntity);
         ecb.AddComponent(mainEntity, new Game()
         {
             Lives = 3,
             Score = 0,
-            LevelId = 0
+            LevelId = levelIndex
         });
     }
 }

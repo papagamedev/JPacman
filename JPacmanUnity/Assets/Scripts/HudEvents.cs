@@ -11,6 +11,8 @@ using static Unity.VisualScripting.Member;
 
 public class HudEvents : MonoBehaviour
 {
+    public GameObject m_ingameRoot;
+    public GameObject m_menuRoot;
     public TMP_Text m_scoreLabel;
     public TMP_Text m_livesLabel;
     public TMP_Text m_messageLabel;
@@ -49,11 +51,21 @@ public class HudEvents : MonoBehaviour
         Round,
         Level,
         Bonus,
+        None,
+        GameOver
+    }
+
+    public enum ShowUIType
+    {
+        Menu,
+        Ingame,
         None
     }
 
     private void OnEnable()
     {
+        OnShowUI(ShowUIType.None);
+
         var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
         hudSystem.OnSetLabelText += OnSetLabelText;
         hudSystem.OnSetLabelPos += OnSetLabelPos;
@@ -61,6 +73,7 @@ public class HudEvents : MonoBehaviour
         hudSystem.OnSetScoreText += OnSetScoreText;
         hudSystem.OnStartScoreAnimation += OnStartScoreAnimation;
         hudSystem.OnFadeAnimation += OnFadeAnimation;
+        hudSystem.OnShowUI += OnShowUI;
 
         Application.targetFrameRate = 60;
     }
@@ -83,6 +96,7 @@ public class HudEvents : MonoBehaviour
             hudSystem.OnSetScoreText -= OnSetScoreText;
             hudSystem.OnStartScoreAnimation -= OnStartScoreAnimation;
             hudSystem.OnFadeAnimation -= OnFadeAnimation;
+            hudSystem.OnShowUI += OnShowUI;
         }
     }
 
@@ -122,6 +136,9 @@ public class HudEvents : MonoBehaviour
             case LabelMessage.Bonus:
                 m_messageLabel.text = "Nivel X";
                 return;
+            case LabelMessage.GameOver:
+                m_messageLabel.text = "Fin del Juego";
+                break;
         }
     }
 
@@ -153,8 +170,9 @@ public class HudEvents : MonoBehaviour
 
     }
 
-    private void Get()
+    private void OnShowUI(ShowUIType uiType)
     {
-        var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
+        m_menuRoot.SetActive(uiType == ShowUIType.Menu);
+        m_ingameRoot.SetActive(uiType == ShowUIType.Ingame);
     }
 }

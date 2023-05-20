@@ -142,11 +142,6 @@ public readonly partial struct MovableAspect : IAspect
         if (m_movable.ValueRO.AllowChangeDirInMidCell || atCellEdge)
         {
             var dirChanged = CheckDirectionChange(ref map, mapPos, atCellEdge);
-            if (dirChanged)
-            {
-                UnityEngine.Debug.Log("New dir: " + m_movable.ValueRO.CurrentDir);
-            }
-
             if (dirChanged && atCellEdge)
             {
                 // if direction was changed at a cell edge, snap to the cell pos
@@ -317,114 +312,76 @@ public readonly partial struct MovableAspect : IAspect
             return nextAvailableDirs.First;
         }
 
-        UnityEngine.Debug.Log("movable CI:" + movableCI);
-
         if (movableCI < 4 || random.NextInt(movableCI) < 4)
         {
             return nextAvailableDirs.RandomNotOpposite(currentDir, ref random);
         }
-/*
-        var vectorToTarget = targetPos - movablePos;
-        var absToTarget = math.abs(vectorToTarget);
-        if (absToTarget.x < absToTarget.y)
-        {
-            /*
-            if (!ChooseFollowTargetVertDir())
-            {
-                if (!ChooseFollowTargetHorizontalDir())
-                {
-                    return nextAvailableDirs.RandomDir(currentDir, random);
-                }
-            }
-        }
-            */
-        return currentDir;
 
+        var targetToMovable =  movablePos - targetPos;
+        var absVector = math.abs(targetToMovable);
+        if (absVector.x < absVector.y)
+        {
+            return CheckVerticalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, false);
+        }
+        else
+        {
+            return CheckHorizontalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, false);
+        }
     }
 
-    /*
-     * 
-     * 
-void FollowPos(SpriteData *spr,int xt,int yt,char *dirs,int ci)
-{
-	int d,tr=0;
-	int dx,dy;
-	
-	if (dirs[0]+dirs[1]+dirs[2]+dirs[3]==1)
-	{
-		for (d=0;d<4;d++)
-			if (dirs[d]) break;
-	}
-	else if ((ci<4) || (randInt(0,ci)<4))
-	{
-azar:	
-		d=randInt(0,3);
-		while ((!dirs[d]) || (spr->dir==(d^1)))
-		{
-			d++;
-			d&=3;
-		}
-	}
-	else
-	{
-		dx=spr->xpos-xt;
-		dy=spr->ypos-yt;
-		d=spr->dir;
-		if (abs((int)dx)<abs((int)dy))
-		{
-checkvert:
-			if (dy<0)
-			{
-				if ((!dirs[DIR_DOWN]) || ((d==DIR_UP) && (ci<14)))
-				{
-					if (tr) goto azar;
-					tr=1;
-					goto checkhoriz;
-				}
-				else
-					d=DIR_DOWN;
-			}
-			else
-			{
-				if ((!dirs[DIR_UP]) || ((d==DIR_DOWN) && (ci<14)))
-				{
-					if (tr) goto azar;
-					tr=1;
-					goto checkhoriz;
-				}
-				else
-					d=DIR_UP;
-			}
-		}
-		else
-		{
-checkhoriz:
-			if (dx<0)
-			{
-				if ((!dirs[DIR_RIGHT]) || ((d==DIR_LEFT) && (ci<14)))
-				{
-					if (tr) goto azar;
-					tr=1;
-					goto checkvert;
-				}
-				else
-					d=DIR_RIGHT;
-			}
-			else
-			{
-				if ((!dirs[DIR_LEFT]) || ((d==DIR_RIGHT) && (ci<14)))
-				{
-					if (tr) goto azar;
-					tr=1;
-					goto checkvert;
-				}
-				else
-					d=DIR_LEFT;
-			}
-		}
-	}
-	spr->dir=d;
-}
-     * 
-     */
+    private static Movable.Direction CheckVerticalFollowDir(float2 targetToMovable, Movable.Direction currentDir, Movable.AvailableDirections nextAvailableDirs, int movableCI, ref Random random, bool lastTry)
+    {
+        if (targetToMovable.y < 0)
+        {
+            if ((!nextAvailableDirs.Down) || ((currentDir == Movable.Direction.Up) && (movableCI < 14)))
+            {
+                if (lastTry)
+                {
+                    return nextAvailableDirs.RandomNotOpposite(currentDir, ref random);
+                }
+                return CheckHorizontalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
+            }
+            return Movable.Direction.Down;
+        }
+        else
+        {
+            if ((!nextAvailableDirs.Up) || ((currentDir == Movable.Direction.Down) && (movableCI < 14)))
+            {
+                if (lastTry)
+                {
+                    return nextAvailableDirs.RandomNotOpposite(currentDir, ref random);
+                }
+                return CheckHorizontalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
+            }
+            return Movable.Direction.Up;
+        }
+    }
+
+    private static Movable.Direction CheckHorizontalFollowDir(float2 targetToMovable, Movable.Direction currentDir, Movable.AvailableDirections nextAvailableDirs, int movableCI, ref Random random, bool lastTry)
+    {
+        if (targetToMovable.x < 0)
+        {
+            if ((!nextAvailableDirs.Right) || ((currentDir == Movable.Direction.Left) && (movableCI < 14)))
+            {
+                if (lastTry)
+                {
+                    return nextAvailableDirs.RandomNotOpposite(currentDir, ref random);
+                }
+                return CheckVerticalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
+            }
+            return Movable.Direction.Right;
+        }
+        else
+        {
+            if ((!nextAvailableDirs.Left) || ((currentDir == Movable.Direction.Right) && (movableCI < 14)))
+            {
+                if (lastTry)
+                {
+                    return nextAvailableDirs.RandomNotOpposite(currentDir, ref random);
+                }
+                return CheckVerticalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
+            }
+            return Movable.Direction.Left;
+        }
+    }
 }

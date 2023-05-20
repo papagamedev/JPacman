@@ -28,6 +28,7 @@ public partial struct EnemySystem : ISystem
         var player = SystemAPI.GetSingletonEntity<PlayerAspect>();
         var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
         var playerWorldPos = playerAspect.GetWorldPos();
+        var playerCollisionRadius = playerAspect.GetCollisionRadius();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
         ref var map = ref gameAspect.GetCurrentMapData();
@@ -39,7 +40,9 @@ public partial struct EnemySystem : ISystem
             BlobMapsRef = mapsBlobRef,
             MapId = map.Id,
             PlayerMapPos = playerMapPos,
+            PlayerCollisionRadius = playerCollisionRadius,
             EnemyCI = gameAspect.LevelData.EnemyCI,
+            MainEntity = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
         new EnemyScaredJob
@@ -48,6 +51,7 @@ public partial struct EnemySystem : ISystem
             BlobMapsRef = mapsBlobRef,
             MapId = map.Id,
             PlayerMapPos = playerMapPos,
+            PlayerCollisionRadius = playerCollisionRadius,
             Main = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
@@ -90,12 +94,14 @@ public partial struct EnemyFollowPlayerJob : IJobEntity
     public BlobAssetReference<MapsConfigData> BlobMapsRef;
     public int MapId;
     public float2 PlayerMapPos;
+    public float PlayerCollisionRadius;
     public int EnemyCI;
+    public Entity MainEntity;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(EnemyFollowPlayerAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, sortKey, EnemyCI, ECB);
+        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, sortKey, EnemyCI, MainEntity, ECB);
     }
 }
 
@@ -105,11 +111,12 @@ public partial struct EnemyScaredJob : IJobEntity
     public BlobAssetReference<MapsConfigData> BlobMapsRef;
     public int MapId;
     public float2 PlayerMapPos;
+    public float PlayerCollisionRadius;
     public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(EnemyScaredAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, sortKey, Main, ECB);
+        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, sortKey, Main, ECB);
     }
 }

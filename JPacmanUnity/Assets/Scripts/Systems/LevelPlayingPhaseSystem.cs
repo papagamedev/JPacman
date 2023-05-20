@@ -7,7 +7,6 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static LevelStartPhaseSystem;
 
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
@@ -43,10 +42,12 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         gameAspect.UpdateLive(SystemAPI.Time.DeltaTime);
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+
         if (gameAspect.IsLevelCompleted() || Input.GetKeyDown(KeyCode.W))
         {
             SwitchToWinPhase(mainEntity, ecb);
         }
+
         ecb.Playback(state.EntityManager);
     }
 

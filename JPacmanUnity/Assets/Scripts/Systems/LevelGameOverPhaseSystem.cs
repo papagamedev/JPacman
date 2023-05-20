@@ -3,31 +3,31 @@ using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
+using Unity.Transforms;
 using UnityEngine;
 
 [BurstCompile]
-[UpdateInGroup(typeof(InitializationSystemGroup))]
-[UpdateAfter(typeof(MenuSystem))]
-public partial struct GameSystem : ISystem, ISystemStartStop
+[UpdateInGroup(typeof(SimulationSystemGroup))]
+public partial struct LevelGameOverPhaseSystem : ISystem, ISystemStartStop
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
+        state.RequireForUpdate<LevelGameOverPhaseTag>();
         state.RequireForUpdate<Main>();
         state.RequireForUpdate<Game>();
     }
-
 
     [BurstCompile]
     public void OnStartRunning(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        StartLevel(mainEntity, ecb);
-        ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
+        ecb.AppendToBuffer(mainEntity, new SetLabelTextBufferElement()
         {
-            UI = HudEvents.ShowUIType.Ingame
+            Value = HudEvents.LabelMessage.GameOver
         });
         ecb.Playback(state.EntityManager);
     }
@@ -35,11 +35,14 @@ public partial struct GameSystem : ISystem, ISystemStartStop
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var ecb = new EntityCommandBuffer(Allocator.Temp);
-        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
-        gameAspect.ApplyAddScore(mainEntity, ecb);
 
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var ecb = new EntityCommandBuffer(Allocator.Temp);
+        if (Input.anyKeyDown)
+        {
+            ecb.RemoveComponent<LevelGameOverPhaseTag>(mainEntity);
+            ecb.AddComponent(mainEntity, new LevelClearPhaseTag());
+        }
         ecb.Playback(state.EntityManager);
     }
 
@@ -49,15 +52,11 @@ public partial struct GameSystem : ISystem, ISystemStartStop
 
     }
 
+
     [BurstCompile]
     public void OnDestroy(ref SystemState state)
     {
 
     }
-
-    private void StartLevel(Entity mainEntity, EntityCommandBuffer ecb)
-    {        
-        ecb.AddComponent(mainEntity, new LevelStartPhaseTag());
-    }
-
 }
+

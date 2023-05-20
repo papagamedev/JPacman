@@ -53,6 +53,10 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
         {
             Value = gameAspect.Lives
         });
+        ecb.AppendToBuffer(mainEntity, new SetScoreTextBufferElement()
+        {
+            Value = gameAspect.Score
+        });
         ecb.AppendToBuffer(mainEntity, new FadeAnimationBufferElement()
         {
             Duration = kFadeInTime,

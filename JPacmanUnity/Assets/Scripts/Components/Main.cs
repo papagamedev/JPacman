@@ -69,7 +69,6 @@ public struct MapConfigData
 
     public float2 WorldToMapPos(float3 worldPos) => new float2(worldPos.x + Width * 0.5f, Height * 0.5f - worldPos.y);
 
-    public bool CheckCollision(float2 pos1, float2 pos2) =>(math.abs(pos1.x - pos2.x) < 0.5f && math.abs(pos1.y - pos2.y) < 0.5f);
 
     public bool IsDirectionAllowed(int x, int y, Movable.Direction direction)
     {
@@ -112,6 +111,10 @@ public struct MapConfigData
     }
 }
 
+public struct IntroPhaseTag : IComponentData { }
+
+public struct MenuPhaseTag : IComponentData { }
+
 public struct SoundEventBufferElement : IBufferElementData
 {
     public AudioEvents.SoundType SoundType;
@@ -125,6 +128,52 @@ public struct SoundStopEventBufferElement : IBufferElementData
 public struct MusicEventBufferElement : IBufferElementData
 {
     public AudioEvents.MusicType MusicType;
+}
+
+
+public struct SetLivesTextBufferElement : IBufferElementData
+{
+    public int Value;
+}
+
+public struct SetScoreTextBufferElement : IBufferElementData
+{
+    public int Value;
+}
+
+public struct SetLabelTextBufferElement : IBufferElementData
+{
+    public HudEvents.LabelMessage Value;
+}
+
+public struct SetLabelPosBufferElement : IBufferElementData
+{
+    public float3 Value;
+}
+
+public struct StartScoreAnimationBufferElement : IBufferElementData
+{
+    public int Score;
+    public float3 WorldPos;
+}
+
+public struct FadeAnimationBufferElement : IBufferElementData
+{
+    public bool IsFadeIn;
+    public float Duration;
+}
+
+public struct AddScoreBufferElement : IBufferElementData
+{
+    public float2 MapPos;
+    public int Score;
+    public bool ScoreAnimation;
+    public bool IsCollectible;
+}
+
+public struct ShowUIBufferElement : IBufferElementData
+{
+    public HudEvents.ShowUIType UI;
 }
 
 public struct Main : IComponentData
@@ -145,4 +194,11 @@ public readonly partial struct MainAspect : IAspect
     public readonly DynamicBuffer<SoundEventBufferElement> SoundEventBuffer;
     public readonly DynamicBuffer<SoundStopEventBufferElement> SoundStopEventBuffer;
     public readonly DynamicBuffer<MusicEventBufferElement> MusicEventBuffer;
+    public readonly DynamicBuffer<SetLivesTextBufferElement> SetLivesTextBuffer;
+    public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
+    public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;
+    public readonly DynamicBuffer<SetLabelPosBufferElement> SetLabelPosBuffer;
+    public readonly DynamicBuffer<StartScoreAnimationBufferElement> StartScoreAnimationBuffer;
+    public readonly DynamicBuffer<FadeAnimationBufferElement> FadeAnimationBuffer;
+    public readonly DynamicBuffer<ShowUIBufferElement> ShowUIBuffer;
 }

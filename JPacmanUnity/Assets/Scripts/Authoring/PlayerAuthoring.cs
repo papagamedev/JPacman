@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerAuthoring : MonoBehaviour
 {
-    public float Lives;
+    public float CollisionRadius;
 
     public class Baker : Baker<PlayerAuthoring>
     {
@@ -16,6 +16,10 @@ public class PlayerAuthoring : MonoBehaviour
             AddComponent(entity, new Player
             {
             });
+            AddComponent(entity, new CollisionCircle()
+            {
+                Radius = authoring.CollisionRadius
+            });            
         }
     }
 }

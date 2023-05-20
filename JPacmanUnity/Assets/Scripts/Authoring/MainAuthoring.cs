@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -27,6 +28,7 @@ public class MainAuthoring : MonoBehaviour
                 MapsConfigBlob = mapsConfigBlob,
                 RandomSeed = (uint)(System.DateTime.Now.Ticks % 1000000000)
             });
+            AddComponent(entity, new IntroPhaseTag());
             AddBuffer<SoundEventBufferElement>(entity);
             AddBuffer<SoundStopEventBufferElement>(entity);
             AddBuffer<MusicEventBufferElement>(entity);
@@ -37,6 +39,7 @@ public class MainAuthoring : MonoBehaviour
             AddBuffer<StartScoreAnimationBufferElement>(entity);
             AddBuffer<FadeAnimationBufferElement>(entity);
             AddBuffer<AddScoreBufferElement>(entity);
+            AddBuffer<ShowUIBufferElement>(entity);
         }
 
         private BlobAssetReference<LevelsConfigData> CreateLevelsConfigBlob(MainAuthoring authoring, List<MapConfig> maps)

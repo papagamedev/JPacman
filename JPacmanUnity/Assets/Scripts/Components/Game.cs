@@ -6,6 +6,7 @@ using Unity.Entities;
 using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
+using static MapConfig;
 
 public struct Game : IComponentData
 {
@@ -26,59 +27,15 @@ public struct LevelWinPhaseTag : IComponentData { }
 
 public struct LevelClearPhaseTag : IComponentData { }
 
+public struct LevelResetLivePhaseTag : IComponentData { }
+
 public struct LevelGameOverPhaseTag : IComponentData { }
-
-public struct SetLivesTextBufferElement : IBufferElementData
-{
-    public int Value;
-}
-
-public struct SetScoreTextBufferElement : IBufferElementData
-{
-    public int Value;
-}
-
-public struct SetLabelTextBufferElement : IBufferElementData
-{
-    public HudEvents.LabelMessage Value;
-}
-
-public struct SetLabelPosBufferElement : IBufferElementData
-{
-    public float3 Value;
-}
-
-public struct StartScoreAnimationBufferElement : IBufferElementData
-{
-    public int Score;
-    public float3 WorldPos;
-}
-
-public struct FadeAnimationBufferElement : IBufferElementData
-{
-    public bool IsFadeIn;
-    public float Duration;
-}
-
-public struct AddScoreBufferElement : IBufferElementData
-{
-    public float2 MapPos;
-    public int Score;
-    public bool ScoreAnimation;
-    public bool IsCollectible;
-}
 
 public readonly partial struct GameAspect : IAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<Main> m_main;
     private readonly RefRW<Game> m_game;
-    public readonly DynamicBuffer<SetLivesTextBufferElement> SetLivesTextBuffer;
-    public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
-    public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;
-    public readonly DynamicBuffer<SetLabelPosBufferElement> SetLabelPosBuffer;
-    public readonly DynamicBuffer<StartScoreAnimationBufferElement> StartScoreAnimationBuffer;
-    public readonly DynamicBuffer<FadeAnimationBufferElement> FadeAnimationBuffer;
     private readonly DynamicBuffer<AddScoreBufferElement> m_addScoreBuffer;
 
     public void ApplyAddScore(Entity mainEntity, EntityCommandBuffer ecb)
@@ -116,13 +73,40 @@ public readonly partial struct GameAspect : IAspect
 
     public ref LevelConfigData LevelData => ref m_main.ValueRO.LevelsConfigBlob.Value.LevelsData[m_game.ValueRO.LevelId];
 
+    public int Score => m_game.ValueRO.Score;
     public int Lives => m_game.ValueRO.Lives;
     public float LiveTime => m_game.ValueRO.LiveTime;
-    public uint RandomSeed => m_main.ValueRW.RandomSeed;
+    public uint RandomSeed => m_main.ValueRW.RandomSeed++;
 
-    public void StartLive() => m_game.ValueRW.LiveTime = 0;
+    public void InitLive(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
+    {
+        ref var mapData = ref GetCurrentMapData();
+        int homeX = (int)mapData.EnemyHousePos.x;
+        int homeY = (int)mapData.EnemyHousePos.y;
+        if (mapData.IsEnemyHorizontalHome(homeX, homeY))
+        {
+            CreateEnemyHorizontalHome(ecb, ref mapData, homeX, homeY, randSeed++);
+        }
+        else if (mapData.IsEnemyVerticalHome(homeX, homeY))
+        {
+            CreateEnemyVerticalHome(ecb, ref mapData, homeX, homeY, randSeed++);
+        }
+        CreatePlayer(ecb, ref mapData, randSeed++);
+        ResetPowerups(ecb, ref mapData);
+    }
+
+    public void StartLive()
+    {
+        m_game.ValueRW.LiveTime = 0;
+    }
 
     public void UpdateLive(float deltaTime) => m_game.ValueRW.LiveTime += deltaTime;
+
+    public int RemoveLive()
+    {
+        m_game.ValueRW.Lives--;
+        return m_game.ValueRO.Lives;
+    }
 
     public void SetNextLevel()
     {
@@ -155,14 +139,6 @@ public readonly partial struct GameAspect : IAspect
                 {
                     CreateDot(ecb, ref collectibleCount, ref mapData, x, y);
                 }
-                else if (mapData.IsEnemyHorizontalHome(x, y))
-                {
-                    CreateEnemyHorizontalHome(ecb, ref mapData, x, y, randSeed++);
-                }
-                else if (mapData.IsEnemyVerticalHome(x, y))
-                {
-                    CreateEnemyVerticalHome(ecb, ref mapData, x, y, randSeed++);
-                }
                 else if (mapData.IsWall(x, y))
                 {
                     CreateWall(ecb, ref mapData, x, y);
@@ -171,13 +147,13 @@ public readonly partial struct GameAspect : IAspect
         }
         m_game.ValueRW.CollectibleCount = collectibleCount;
 
-        CreatePlayer(ecb, ref mapData, randSeed++);
-
         var labelWorldPos = mapData.MapToWorldPos(mapData.LabelMessagePos);
         ecb.AppendToBuffer(mainEntity, new SetLabelPosBufferElement()
         {
             Value = labelWorldPos
         });
+
+        InitLive(ecb, mainEntity, randSeed++);
     }
 
     private void CreatePlayer(EntityCommandBuffer ecb, ref MapConfigData mapData, uint randSeed)
@@ -295,5 +271,10 @@ public readonly partial struct GameAspect : IAspect
                 Id = id,
             });
         ecb.AddComponent(enemy, new EnemyHome() { });
+    }
+
+    private void ResetPowerups(EntityCommandBuffer ecb, ref MapConfigData mapData)
+    {
+        // reset powerup position when a new live begins
     }
 }

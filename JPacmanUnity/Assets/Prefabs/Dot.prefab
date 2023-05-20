@@ -100,3 +100,4 @@ MonoBehaviour:
   Score: 10
   ScoreAnimation: 0
   SoundType: 0
+  CollisionRadius: 0

@@ -9,6 +9,7 @@ public class CollectibleAuthoring : MonoBehaviour
     public int Score;
     public bool ScoreAnimation;
     public AudioEvents.SoundType SoundType;
+    public float CollisionRadius;
 
     public class Baker : Baker<CollectibleAuthoring>
     {
@@ -20,6 +21,10 @@ public class CollectibleAuthoring : MonoBehaviour
                 Score = authoring.Score,
                 ScoreAnimation = authoring.ScoreAnimation,
                 SoundType = authoring.SoundType
+            });
+            AddComponent(entity, new CollisionCircle()
+            {
+                Radius = authoring.CollisionRadius
             });
         }
     }

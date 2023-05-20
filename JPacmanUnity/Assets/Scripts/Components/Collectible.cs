@@ -17,14 +17,15 @@ public readonly partial struct CollectibleAspect : IAspect
     public readonly Entity Entity;
     private readonly RefRO<LocalTransform> m_transform;
     private readonly RefRO<Collectible> m_collectible;
+    private readonly RefRO<CollisionCircle> m_collision;
 
-    public void CheckPlayer(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
+    public void CheckPlayer(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var collectibleWorldPos = m_transform.ValueRO.Position;
         var collectibleMapPos = mapData.WorldToMapPos(collectibleWorldPos);
         
-        if (mapData.CheckCollision(collectibleMapPos,playerMapPos))
+        if (CollisionCircle.CheckCollision(collectibleMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
         {
             ecb.DestroyEntity(sortKey, Entity);
 

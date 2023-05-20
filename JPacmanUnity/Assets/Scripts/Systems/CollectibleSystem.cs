@@ -29,6 +29,7 @@ public partial struct CollectibleSystem : ISystem
         var player = SystemAPI.GetSingletonEntity<PlayerAspect>();
         var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
         var playerWorldPos = playerAspect.GetWorldPos();
+        var playerCollisionRadius = playerAspect.GetCollisionRadius();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
         ref var map = ref gameAspect.GetCurrentMapData();
@@ -40,6 +41,7 @@ public partial struct CollectibleSystem : ISystem
             BlobMapsRef = mapsBlobRef,
             MapId = map.Id,
             PlayerMapPos = playerMapPos,
+            PlayerCollisionRadius = playerCollisionRadius,
             Main = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
@@ -58,12 +60,13 @@ public partial struct CollectJob : IJobEntity
     public BlobAssetReference<MapsConfigData> BlobMapsRef;
     public int MapId;
     public float2 PlayerMapPos;
+    public float PlayerCollisionRadius;
     public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(CollectibleAspect collectible, [EntityIndexInQuery] int sortKey)
     {
-        collectible.CheckPlayer(BlobMapsRef, MapId, PlayerMapPos, sortKey, Main, ECB);
+        collectible.CheckPlayer(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, sortKey, Main, ECB);
     }
 }
 
