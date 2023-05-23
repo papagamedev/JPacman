@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
-using static MapConfig;
 
 public struct Game : IComponentData
 {
@@ -15,7 +11,10 @@ public struct Game : IComponentData
     public int LevelId;
     public int CollectibleCount;
     public float LiveTime;
+    public bool EnemyScaredBlinking;
 }
+
+public struct EnemyScaredPhaseTag : IComponentData { }
 
 public struct LevelStartPhaseTag : IComponentData { }
 
@@ -77,6 +76,8 @@ public readonly partial struct GameAspect : IAspect
     public int Lives => m_game.ValueRO.Lives;
     public float LiveTime => m_game.ValueRO.LiveTime;
     public uint RandomSeed => m_main.ValueRW.RandomSeed++;
+    public void SetEnemyScaredBlinking(bool blinking) => m_game.ValueRW.EnemyScaredBlinking = blinking;
+    public bool IsEnemyScaredBlinking => m_game.ValueRO.EnemyScaredBlinking;
 
     public void InitLive(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
     {
@@ -92,7 +93,6 @@ public readonly partial struct GameAspect : IAspect
             CreateEnemyVerticalHome(ecb, ref mapData, homeX, homeY, randSeed++);
         }
         CreatePlayer(ecb, ref mapData, randSeed++);
-        ResetPowerups(ecb, ref mapData);
     }
 
     public void StartLive()
@@ -152,6 +152,8 @@ public readonly partial struct GameAspect : IAspect
         {
             Value = labelWorldPos
         });
+
+        CreatePowerups(ecb, ref mapData);
 
         InitLive(ecb, mainEntity, randSeed++);
     }
@@ -270,11 +272,21 @@ public readonly partial struct GameAspect : IAspect
             {
                 Id = id,
             });
-        ecb.AddComponent(enemy, new EnemyHome() { });
+        ecb.AddComponent(enemy, new EnemyHomeTag() { });
     }
 
-    private void ResetPowerups(EntityCommandBuffer ecb, ref MapConfigData mapData)
+    private void CreatePowerups(EntityCommandBuffer ecb, ref MapConfigData mapData)
     {
-        // reset powerup position when a new live begins
+        for (int i = 0; i < 4; i++)
+        {
+            var powerup = ecb.Instantiate(m_main.ValueRO.PowerupPrefab);
+            ecb.SetComponent(powerup,
+                new LocalTransform()
+                {
+                    Position = mapData.MapToWorldPos(mapData.PowerupPos[i].x, mapData.PowerupPos[i].y),
+                    Scale = 1.0f,
+                    Rotation = quaternion.identity,
+                });
+        }
     }
 }

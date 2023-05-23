@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -24,6 +22,8 @@ public class MainAuthoring : MonoBehaviour
                 EnemyPrefab = GetEntity(authoring.Config.EnemyPrefab, TransformUsageFlags.None),
                 PlayerPrefab = GetEntity(authoring.Config.PlayerPrefab, TransformUsageFlags.None),
                 WallPrefab = GetEntity(authoring.Config.WallPrefab, TransformUsageFlags.None),
+                FruitPrefab = GetEntity(authoring.Config.FruitPrefab, TransformUsageFlags.None),
+                PowerupPrefab = GetEntity(authoring.Config.PowerupPrefab, TransformUsageFlags.None),
                 LevelsConfigBlob = levelsConfigBlob,
                 MapsConfigBlob = mapsConfigBlob,
                 RandomSeed = (uint)(System.DateTime.Now.Ticks % 1000000000)
@@ -118,6 +118,14 @@ public class MainAuthoring : MonoBehaviour
                             c == MapConfigData.kEnemyVerticalHomeChar)
                         {
                             enemyHousePos = new float2(x, y);
+                        }
+                        else if (c == MapConfigData.kPowerupVerticalChar)
+                        {
+                            mapsArrayBuilder[i].PowerupPos.Add(new float2(x, y + 0.5f));
+                        }
+                        else if (c == MapConfigData.kPowerupHorizontalChar)
+                        {
+                            mapsArrayBuilder[i].PowerupPos.Add(new float2(x + 0.5f, y));
                         }
                     }
                 }

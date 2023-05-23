@@ -128,7 +128,9 @@ MonoBehaviour:
   - {r: 1, g: 0.6207677, b: 0, a: 1}
   - {r: 0.09172523, g: 1, b: 0, a: 1}
   - {r: 1, g: 0, b: 0.9254427, a: 1}
-  m_enemyScaredColor: {r: 0.45273018, g: 0, b: 1, a: 1}
+  m_enemyScaredColor: {r: 0.5719115, g: 0.22801708, b: 0.990566, a: 1}
+  EnemyScaredBlinkColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemyReturnHomeColor: {r: 1, g: 1, b: 1, a: 0.24705882}
   m_collisionRadius: 1
 --- !u!1 &3857779985276686472
 GameObject:

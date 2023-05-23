@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 4000011641599626}
   - component: {fileID: 212000010169166392}
   - component: {fileID: -5838190375416780258}
+  - component: {fileID: 3727351250070492963}
   m_Layer: 0
-  m_Name: Dot
+  m_Name: Powerup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 1753778391
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e6ea789492d47604d9bc1b662537c711, type: 3}
+  m_Sprite: {fileID: 1920607304, guid: 24fbd64468104cd4986ec391bbd05a69, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -97,8 +98,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daaafc08666656f48abba64ee3895b26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Score: 10
+  Score: 50
   ScoreAnimation: 0
-  SoundType: 0
+  SoundType: 1
   CollisionRadius: 0
-  IsPowerup: 0
+  IsPowerup: 1
+--- !u!114 &3727351250070492963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010539885376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88281dfc9ccbcfe44819baabcf16bf98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationFrames:
+  - {fileID: -1515699415, guid: 24fbd64468104cd4986ec391bbd05a69, type: 3}
+  - {fileID: -1515699415, guid: 24fbd64468104cd4986ec391bbd05a69, type: 3}
+  - {fileID: 2027403511, guid: 24fbd64468104cd4986ec391bbd05a69, type: 3}
+  - {fileID: -1909049230, guid: 24fbd64468104cd4986ec391bbd05a69, type: 3}
+  - {fileID: -1909049230, guid: 24fbd64468104cd4986ec391bbd05a69, type: 3}
+  AnimationLength: 0.6
+  WrapMode: 4
+  StartPlaying: 1

@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 public class EnemyDef : IComponentData
 {
     public UnityEngine.Color[] EnemyColors;
     public UnityEngine.Color EnemyScaredColor;
+    public UnityEngine.Color EnemyScaredBlinkColor;
+    public UnityEngine.Color EnemyReturnHomeColor;
 }
 
 public struct Enemy : IComponentData
@@ -18,17 +15,15 @@ public struct Enemy : IComponentData
     public int Id;
 }
 
-public struct EnemyHome : IComponentData
-{
-}
+public struct EnemyHomeTag : IComponentData { }
 
-public struct EnemyFollowPlayer : IComponentData
-{
-}
+public struct EnemyFollowPlayerTag : IComponentData { }
 
-public struct EnemyScared : IComponentData
-{
-}
+public struct EnemyScaredTag : IComponentData { }
+
+public struct EnemyHomeScaredTag : IComponentData { }
+
+public struct EnemyReturnHomeTag : IComponentData { }
 
 
 public readonly partial struct EnemyHomeAspect : IAspect
@@ -37,9 +32,9 @@ public readonly partial struct EnemyHomeAspect : IAspect
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<Enemy> m_enemy;
-    private readonly RefRO<EnemyHome> m_enemyHome;
+    private readonly RefRO<EnemyHomeTag> m_enemyHome;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, float liveTime, float exitHomeTime, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, float liveTime, float exitHomeTime, float enemySpeed, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
 
@@ -48,10 +43,12 @@ public readonly partial struct EnemyHomeAspect : IAspect
         {
             m_movable.ValueRW.ForcedDir = true;
             m_movable.ValueRW.DesiredDir = mapData.EnemyExitDir;
-            ecb.RemoveComponent<EnemyHome>(sortKey, Entity);
-            ecb.AddComponent(sortKey, Entity, new EnemyFollowPlayer() { });
+            ecb.RemoveComponent<EnemyHomeTag>(sortKey, Entity);
+            ecb.AddComponent(sortKey, Entity, new EnemyFollowPlayerTag() { });
             return;
         }
+
+        m_movable.ValueRW.Speed = enemySpeed;
 
         var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
         if (nextAvailableDirs.Count == 1)
@@ -69,10 +66,10 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<Enemy> m_enemy;
-    private readonly RefRO<EnemyFollowPlayer> m_enemyFollowPLayer;
+    private readonly RefRO<EnemyFollowPlayerTag> m_enemyFollowPLayer;
     private readonly RefRO<CollisionCircle> m_collision;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, int enemyCI, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, int enemyCI, float enemySpeed, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var enemyWorldPos = m_transform.ValueRO.Position;
@@ -84,7 +81,9 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
             ecb.RemoveComponent<LevelPlayingPhaseTag>(sortKey, mainEntity);
             return;
         }
-        
+
+        m_movable.ValueRW.Speed = enemySpeed;
+
         var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
         var currentDir = m_movable.ValueRO.CurrentDir;
         var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
@@ -101,10 +100,10 @@ public readonly partial struct EnemyScaredAspect : IAspect
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<Enemy> m_enemy;
-    private readonly RefRO<EnemyScared> m_enemyScared;
+    private readonly RefRO<EnemyScaredTag> m_enemyScared;
     private readonly RefRO<CollisionCircle> m_collision;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var enemyWorldPos = m_transform.ValueRO.Position;
@@ -112,19 +111,93 @@ public readonly partial struct EnemyScaredAspect : IAspect
 
         if (CollisionCircle.CheckCollision(enemyMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
         {
-            // enemy captured by player!!
+            ecb.RemoveComponent<EnemyScaredTag>(sortKey, Entity);
+            ecb.AddComponent(sortKey, Entity, new EnemyReturnHomeTag() { });
 
+            ecb.AppendToBuffer(sortKey, mainEntity, new SoundEventBufferElement()
+            {
+                SoundType = AudioEvents.SoundType.PlayerEatEnemy
+            });
             return;
         }
 
-        /*
-                DirsCanMove(Goblins[i],dirs);
-				if ((dirs[0]+dirs[1]+dirs[2]+dirs[3]>2) || (!dirs[Goblins[i]->dir]))
-					FollowPos(Goblins[i],HouseX,HouseY,dirs,5);
-				MakeMove(Goblins[i],dirs);
-        */
+        m_movable.ValueRW.Speed = 4.0f;
+
+        var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
+        var currentDir = m_movable.ValueRO.CurrentDir;
+        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
+        if (nextAvailableDirs.Count > 2 || !nextAvailableDirs.Check(currentDir))
+        {
+            m_movable.ValueRW.DesiredDir = MovableAspect.ComputeFollowTargetDir(nextCellPos, currentDir, mapData.EnemyHousePos, nextAvailableDirs, 5, ref m_movable.ValueRW.Rand);
+        }
     }
 
 }
 
+public readonly partial struct EnemyHomeScaredAspect : IAspect
+{
+    public readonly Entity Entity;
+    private readonly RefRW<LocalTransform> m_transform;
+    private readonly RefRW<Movable> m_movable;
+    private readonly RefRO<Enemy> m_enemy;
+    private readonly RefRO<EnemyHomeScaredTag> m_enemyScared;
+    private readonly RefRO<CollisionCircle> m_collision;
 
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    {
+        ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
+        var enemyWorldPos = m_transform.ValueRO.Position;
+        var enemyMapPos = mapData.WorldToMapPos(enemyWorldPos);
+
+        m_movable.ValueRW.Speed = 4.0f;
+
+        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
+        if (nextAvailableDirs.Count == 1)
+        {
+            m_movable.ValueRW.DesiredDir = nextAvailableDirs.First;
+        }
+    }
+
+}
+
+public readonly partial struct EnemyReturnHomeAspect : IAspect
+{
+    public readonly Entity Entity;
+    private readonly RefRW<LocalTransform> m_transform;
+    private readonly RefRW<Movable> m_movable;
+    private readonly RefRO<Enemy> m_enemy;
+    private readonly RefRO<EnemyReturnHomeTag> m_enemyScared;
+    private readonly RefRO<CollisionCircle> m_collision;
+
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
+    {
+        ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
+        var enemyWorldPos = m_transform.ValueRO.Position;
+        var enemyMapPos = mapData.WorldToMapPos(enemyWorldPos);
+
+        if (m_movable.ValueRO.NextCellEdgeMapPos.Equals(mapData.EnemyHousePos))
+        {
+            ecb.RemoveComponent<EnemyReturnHomeTag>(sortKey, Entity);
+            ecb.AddComponent(sortKey, Entity, new EnemyHomeTag() { });
+            return;
+        }
+
+        if (m_movable.ValueRO.NextCellEdgeMapPos.Equals(mapData.EnemyExitPos))
+        {
+            m_movable.ValueRW.ForcedDir = true;
+            m_movable.ValueRW.DesiredDir = Movable.OppositeDir(mapData.EnemyExitDir);
+            return;
+        }
+
+        m_movable.ValueRW.Speed = 16.0f;
+
+        var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
+        var currentDir = m_movable.ValueRO.CurrentDir;
+        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
+        if (nextAvailableDirs.Count > 2 || !nextAvailableDirs.Check(currentDir))
+        {
+            m_movable.ValueRW.DesiredDir = MovableAspect.ComputeFollowTargetDir(nextCellPos, currentDir, mapData.EnemyExitPos, nextAvailableDirs, 13, ref m_movable.ValueRW.Rand);
+        }
+    }
+
+}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 212000010169166392}
   - component: {fileID: -5838190375416780258}
   m_Layer: 0
-  m_Name: Dot
+  m_Name: Fruit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 1753778391
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e6ea789492d47604d9bc1b662537c711, type: 3}
+  m_Sprite: {fileID: -366697972, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -97,8 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daaafc08666656f48abba64ee3895b26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Score: 10
+  Score: 500
   ScoreAnimation: 0
-  SoundType: 0
+  SoundType: 1
   CollisionRadius: 0
   IsPowerup: 0

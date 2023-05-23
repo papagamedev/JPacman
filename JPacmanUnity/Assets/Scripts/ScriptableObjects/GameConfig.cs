@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
-using System.Collections.Generic;
 
 [CreateAssetMenu(fileName="GameConfig", menuName = "JPacman Data/Game Config")]
 public class GameConfig : ScriptableObject
@@ -27,6 +25,8 @@ public class GameConfig : ScriptableObject
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
     public GameObject WallPrefab;
+    public GameObject FruitPrefab;
+    public GameObject PowerupPrefab;
     public LevelConfig[] LevelConfigs;
     
     public void AssignMapIds()

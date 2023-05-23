@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class CollectibleAuthoring : MonoBehaviour
@@ -10,6 +7,7 @@ public class CollectibleAuthoring : MonoBehaviour
     public bool ScoreAnimation;
     public AudioEvents.SoundType SoundType;
     public float CollisionRadius;
+    public bool IsPowerup;
 
     public class Baker : Baker<CollectibleAuthoring>
     {
@@ -20,7 +18,8 @@ public class CollectibleAuthoring : MonoBehaviour
             {
                 Score = authoring.Score,
                 ScoreAnimation = authoring.ScoreAnimation,
-                SoundType = authoring.SoundType
+                SoundType = authoring.SoundType,
+                IsPowerup = authoring.IsPowerup
             });
             AddComponent(entity, new CollisionCircle()
             {

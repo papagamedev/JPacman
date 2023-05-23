@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 public struct Collectible : IComponentData
 {
     public int Score;
     public bool ScoreAnimation;
-    public AudioEvents.SoundType SoundType; 
+    public AudioEvents.SoundType SoundType;
+    public bool IsPowerup;
 }
 
 public readonly partial struct CollectibleAspect : IAspect
@@ -24,25 +22,32 @@ public readonly partial struct CollectibleAspect : IAspect
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var collectibleWorldPos = m_transform.ValueRO.Position;
         var collectibleMapPos = mapData.WorldToMapPos(collectibleWorldPos);
-        
-        if (CollisionCircle.CheckCollision(collectibleMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
+
+        if (!CollisionCircle.CheckCollision(collectibleMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
         {
-            ecb.DestroyEntity(sortKey, Entity);
+            return;
+        }
 
-            var scoreBufferElement = new AddScoreBufferElement()
-            {
-                MapPos = collectibleMapPos,
-                Score = m_collectible.ValueRO.Score,
-                ScoreAnimation = m_collectible.ValueRO.ScoreAnimation,
-                IsCollectible = true
-            };
-            ecb.AppendToBuffer(sortKey, main, scoreBufferElement);
+        ecb.DestroyEntity(sortKey, Entity);
 
-            var soundEventBufferElement = new SoundEventBufferElement()
-            {
-                SoundType = m_collectible.ValueRO.SoundType
-            };
-            ecb.AppendToBuffer(sortKey, main, soundEventBufferElement);
+        var scoreBufferElement = new AddScoreBufferElement()
+        {
+            MapPos = collectibleMapPos,
+            Score = m_collectible.ValueRO.Score,
+            ScoreAnimation = m_collectible.ValueRO.ScoreAnimation,
+            IsCollectible = true
+        };
+        ecb.AppendToBuffer(sortKey, main, scoreBufferElement);
+
+        var soundEventBufferElement = new SoundEventBufferElement()
+        {
+            SoundType = m_collectible.ValueRO.SoundType
+        };
+        ecb.AppendToBuffer(sortKey, main, soundEventBufferElement);
+
+        if (m_collectible.ValueRO.IsPowerup)
+        {
+            ecb.AddComponent(sortKey, main, new EnemyScaredPhaseTag());
         }
     }
 }

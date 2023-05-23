@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class EnemyAuthoring : MonoBehaviour
 {
     public Color[] m_enemyColors;
     public Color m_enemyScaredColor;
+    public Color EnemyScaredBlinkColor;
+    public Color EnemyReturnHomeColor;
     public float m_collisionRadius;
 
     public class Baker : Baker<EnemyAuthoring>
@@ -19,7 +17,9 @@ public class EnemyAuthoring : MonoBehaviour
             AddComponentObject(entity, new EnemyDef
             {
                 EnemyColors = authoring.m_enemyColors,
-                EnemyScaredColor = authoring.m_enemyScaredColor
+                EnemyScaredColor = authoring.m_enemyScaredColor,
+                EnemyScaredBlinkColor = authoring.EnemyScaredBlinkColor,
+                EnemyReturnHomeColor = authoring.EnemyReturnHomeColor
             });
             AddComponent(entity, new CollisionCircle()
             {

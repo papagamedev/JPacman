@@ -18,6 +18,10 @@ MonoBehaviour:
   EnemyPrefab: {fileID: 1000013497543366, guid: afb12eae9b9482b468b045135b2e9984,
     type: 3}
   WallPrefab: {fileID: 1000010539885376, guid: 1b2bd6e64f697c0408aa2a50c96eeb99, type: 3}
+  FruitPrefab: {fileID: 1000010539885376, guid: 6185db1c4d842b14a92553bf49c539d9,
+    type: 3}
+  PowerupPrefab: {fileID: 1000010539885376, guid: 3a068e9a975821043a7cb5c0c7f26ad5,
+    type: 3}
   LevelConfigs:
   - RoundNumber: 1
     LevelNumber: 1

@@ -1,12 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
-using Unity.Mathematics;
-using Unity.Transforms;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
@@ -58,12 +52,9 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new SoundStopEventBufferElement()
         {
-            SoundType = AudioEvents.SoundType.EnemyScared
-        });
-        ecb.AppendToBuffer(mainEntity, new SoundStopEventBufferElement()
-        {
             SoundType = AudioEvents.SoundType.EnemyReturnHome
         });
+        ecb.RemoveComponent<EnemyScaredPhaseTag>(mainEntity);
         ecb.Playback(state.EntityManager);
     }
 
