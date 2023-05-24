@@ -11,6 +11,7 @@ public partial class HudSystem : SystemBase
     public Action<int> OnSetLivesText;
     public Action<int> OnSetScoreText;
     public Action<int, float3> OnStartScoreAnimation;
+    public Action OnKillAllScoreAnimations;
     public Action<bool, float> OnFadeAnimation;
     public Action<HudEvents.ShowUIType> OnShowUI;
 
@@ -82,6 +83,15 @@ public partial class HudSystem : SystemBase
             }
         }
         mainAspect.StartScoreAnimationBuffer.Clear();
+
+        if (OnKillAllScoreAnimations != null)
+        {
+            foreach (var element in mainAspect.KillAllScoreAnimationsBuffer)
+            {
+                OnKillAllScoreAnimations();
+            }
+        }
+        mainAspect.KillAllScoreAnimationsBuffer.Clear();
 
         if (OnFadeAnimation != null)
         {

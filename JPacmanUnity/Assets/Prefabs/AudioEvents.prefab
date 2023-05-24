@@ -48,7 +48,7 @@ MonoBehaviour:
     m_audioClip: {fileID: 8300000, guid: 7cfda2ee54aafa342823a6b72c2e8e81, type: 3}
     m_loop: 0
   SoundPlayerEatPowerup:
-    m_audioClip: {fileID: 8300000, guid: dab07c3ec5e4bb0409743692b9f9694b, type: 3}
+    m_audioClip: {fileID: 8300000, guid: 7cfda2ee54aafa342823a6b72c2e8e81, type: 3}
     m_loop: 0
   SoundPlayerEatFruit:
     m_audioClip: {fileID: 8300000, guid: dab07c3ec5e4bb0409743692b9f9694b, type: 3}

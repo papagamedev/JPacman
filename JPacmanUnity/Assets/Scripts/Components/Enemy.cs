@@ -118,6 +118,10 @@ public readonly partial struct EnemyScaredAspect : IAspect
             {
                 SoundType = AudioEvents.SoundType.PlayerEatEnemy
             });
+            ecb.AppendToBuffer(sortKey, mainEntity, new EnemyEatenBufferElement()
+            {
+                WorldPos = enemyWorldPos
+            });
             return;
         }
 

@@ -57,18 +57,15 @@ public struct StartScoreAnimationBufferElement : IBufferElementData
     public float3 WorldPos;
 }
 
+public struct KillAllScoreAnimationBufferElement : IBufferElementData
+{
+    public byte Dummy;
+}
+
 public struct FadeAnimationBufferElement : IBufferElementData
 {
     public bool IsFadeIn;
     public float Duration;
-}
-
-public struct AddScoreBufferElement : IBufferElementData
-{
-    public float2 MapPos;
-    public int Score;
-    public bool ScoreAnimation;
-    public bool IsCollectible;
 }
 
 public struct ShowUIBufferElement : IBufferElementData
@@ -101,6 +98,7 @@ public readonly partial struct MainAspect : IAspect
     public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;
     public readonly DynamicBuffer<SetLabelPosBufferElement> SetLabelPosBuffer;
     public readonly DynamicBuffer<StartScoreAnimationBufferElement> StartScoreAnimationBuffer;
+    public readonly DynamicBuffer<KillAllScoreAnimationBufferElement> KillAllScoreAnimationsBuffer;
     public readonly DynamicBuffer<FadeAnimationBufferElement> FadeAnimationBuffer;
     public readonly DynamicBuffer<ShowUIBufferElement> ShowUIBuffer;
 }

@@ -469,6 +469,8 @@ MonoBehaviour:
   m_scoreLabel: {fileID: 9142101668423424177}
   m_livesLabel: {fileID: 89772869745737779}
   m_messageLabel: {fileID: 4350624610524134011}
+  m_scoreAnimationPrefab: {fileID: 3096224326318731969, guid: a241786e00483fe418812e10d26b1d57,
+    type: 3}
   m_fade: {fileID: 3816927257634189984}
 --- !u!1 &5945328832269077125
 GameObject:

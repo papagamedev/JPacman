@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -11,6 +13,7 @@ public class HudEvents : MonoBehaviour
     public TMP_Text m_scoreLabel;
     public TMP_Text m_livesLabel;
     public TMP_Text m_messageLabel;
+    public GameObject m_scoreAnimationPrefab;
     public Image m_fade;
 
     private class FadeState
@@ -35,11 +38,56 @@ public class HudEvents : MonoBehaviour
             }
             fade.color = new Color(1, 1, 1, currentOpacity);
         }
-
-
     };
 
+    private class ScoreAnimState
+    {
+        const float kWaitTime = 2.0f;
+        const float kAnimSpeed = 1000.0f;
+
+        private RectTransform m_transform;
+        private Vector3 m_startPos;
+        private Vector3 m_targetPos;
+        private float m_time;
+
+        public int Score { get; private set; }
+
+        public bool Ready => (m_targetPos - m_transform.localPosition).magnitude < kAnimSpeed * 0.05f;
+
+        public ScoreAnimState(GameObject gameObject, int score, Vector3 worldPos, Vector3 targetPos)
+        {
+            Score = score;
+            m_transform = gameObject.GetComponent<RectTransform>();
+            m_startPos = WorldToUIPos(worldPos);
+            m_targetPos = targetPos;
+            m_time = 0.0f;
+            m_transform.localPosition = m_startPos;
+            var textComponent = gameObject.GetComponent<TMP_Text>();
+            textComponent.text = score.ToString();
+        }
+
+        public void Update(float deltaTime)
+        {
+            m_time += deltaTime;
+            if (m_time < kWaitTime)
+            {
+                return;
+            }
+
+            var currentPos = m_transform.localPosition;
+            var dir = (m_targetPos - currentPos).normalized;
+            currentPos += dir * deltaTime * kAnimSpeed;
+            m_transform.localPosition = currentPos;
+        }
+
+        public void Kill()
+        {
+            GameObject.Destroy(m_transform.gameObject);
+        }
+    }
+
     private FadeState m_fadeAnimation;
+    private List<ScoreAnimState> m_scoreAnimations;
 
     public enum LabelMessage
     {
@@ -67,20 +115,24 @@ public class HudEvents : MonoBehaviour
         hudSystem.OnSetLivesText += OnSetLivesText;
         hudSystem.OnSetScoreText += OnSetScoreText;
         hudSystem.OnStartScoreAnimation += OnStartScoreAnimation;
+        hudSystem.OnKillAllScoreAnimations += OnKillAllScoreAnimations;
         hudSystem.OnFadeAnimation += OnFadeAnimation;
         hudSystem.OnShowUI += OnShowUI;
 
         Application.targetFrameRate = 60;
+
+        m_scoreAnimations = new List<ScoreAnimState>();
     }
 
     private void Update()
     {
         UpdateFade();
+        UpdateScoreAnimations();
     }
 
     private void OnDisable()
     {
-        KillAllScoreAnimations();
+        OnKillAllScoreAnimations();
 
         if (World.DefaultGameObjectInjectionWorld != null)
         {
@@ -95,24 +147,54 @@ public class HudEvents : MonoBehaviour
         }
     }
 
-    private void OnStartScoreAnimation(int arg1, float3 arg2)
+    private void OnStartScoreAnimation(int score, float3 worldPos)
     {
-        
+        var gameObject = Instantiate(m_scoreAnimationPrefab, m_ingameRoot.transform);
+        m_scoreAnimations.Add(new ScoreAnimState(gameObject, score, worldPos, m_scoreLabel.rectTransform.localPosition));
     }
 
-    private void KillAllScoreAnimations()
+    private void OnKillAllScoreAnimations()
     {
-
+        foreach (var anim in m_scoreAnimations)
+        {
+            anim.Kill();
+        }
+        m_scoreAnimations.Clear();
     }
 
-    private void OnSetScoreText(int obj)
+    private void UpdateScoreAnimations()
     {
-        m_scoreLabel.text = obj.ToString();
+        var scoreToAdd = 0;
+        var animsToKill = new List<ScoreAnimState>();
+        foreach (var anim in m_scoreAnimations)
+        {
+            anim.Update(Time.deltaTime);
+            if (anim.Ready)
+            {
+                scoreToAdd += anim.Score;
+                anim.Kill();
+                animsToKill.Add(anim);
+            }
+        }
+        foreach (var anim in animsToKill)
+        {
+            m_scoreAnimations.Remove(anim);
+        }
+        if (scoreToAdd > 0)
+        {
+            OnSetScoreText(System.Convert.ToInt32(m_scoreLabel.text) + scoreToAdd);
+        }
     }
 
-    private void OnSetLivesText(int obj)
+    private void OnSetScoreText(int score)
     {
-        m_livesLabel.text = obj.ToString();
+        var animScoresTotal = m_scoreAnimations.Select(x => x.Score).Sum();
+        m_scoreLabel.text = (score - animScoresTotal).ToString();
+    }
+
+    private void OnSetLivesText(int value)
+    {
+        m_livesLabel.text = value.ToString();
     }
 
     private void OnSetLabelText(LabelMessage message, int value)
@@ -139,7 +221,7 @@ public class HudEvents : MonoBehaviour
 
     private void OnSetLabelPos(float3 worldPos)
     {
-        m_messageLabel.rectTransform.localPosition = new Vector2(worldPos.x * 16, (worldPos.y - 1) * 16);
+        m_messageLabel.rectTransform.localPosition = WorldToUIPos(worldPos);
     }
 
     private void OnFadeAnimation(bool isFadeIn, float duration)
@@ -169,5 +251,10 @@ public class HudEvents : MonoBehaviour
     {
         m_menuRoot.SetActive(uiType == ShowUIType.Menu);
         m_ingameRoot.SetActive(uiType == ShowUIType.Ingame);
+    }
+
+    private static Vector3 WorldToUIPos(Vector3 worldPos)
+    {
+        return new Vector3(worldPos.x * 16, (worldPos.y - 1) * 16, 0);
     }
 }

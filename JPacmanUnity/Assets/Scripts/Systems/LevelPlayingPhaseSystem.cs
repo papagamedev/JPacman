@@ -54,7 +54,7 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         {
             SoundType = AudioEvents.SoundType.EnemyReturnHome
         });
-        ecb.RemoveComponent<EnemyScaredPhaseTag>(mainEntity);
+        ecb.RemoveComponent<PowerupModeActiveTag>(mainEntity);
         ecb.Playback(state.EntityManager);
     }
 

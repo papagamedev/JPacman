@@ -1,6 +1,4 @@
-using Unity.Collections;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
 
@@ -11,10 +9,8 @@ public struct Game : IComponentData
     public int LevelId;
     public int CollectibleCount;
     public float LiveTime;
-    public bool EnemyScaredBlinking;
+    public int EnemyScore;
 }
-
-public struct EnemyScaredPhaseTag : IComponentData { }
 
 public struct LevelStartPhaseTag : IComponentData { }
 
@@ -30,11 +26,21 @@ public struct LevelResetLivePhaseTag : IComponentData { }
 
 public struct LevelGameOverPhaseTag : IComponentData { }
 
+
+public struct AddScoreBufferElement : IBufferElementData
+{
+    public float3 WorldPos;
+    public int Score;
+    public bool ScoreAnimation;
+    public bool IsCollectible;
+}
+
 public readonly partial struct GameAspect : IAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<Main> m_main;
     private readonly RefRW<Game> m_game;
+    private readonly RefRW<PowerupMode> m_powerupMode;
     private readonly DynamicBuffer<AddScoreBufferElement> m_addScoreBuffer;
 
     public void ApplyAddScore(Entity mainEntity, EntityCommandBuffer ecb)
@@ -46,9 +52,16 @@ public readonly partial struct GameAspect : IAspect
 
             if (score.ScoreAnimation)
             {
-                // send score animation event!
+                ecb.AppendToBuffer(mainEntity, new StartScoreAnimationBufferElement()
+                {
+                    Score = score.Score,
+                    WorldPos = score.WorldPos
+                });
             }
-            scoreAdded = true;
+            else 
+            {
+                scoreAdded = true;
+            }
 
             if (score.IsCollectible)
             {
@@ -58,15 +71,15 @@ public readonly partial struct GameAspect : IAspect
 
         if (scoreAdded)
         {
-            var element = new SetScoreTextBufferElement()
+            ecb.AppendToBuffer(mainEntity, new SetScoreTextBufferElement()
             {
                 Value = m_game.ValueRO.Score
-            };
-            ecb.AppendToBuffer(mainEntity, element);
+            });
         }
 
         m_addScoreBuffer.Clear();
     }
+
 
     public bool IsLevelCompleted() => m_game.ValueRO.CollectibleCount <= 0;
 
@@ -76,8 +89,7 @@ public readonly partial struct GameAspect : IAspect
     public int Lives => m_game.ValueRO.Lives;
     public float LiveTime => m_game.ValueRO.LiveTime;
     public uint RandomSeed => m_main.ValueRW.RandomSeed++;
-    public void SetEnemyScaredBlinking(bool blinking) => m_game.ValueRW.EnemyScaredBlinking = blinking;
-    public bool IsEnemyScaredBlinking => m_game.ValueRO.EnemyScaredBlinking;
+    public int EnemyScore => m_game.ValueRO.EnemyScore;
 
     public void InitLive(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
     {
@@ -128,7 +140,12 @@ public readonly partial struct GameAspect : IAspect
 
     public void CreateLevel(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
     {
-        var collectibleCount = 0;
+        m_powerupMode.ValueRW.EnemyScaredTime = LevelData.EnemyScaredTime;
+        m_powerupMode.ValueRW.DefaultEnemyScore = LevelData.EnemyScore;
+        m_powerupMode.ValueRW.BonusLevel = LevelData.BonusLevel;
+        m_powerupMode.ValueRW.EnemyScaredCount = 0;
+
+        m_game.ValueRW.CollectibleCount = 0;
         ref var mapData = ref GetCurrentMapData();
         bool isBonusLevel = LevelData.BonusLevel;
         for (var y = 0; y < mapData.Height; y++)
@@ -137,7 +154,7 @@ public readonly partial struct GameAspect : IAspect
             {
                 if (!isBonusLevel && mapData.IsDot(x, y))
                 {
-                    CreateDot(ecb, ref collectibleCount, ref mapData, x, y);
+                    CreateDot(ecb, ref mapData, x, y);
                 }
                 else if (mapData.IsWall(x, y))
                 {
@@ -145,7 +162,6 @@ public readonly partial struct GameAspect : IAspect
                 }
             }
         }
-        m_game.ValueRW.CollectibleCount = collectibleCount;
 
         var labelWorldPos = mapData.MapToWorldPos(mapData.LabelMessagePos);
         ecb.AppendToBuffer(mainEntity, new SetLabelPosBufferElement()
@@ -219,7 +235,7 @@ public readonly partial struct GameAspect : IAspect
 
     }
 
-    private void CreateDot(EntityCommandBuffer ecb, ref int collectibleCount, ref MapConfigData mapData, int x, int y)
+    private void CreateDot(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
     {
         var dot = ecb.Instantiate(m_main.ValueRO.DotPrefab);
         ecb.SetComponent(dot,
@@ -229,7 +245,7 @@ public readonly partial struct GameAspect : IAspect
                 Scale = 1.0f,
                 Rotation = quaternion.identity
             });
-        collectibleCount++;
+        m_game.ValueRW.CollectibleCount++;
     }
 
     private void CreateEnemyHorizontalHome(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y, uint randSeed)
@@ -287,6 +303,7 @@ public readonly partial struct GameAspect : IAspect
                     Scale = 1.0f,
                     Rotation = quaternion.identity,
                 });
+            m_game.ValueRW.CollectibleCount++;
         }
     }
 }

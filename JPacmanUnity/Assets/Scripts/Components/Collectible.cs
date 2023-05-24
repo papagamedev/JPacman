@@ -30,24 +30,25 @@ public readonly partial struct CollectibleAspect : IAspect
 
         ecb.DestroyEntity(sortKey, Entity);
 
-        var scoreBufferElement = new AddScoreBufferElement()
+        ecb.AppendToBuffer(sortKey, main, new AddScoreBufferElement()
         {
-            MapPos = collectibleMapPos,
+            WorldPos = collectibleWorldPos,
             Score = m_collectible.ValueRO.Score,
             ScoreAnimation = m_collectible.ValueRO.ScoreAnimation,
             IsCollectible = true
-        };
-        ecb.AppendToBuffer(sortKey, main, scoreBufferElement);
+        });
 
-        var soundEventBufferElement = new SoundEventBufferElement()
+        ecb.AppendToBuffer(sortKey, main, new SoundEventBufferElement()
         {
             SoundType = m_collectible.ValueRO.SoundType
-        };
-        ecb.AppendToBuffer(sortKey, main, soundEventBufferElement);
+        });
 
         if (m_collectible.ValueRO.IsPowerup)
         {
-            ecb.AddComponent(sortKey, main, new EnemyScaredPhaseTag());
+            ecb.AppendToBuffer(sortKey, main, new PowerupCollectedBufferElement()
+            {
+                CollectedPos = collectibleMapPos
+            });
         }
     }
 }

@@ -33,6 +33,7 @@ MonoBehaviour:
     EnemySpeed: 6
     EnemyInHomeTime: 7
     EnemyScaredTime: 13
+    EnemyScore: 200
     EnemyCI: 0
     FruitScore: 500
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
@@ -46,6 +47,7 @@ MonoBehaviour:
     EnemySpeed: 6
     EnemyInHomeTime: 7
     EnemyScaredTime: 12
+    EnemyScore: 200
     EnemyCI: 1
     FruitScore: 1000
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
@@ -59,6 +61,7 @@ MonoBehaviour:
     EnemySpeed: 6
     EnemyInHomeTime: 7
     EnemyScaredTime: 11
+    EnemyScore: 200
     EnemyCI: 2
     FruitScore: 1500
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
@@ -72,6 +75,7 @@ MonoBehaviour:
     EnemySpeed: 6
     EnemyInHomeTime: 7
     EnemyScaredTime: 10
+    EnemyScore: 200
     EnemyCI: 3
     FruitScore: 5000
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
@@ -85,6 +89,7 @@ MonoBehaviour:
     EnemySpeed: 8
     EnemyInHomeTime: 7
     EnemyScaredTime: 9
+    EnemyScore: 200
     EnemyCI: 4
     FruitScore: 2000
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
@@ -98,6 +103,7 @@ MonoBehaviour:
     EnemySpeed: 8
     EnemyInHomeTime: 7
     EnemyScaredTime: 8
+    EnemyScore: 200
     EnemyCI: 5
     FruitScore: 2500
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
@@ -111,6 +117,7 @@ MonoBehaviour:
     EnemySpeed: 8
     EnemyInHomeTime: 7
     EnemyScaredTime: 0
+    EnemyScore: 200
     EnemyCI: 6
     FruitScore: 5000
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
@@ -124,6 +131,7 @@ MonoBehaviour:
     EnemySpeed: 8
     EnemyInHomeTime: 7
     EnemyScaredTime: 6
+    EnemyScore: 200
     EnemyCI: 7
     FruitScore: 5000
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}

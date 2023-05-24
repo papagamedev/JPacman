@@ -37,9 +37,12 @@ public class MainAuthoring : MonoBehaviour
             AddBuffer<SetLabelTextBufferElement>(entity);
             AddBuffer<SetLabelPosBufferElement>(entity);
             AddBuffer<StartScoreAnimationBufferElement>(entity);
+            AddBuffer<KillAllScoreAnimationBufferElement>(entity);
             AddBuffer<FadeAnimationBufferElement>(entity);
-            AddBuffer<AddScoreBufferElement>(entity);
             AddBuffer<ShowUIBufferElement>(entity);
+            AddBuffer<AddScoreBufferElement>(entity);
+            AddBuffer<PowerupCollectedBufferElement>(entity);
+            AddBuffer<EnemyEatenBufferElement>(entity);
         }
 
         private BlobAssetReference<LevelsConfigData> CreateLevelsConfigBlob(MainAuthoring authoring, List<MapConfig> maps)
@@ -62,6 +65,7 @@ public class MainAuthoring : MonoBehaviour
                 arrayBuilder[i].EnemySpeed = levelsConfig[i].EnemySpeed;
                 arrayBuilder[i].EnemyInHomeTime = levelsConfig[i].EnemyInHomeTime;
                 arrayBuilder[i].EnemyScaredTime = levelsConfig[i].EnemyScaredTime;
+                arrayBuilder[i].EnemyScore = levelsConfig[i].EnemyScore;
                 arrayBuilder[i].EnemyCI = levelsConfig[i].EnemyCI;
                 arrayBuilder[i].FruitScore = levelsConfig[i].FruitScore;
 

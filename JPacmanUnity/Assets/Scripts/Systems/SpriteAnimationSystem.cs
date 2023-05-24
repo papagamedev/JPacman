@@ -47,8 +47,8 @@ public partial class SpriteAnimationSystem : SystemBase
         }).WithoutBurst().Run();
 
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
-        var enemyScaredBlinking = gameAspect.IsEnemyScaredBlinking;
+        var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
+        var enemyScaredBlinking = powerupModeAspect.IsEnemyScaredBlinking;
 
         Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in EnemyScaredTag enemy) =>
         {

@@ -16,6 +16,7 @@ public class GameConfig : ScriptableObject
         public float EnemySpeed;
         public float EnemyInHomeTime;
         public float EnemyScaredTime;
+        public int EnemyScore;
         public int EnemyCI;
         public int FruitScore;
         public MapConfig MapConfig;

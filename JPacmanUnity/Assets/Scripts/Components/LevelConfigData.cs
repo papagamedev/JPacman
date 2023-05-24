@@ -10,6 +10,7 @@ public struct LevelConfigData
     public float EnemySpeed;
     public float EnemyInHomeTime;
     public float EnemyScaredTime;
+    public int EnemyScore;
     public int EnemyCI;
     public int FruitScore;
     public int MapId;
