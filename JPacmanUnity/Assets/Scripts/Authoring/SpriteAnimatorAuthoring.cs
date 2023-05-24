@@ -17,18 +17,21 @@ public class SpriteAnimatorAuthoring : MonoBehaviour
             {
                 AnimationFrames = authoring.AnimationFrames
             });
-            AddComponent(entity, new SpriteAnimator()
+            if (authoring.AnimationLength > 0)
             {
-                StartTime = 0,
-                Frame = 0,
-                FramesCount = authoring.AnimationFrames.Length,
-                StartFrame = 0,
-                LastFrame = authoring.AnimationFrames.Length - 1,
-                AnimationLength = authoring.AnimationLength,
-                WrapMode = authoring.WrapMode,
-                Backwards = false,
-                Running = authoring.StartPlaying
-            });
+                AddComponent(entity, new SpriteAnimator()
+                {
+                    StartTime = 0,
+                    Frame = 0,
+                    FramesCount = authoring.AnimationFrames.Length,
+                    StartFrame = 0,
+                    LastFrame = authoring.AnimationFrames.Length - 1,
+                    AnimationLength = authoring.AnimationLength,
+                    WrapMode = authoring.WrapMode,
+                    Backwards = false,
+                    Running = authoring.StartPlaying
+                });
+            }
         }
     }
 }

@@ -68,7 +68,7 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
     private readonly RefRO<EnemyFollowPlayerTag> m_enemyFollowPLayer;
     private readonly RefRO<CollisionCircle> m_collision;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, int enemyCI, float enemySpeed, bool isBonus, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int enemyCI, float enemySpeed, float enemySpeedInTunnel, bool isBonus, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var enemyWorldPos = m_transform.ValueRO.Position;
@@ -99,6 +99,7 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
 
         // set normal speed in this state
         m_movable.ValueRW.Speed = enemySpeed;
+        m_movable.ValueRW.SpeedInTunnel = enemySpeedInTunnel;
 
         // "think" on following player
         var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
@@ -119,7 +120,7 @@ public readonly partial struct EnemyScaredAspect : IAspect
     private readonly RefRO<EnemyScaredTag> m_enemyScared;
     private readonly RefRO<CollisionCircle> m_collision;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, float enemySpeedScared, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var enemyWorldPos = m_transform.ValueRO.Position;
@@ -141,7 +142,8 @@ public readonly partial struct EnemyScaredAspect : IAspect
             return;
         }
 
-        m_movable.ValueRW.Speed = 4.0f;
+        m_movable.ValueRW.Speed = enemySpeedScared;
+        m_movable.ValueRW.SpeedInTunnel = enemySpeedScared;
 
         var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
         var currentDir = m_movable.ValueRO.CurrentDir;
@@ -160,11 +162,11 @@ public readonly partial struct EnemyHomeScaredAspect : IAspect
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<EnemyHomeScaredTag> m_enemyScared;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float enemySpeedScared, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
 
-        m_movable.ValueRW.Speed = 4.0f;
+        m_movable.ValueRW.Speed = enemySpeedScared;
 
         var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
         if (nextAvailableDirs.Count == 1)
@@ -181,7 +183,7 @@ public readonly partial struct EnemyReturnHomeAspect : IAspect
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<EnemyReturnHomeTag> m_enemyScared;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float enemySpeedRerturnHome, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var currentDir = m_movable.ValueRO.CurrentDir;
@@ -207,7 +209,8 @@ public readonly partial struct EnemyReturnHomeAspect : IAspect
             return;
         }
 
-        m_movable.ValueRW.Speed = 16.0f;
+        m_movable.ValueRW.Speed = enemySpeedRerturnHome;
+        m_movable.ValueRW.SpeedInTunnel = enemySpeedRerturnHome;
 
         var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
         if (nextAvailableDirs.Count > 2 || !nextAvailableDirs.Check(currentDir))

@@ -40,6 +40,7 @@ public partial struct EnemySystem : ISystem
             PlayerCollisionRadius = playerCollisionRadius,
             EnemyCI = gameAspect.LevelData.EnemyCI,
             EnemySpeed = gameAspect.LevelData.EnemySpeed,
+            EnemySpeedInTunnel = gameAspect.LevelData.EnemySpeedInTunnel,
             IsBonus = gameAspect.LevelData.BonusLevel,
             MainEntity = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
@@ -51,6 +52,7 @@ public partial struct EnemySystem : ISystem
             MapId = map.Id,
             PlayerMapPos = playerMapPos,
             PlayerCollisionRadius = playerCollisionRadius,
+            EnemySpeedScared = gameAspect.LevelData.EnemySpeedScared,
             Main = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
@@ -59,7 +61,7 @@ public partial struct EnemySystem : ISystem
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
             MapId = map.Id,
-            Main = mainEntity,
+            EnemySpeedScared = gameAspect.LevelData.EnemySpeedScared,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
         new EnemyHomeJob
@@ -77,6 +79,7 @@ public partial struct EnemySystem : ISystem
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
             MapId = map.Id,
+            EnemySpeedReturnHome = gameAspect.LevelData.EnemySpeedReturnHome,
             Main = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
@@ -114,13 +117,14 @@ public partial struct EnemyFollowPlayerJob : IJobEntity
     public float PlayerCollisionRadius;
     public int EnemyCI;
     public float EnemySpeed;
+    public float EnemySpeedInTunnel;
     public bool IsBonus;
     public Entity MainEntity;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(EnemyFollowPlayerAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, sortKey, EnemyCI, EnemySpeed, IsBonus, MainEntity, ECB);
+        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, EnemyCI, EnemySpeed, EnemySpeedInTunnel, IsBonus, sortKey, MainEntity, ECB);
     }
 }
 
@@ -131,12 +135,13 @@ public partial struct EnemyScaredJob : IJobEntity
     public int MapId;
     public float2 PlayerMapPos;
     public float PlayerCollisionRadius;
+    public float EnemySpeedScared;
     public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(EnemyScaredAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, sortKey, Main, ECB);
+        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, EnemySpeedScared, sortKey, Main, ECB);
     }
 }
 
@@ -146,12 +151,12 @@ public partial struct EnemyHomeScaredJob : IJobEntity
     public float DeltaTime;
     public BlobAssetReference<MapsConfigData> BlobMapsRef;
     public int MapId;
-    public Entity Main;
+    public float EnemySpeedScared;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(EnemyHomeScaredAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, sortKey, Main, ECB);
+        enemy.Update(BlobMapsRef, MapId, EnemySpeedScared, ECB);
     }
 }
 
@@ -160,11 +165,12 @@ public partial struct EnemyReturnHomeJob : IJobEntity
     public float DeltaTime;
     public BlobAssetReference<MapsConfigData> BlobMapsRef;
     public int MapId;
+    public float EnemySpeedReturnHome;
     public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(EnemyReturnHomeAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, sortKey, Main, ECB);
+        enemy.Update(BlobMapsRef, MapId, EnemySpeedReturnHome, sortKey, Main, ECB);
     }
 }

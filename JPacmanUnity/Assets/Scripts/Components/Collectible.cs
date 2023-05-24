@@ -4,10 +4,17 @@ using Unity.Transforms;
 
 public struct Collectible : IComponentData
 {
+    public enum EType
+    {
+        Dot,
+        Powerup,
+        Fruit
+    };
+
     public int Score;
     public bool ScoreAnimation;
     public AudioEvents.SoundType SoundType;
-    public bool IsPowerup;
+    public EType Type;
 }
 
 public readonly partial struct CollectibleAspect : IAspect
@@ -17,7 +24,7 @@ public readonly partial struct CollectibleAspect : IAspect
     private readonly RefRO<Collectible> m_collectible;
     private readonly RefRO<CollisionCircle> m_collision;
 
-    public void CheckPlayer(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
+    public void CheckPlayer(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int fruitScore, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var collectibleWorldPos = m_transform.ValueRO.Position;
@@ -30,12 +37,29 @@ public readonly partial struct CollectibleAspect : IAspect
 
         ecb.DestroyEntity(sortKey, Entity);
 
+        var score = m_collectible.ValueRO.Score;
+        var registerAsCollectible = true;
+
+        switch (m_collectible.ValueRO.Type)
+        {
+            case Collectible.EType.Powerup:
+                ecb.AppendToBuffer(sortKey, main, new PowerupCollectedBufferElement()
+                {
+                    CollectedPos = collectibleMapPos
+                });
+                break;
+            case Collectible.EType.Fruit:
+                score = fruitScore;
+                registerAsCollectible = false;
+                break;
+        }
+
         ecb.AppendToBuffer(sortKey, main, new AddScoreBufferElement()
         {
             WorldPos = collectibleWorldPos,
-            Score = m_collectible.ValueRO.Score,
+            Score = score,
             ScoreAnimation = m_collectible.ValueRO.ScoreAnimation,
-            IsCollectible = true
+            IsCollectible = registerAsCollectible
         });
 
         ecb.AppendToBuffer(sortKey, main, new SoundEventBufferElement()
@@ -43,12 +67,5 @@ public readonly partial struct CollectibleAspect : IAspect
             SoundType = m_collectible.ValueRO.SoundType
         });
 
-        if (m_collectible.ValueRO.IsPowerup)
-        {
-            ecb.AppendToBuffer(sortKey, main, new PowerupCollectedBufferElement()
-            {
-                CollectedPos = collectibleMapPos
-            });
-        }
     }
 }

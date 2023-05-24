@@ -9,6 +9,7 @@ public partial class HudSystem : SystemBase
     public Action<HudEvents.LabelMessage, int> OnSetLabelText;
     public Action<float3> OnSetLabelPos; 
     public Action<int> OnSetLivesText;
+    public Action<int> OnSetLevelIcon;
     public Action<bool, int, int, float3> OnSetScoreText;
     public Action OnKillAllScoreAnimations;
     public Action<bool, float> OnFadeAnimation;
@@ -70,6 +71,15 @@ public partial class HudSystem : SystemBase
             foreach (var element in mainAspect.SetLabelPosBuffer)
             {
                 OnSetLabelPos(element.Value);
+            }
+        }
+        mainAspect.SetLabelPosBuffer.Clear();
+
+        if (OnSetLevelIcon != null)
+        {
+            foreach (var element in mainAspect.SetLevelIconBuffer)
+            {
+                OnSetLevelIcon(element.IconIdx);
             }
         }
         mainAspect.SetLabelPosBuffer.Clear();

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4000011641599626}
   - component: {fileID: 212000010169166392}
   - component: {fileID: -5838190375416780258}
+  - component: {fileID: 5847463652335190278}
   m_Layer: 0
   m_Name: Fruit
   m_TagString: Untagged
@@ -98,7 +99,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Score: 500
-  ScoreAnimation: 0
-  SoundType: 1
+  ScoreAnimation: 1
+  SoundType: 2
   CollisionRadius: 0
-  IsPowerup: 0
+  Type: 2
+--- !u!114 &5847463652335190278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010539885376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88281dfc9ccbcfe44819baabcf16bf98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationFrames:
+  - {fileID: -366697972, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: -1219100667, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: 2133994583, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: 1261026469, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: -1678515792, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: -727415319, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: 1758381076, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: -1223855546, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: 767832264, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: -1472219113, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: -472860567, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  - {fileID: -303340516, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  AnimationLength: 0
+  WrapMode: 0
+  StartPlaying: 0

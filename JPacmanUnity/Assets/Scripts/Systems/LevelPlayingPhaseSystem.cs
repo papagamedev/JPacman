@@ -19,7 +19,6 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
-        gameAspect.StartLive();
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
         {
@@ -34,8 +33,9 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
-        gameAspect.UpdateLive(SystemAPI.Time.DeltaTime);
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+        gameAspect.UpdatePlayingTime(SystemAPI.Time.DeltaTime);
+        gameAspect.CheckSpawnFruit(mainEntity, ecb);
 
         if (gameAspect.IsLevelCompleted() || Input.GetKeyDown(KeyCode.W))
         {

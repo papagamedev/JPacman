@@ -5,18 +5,6 @@ using Unity.Transforms;
 
 public struct Movable : IComponentData
 {
-
-
-    static FixedList32Bytes<int> m_dirX = new FixedList32Bytes<int>()
-    {
-        1, -1, 0, 0
-    };
-
-    static FixedList32Bytes<int> m_dirY = new FixedList32Bytes<int>()
-    {
-        0, 0, 1, -1
-    };
-
     static FixedList64Bytes<float2> m_dirVector = new FixedList64Bytes<float2>()
     {
         new float2(1, 0),
@@ -97,6 +85,7 @@ public struct Movable : IComponentData
     }
 
     public float Speed;
+    public float SpeedInTunnel;
     public bool AllowChangeDirInMidCell;
     public Direction CurrentDir;
     public Direction DesiredDir;
@@ -106,9 +95,8 @@ public struct Movable : IComponentData
     public float2 LastCellEdgeMapPos;
     public bool Init;
     public Random Rand;
+    public bool IsInTunnel;
 
-    public int GetDirX(Direction dir) => m_dirX[(int)dir];
-    public int GetDirY(Direction dir) => m_dirY[(int)dir];
     public float2 GetDirVector(Direction dir) => m_dirVector[(int)dir];
 }
 
@@ -136,6 +124,20 @@ public readonly partial struct MovableAspect : IAspect
             m_movable.ValueRW.LastCellEdgeMapPos = math.round(mapPos);
         }
 
+        // check tunnel teleport
+        if (atCellEdge)
+        {
+            if (map.IsTunnelEntrance(m_movable.ValueRO.LastCellEdgeMapPos))
+            {
+                m_movable.ValueRW.IsInTunnel = !m_movable.ValueRW.IsInTunnel;
+            }
+            else if (map.IsTunnel(m_movable.ValueRO.LastCellEdgeMapPos, out var tunnelIdx))
+            {
+                mapPos = map.TunnelPos[MapConfigData.OppositeTunnelIdx(tunnelIdx)];
+                m_movable.ValueRW.LastCellEdgeMapPos = mapPos;
+            }
+        }
+
         if (m_movable.ValueRO.AllowChangeDirInMidCell || atCellEdge)
         {
             var dirChanged = CheckDirectionChange(ref map, mapPos, atCellEdge);
@@ -158,7 +160,7 @@ public readonly partial struct MovableAspect : IAspect
         // check how far are we moving, and if we are going to cross a cell boundary;
         // in that case, we adjust the deltaTime to move just that amount and reevaluate the movement at that time
 
-        var speed = m_movable.ValueRO.Speed;
+        var speed = m_movable.ValueRO.IsInTunnel ? m_movable.ValueRO.SpeedInTunnel : m_movable.ValueRO.Speed;
         var moveDistance = speed * deltaTime;
         if (!atCellEdge)
         {

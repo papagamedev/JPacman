@@ -7,7 +7,7 @@ public class CollectibleAuthoring : MonoBehaviour
     public bool ScoreAnimation;
     public AudioEvents.SoundType SoundType;
     public float CollisionRadius;
-    public bool IsPowerup;
+    public Collectible.EType Type;
 
     public class Baker : Baker<CollectibleAuthoring>
     {
@@ -19,7 +19,7 @@ public class CollectibleAuthoring : MonoBehaviour
                 Score = authoring.Score,
                 ScoreAnimation = authoring.ScoreAnimation,
                 SoundType = authoring.SoundType,
-                IsPowerup = authoring.IsPowerup
+                Type = authoring.Type
             });
             AddComponent(entity, new CollisionCircle()
             {

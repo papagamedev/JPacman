@@ -13,6 +13,7 @@ public class HudEvents : MonoBehaviour
     public TMP_Text m_scoreLabel;
     public TMP_Text m_livesLabel;
     public TMP_Text m_messageLabel;
+    public GameObject m_levelIconsRoot;
     public GameObject m_scoreAnimationPrefab;
     public Image m_fade;
 
@@ -114,6 +115,7 @@ public class HudEvents : MonoBehaviour
         hudSystem.OnSetLabelText += OnSetLabelText;
         hudSystem.OnSetLabelPos += OnSetLabelPos;
         hudSystem.OnSetLivesText += OnSetLivesText;
+        hudSystem.OnSetLevelIcon += OnSetLevelIcon;
         hudSystem.OnSetScoreText += OnSetScoreText;
         hudSystem.OnKillAllScoreAnimations += OnKillAllScoreAnimations;
         hudSystem.OnFadeAnimation += OnFadeAnimation;
@@ -140,6 +142,7 @@ public class HudEvents : MonoBehaviour
             hudSystem.OnSetLabelText -= OnSetLabelText;
             hudSystem.OnSetLabelPos -= OnSetLabelPos;
             hudSystem.OnSetLivesText -= OnSetLivesText;
+            hudSystem.OnSetLevelIcon -= OnSetLevelIcon;
             hudSystem.OnSetScoreText -= OnSetScoreText;
             hudSystem.OnFadeAnimation -= OnFadeAnimation;
             hudSystem.OnShowUI += OnShowUI;
@@ -230,6 +233,16 @@ public class HudEvents : MonoBehaviour
     private void OnSetLabelPos(float3 worldPos)
     {
         m_messageLabel.rectTransform.localPosition = WorldToUIPos(worldPos);
+    }
+
+    private void OnSetLevelIcon(int iconIdx)
+    {
+        var transform = m_levelIconsRoot.transform;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var child = transform.GetChild(i);
+            child.gameObject.SetActive(i <= iconIdx);
+        }
     }
 
     private void OnFadeAnimation(bool isFadeIn, float duration)

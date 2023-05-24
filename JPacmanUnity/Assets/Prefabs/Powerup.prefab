@@ -102,7 +102,7 @@ MonoBehaviour:
   ScoreAnimation: 0
   SoundType: 1
   CollisionRadius: 0
-  IsPowerup: 1
+  Type: 1
 --- !u!114 &3727351250070492963
 MonoBehaviour:
   m_ObjectHideFlags: 0

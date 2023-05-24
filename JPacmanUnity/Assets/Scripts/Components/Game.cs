@@ -1,6 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using static MapConfig;
 
 public struct Game : IComponentData
 {
@@ -9,6 +10,8 @@ public struct Game : IComponentData
     public int LevelId;
     public int CollectibleCount;
     public float LiveTime;
+    public float LevelTime;
+    public bool FruitSpawned;
     public int EnemyScore;
 }
 
@@ -106,6 +109,8 @@ public readonly partial struct GameAspect : IAspect
 
     public void InitLive(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
     {
+        m_game.ValueRW.LiveTime = 0;
+
         ref var mapData = ref GetCurrentMapData();
         int homeX = (int)mapData.EnemyHousePos.x;
         int homeY = (int)mapData.EnemyHousePos.y;
@@ -120,17 +125,45 @@ public readonly partial struct GameAspect : IAspect
         CreatePlayer(ecb, ref mapData, randSeed++);
     }
 
-    public void StartLive()
+    public void UpdatePlayingTime(float deltaTime)
     {
-        m_game.ValueRW.LiveTime = 0;
+        m_game.ValueRW.LiveTime += deltaTime;
+        m_game.ValueRW.LevelTime += deltaTime;
     }
-
-    public void UpdateLive(float deltaTime) => m_game.ValueRW.LiveTime += deltaTime;
 
     public int RemoveLive()
     {
         m_game.ValueRW.Lives--;
         return m_game.ValueRO.Lives;
+    }
+
+    public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        if (m_game.ValueRO.FruitSpawned || m_game.ValueRO.LevelTime < LevelData.FruitWaitTime)
+        {
+            return;
+        }
+        m_game.ValueRW.FruitSpawned = true;
+
+        ref var mapData = ref GetCurrentMapData();
+        var fruit = ecb.Instantiate(m_main.ValueRO.FruitPrefab);
+        ecb.SetComponent(fruit,
+            new LocalTransform()
+            {
+                Position = mapData.MapToWorldPos(mapData.FruitPos),
+                Scale = 1.0f,
+                Rotation = quaternion.identity
+            });
+        ecb.AddComponent(fruit,
+            new Fruit()
+            {
+                Duration = LevelData.FruitDuration
+            });
+        ecb.AddComponent(fruit,
+            new SpriteSetFrame()
+            {
+                Frame = LevelData.FruitSpriteIdx
+            });
     }
 
     public void SetNextLevel()
@@ -153,7 +186,10 @@ public readonly partial struct GameAspect : IAspect
 
     public void CreateLevel(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
     {
+        m_game.ValueRW.LevelTime = 0;
+        m_game.ValueRW.FruitSpawned = false;
         m_game.ValueRW.CollectibleCount = 0;
+
         ref var mapData = ref GetCurrentMapData();
         bool isBonusLevel = LevelData.BonusLevel;
         for (var y = 0; y < mapData.Height; y++)
@@ -176,6 +212,10 @@ public readonly partial struct GameAspect : IAspect
         {
             Value = labelWorldPos
         });
+        ecb.AppendToBuffer(mainEntity, new SetLevelIconBufferElement()
+        {
+            IconIdx = LevelData.Idx
+        });
 
         CreatePowerups(ecb, ref mapData);
 
@@ -196,6 +236,7 @@ public readonly partial struct GameAspect : IAspect
                 new Movable()
                 {
                     Speed = LevelData.PlayerSpeed,
+                    SpeedInTunnel = LevelData.PlayerSpeed,
                     AllowChangeDirInMidCell = true,
                     Rand = new Random(randSeed)
                 });
@@ -239,8 +280,6 @@ public readonly partial struct GameAspect : IAspect
             {
                 Frame = frame
             });
-        ecb.RemoveComponent<SpriteAnimator>(wall);
-
     }
 
     private void CreateDot(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
@@ -286,6 +325,7 @@ public readonly partial struct GameAspect : IAspect
             new Movable()
             {
                 Speed = LevelData.EnemySpeed,
+                SpeedInTunnel = LevelData.EnemySpeedInTunnel,
                 AllowChangeDirInMidCell = false,
                 CurrentDir = direction,
                 DesiredDir = Movable.Direction.None,

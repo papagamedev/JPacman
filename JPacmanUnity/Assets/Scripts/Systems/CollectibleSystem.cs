@@ -38,6 +38,7 @@ public partial struct CollectibleSystem : ISystem
             MapId = map.Id,
             PlayerMapPos = playerMapPos,
             PlayerCollisionRadius = playerCollisionRadius,
+            FruitScore = gameAspect.LevelData.FruitScore,
             Main = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
@@ -57,12 +58,13 @@ public partial struct CollectJob : IJobEntity
     public int MapId;
     public float2 PlayerMapPos;
     public float PlayerCollisionRadius;
+    public int FruitScore;
     public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(CollectibleAspect collectible, [EntityIndexInQuery] int sortKey)
     {
-        collectible.CheckPlayer(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, sortKey, Main, ECB);
+        collectible.CheckPlayer(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, FruitScore, sortKey, Main, ECB);
     }
 }
 

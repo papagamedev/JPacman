@@ -31,12 +31,18 @@ MonoBehaviour:
     MovePowerups: 0
     PlayerSpeed: 8
     EnemySpeed: 6
+    EnemySpeedInTunnel: 4
+    EnemySpeedScared: 4
+    EnemySpeedReturnHome: 16
     EnemyInHomeTime: 7
     EnemyScaredTime: 13
     EnemyScore: 200
     EnemyCI: 0
     FruitScore: 500
-    MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+    FruitSpriteIdx: 0
+    FruitWaitTime: 60
+    FruitDuration: 20
+    MapConfig: {fileID: 11400000, guid: 26d0008ff471acf4581dcdda2ee98986, type: 2}
   - RoundNumber: 1
     LevelNumber: 2
     BonusLevel: 0
@@ -45,11 +51,17 @@ MonoBehaviour:
     MovePowerups: 0
     PlayerSpeed: 8
     EnemySpeed: 6
+    EnemySpeedInTunnel: 4
+    EnemySpeedScared: 4
+    EnemySpeedReturnHome: 16
     EnemyInHomeTime: 7
     EnemyScaredTime: 12
     EnemyScore: 200
     EnemyCI: 1
     FruitScore: 1000
+    FruitSpriteIdx: 1
+    FruitWaitTime: 60
+    FruitDuration: 20
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
   - RoundNumber: 1
     LevelNumber: 3
@@ -59,11 +71,17 @@ MonoBehaviour:
     MovePowerups: 0
     PlayerSpeed: 8
     EnemySpeed: 6
+    EnemySpeedInTunnel: 4
+    EnemySpeedScared: 4
+    EnemySpeedReturnHome: 16
     EnemyInHomeTime: 7
     EnemyScaredTime: 11
     EnemyScore: 200
     EnemyCI: 2
     FruitScore: 1500
+    FruitSpriteIdx: 2
+    FruitWaitTime: 60
+    FruitDuration: 20
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
   - RoundNumber: 1
     LevelNumber: 0
@@ -73,11 +91,17 @@ MonoBehaviour:
     MovePowerups: 0
     PlayerSpeed: 8
     EnemySpeed: 6
+    EnemySpeedInTunnel: 4
+    EnemySpeedScared: 4
+    EnemySpeedReturnHome: 16
     EnemyInHomeTime: 7
     EnemyScaredTime: 10
     EnemyScore: 200
     EnemyCI: 3
     FruitScore: 5000
+    FruitSpriteIdx: 11
+    FruitWaitTime: 5
+    FruitDuration: 75
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
   - RoundNumber: 1
     LevelNumber: 4
@@ -87,11 +111,17 @@ MonoBehaviour:
     MovePowerups: 0
     PlayerSpeed: 8
     EnemySpeed: 8
+    EnemySpeedInTunnel: 4
+    EnemySpeedScared: 4
+    EnemySpeedReturnHome: 16
     EnemyInHomeTime: 7
     EnemyScaredTime: 9
     EnemyScore: 200
     EnemyCI: 4
     FruitScore: 2000
+    FruitSpriteIdx: 3
+    FruitWaitTime: 60
+    FruitDuration: 20
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
   - RoundNumber: 1
     LevelNumber: 5
@@ -101,11 +131,17 @@ MonoBehaviour:
     MovePowerups: 0
     PlayerSpeed: 8
     EnemySpeed: 8
+    EnemySpeedInTunnel: 4
+    EnemySpeedScared: 4
+    EnemySpeedReturnHome: 16
     EnemyInHomeTime: 7
     EnemyScaredTime: 8
     EnemyScore: 200
     EnemyCI: 5
     FruitScore: 2500
+    FruitSpriteIdx: 4
+    FruitWaitTime: 60
+    FruitDuration: 20
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
   - RoundNumber: 1
     LevelNumber: 6
@@ -115,11 +151,17 @@ MonoBehaviour:
     MovePowerups: 0
     PlayerSpeed: 8
     EnemySpeed: 8
+    EnemySpeedInTunnel: 4
+    EnemySpeedScared: 4
+    EnemySpeedReturnHome: 16
     EnemyInHomeTime: 7
     EnemyScaredTime: 0
     EnemyScore: 200
     EnemyCI: 6
     FruitScore: 5000
+    FruitSpriteIdx: 10
+    FruitWaitTime: 60
+    FruitDuration: 20
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
   - RoundNumber: 1
     LevelNumber: 0
@@ -129,9 +171,15 @@ MonoBehaviour:
     MovePowerups: 0
     PlayerSpeed: 8
     EnemySpeed: 8
+    EnemySpeedInTunnel: 4
+    EnemySpeedScared: 4
+    EnemySpeedReturnHome: 16
     EnemyInHomeTime: 7
     EnemyScaredTime: 6
     EnemyScore: 200
     EnemyCI: 7
     FruitScore: 5000
+    FruitSpriteIdx: 11
+    FruitWaitTime: 5
+    FruitDuration: 75
     MapConfig: {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}

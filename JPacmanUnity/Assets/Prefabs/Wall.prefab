@@ -114,6 +114,6 @@ MonoBehaviour:
   - {fileID: 992642365, guid: 05718a746e8c2bd4bac4d8e5667c2586, type: 3}
   - {fileID: -1594025413, guid: 05718a746e8c2bd4bac4d8e5667c2586, type: 3}
   - {fileID: -307984543, guid: 05718a746e8c2bd4bac4d8e5667c2586, type: 3}
-  AnimationLength: 1
+  AnimationLength: 0
   WrapMode: 0
   StartPlaying: 0

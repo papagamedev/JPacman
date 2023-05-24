@@ -54,6 +54,11 @@ public struct SetLabelPosBufferElement : IBufferElementData
     public float3 Value;
 }
 
+public struct SetLevelIconBufferElement : IBufferElementData
+{
+    public int IconIdx;
+}
+
 public struct KillAllScoreAnimationBufferElement : IBufferElementData
 {
     public byte Dummy;
@@ -94,6 +99,7 @@ public readonly partial struct MainAspect : IAspect
     public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
     public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;
     public readonly DynamicBuffer<SetLabelPosBufferElement> SetLabelPosBuffer;
+    public readonly DynamicBuffer<SetLevelIconBufferElement> SetLevelIconBuffer;
     public readonly DynamicBuffer<KillAllScoreAnimationBufferElement> KillAllScoreAnimationsBuffer;
     public readonly DynamicBuffer<FadeAnimationBufferElement> FadeAnimationBuffer;
     public readonly DynamicBuffer<ShowUIBufferElement> ShowUIBuffer;

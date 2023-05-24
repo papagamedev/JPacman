@@ -101,4 +101,4 @@ MonoBehaviour:
   ScoreAnimation: 0
   SoundType: 0
   CollisionRadius: 0
-  IsPowerup: 0
+  Type: 0
