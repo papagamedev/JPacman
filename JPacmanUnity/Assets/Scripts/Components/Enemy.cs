@@ -74,6 +74,15 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
         var enemyWorldPos = m_transform.ValueRO.Position;
         var enemyMapPos = mapData.WorldToMapPos(enemyWorldPos);
 
+        // if for some reason the enemy is in follow player state and INSIDE the home, just get out!
+        if (m_movable.ValueRO.NextCellEdgeMapPos.Equals(mapData.EnemyHousePos))
+        {
+            m_movable.ValueRW.ForcedDir = true;
+            m_movable.ValueRW.DesiredDir = mapData.EnemyExitDir;
+            return;
+        }
+
+        // check if player is captured
         if (CollisionCircle.CheckCollision(enemyMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
         {
             ecb.RemoveComponent<LevelPlayingPhaseTag>(sortKey, mainEntity);
@@ -88,8 +97,10 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
             return;
         }
 
+        // set normal speed in this state
         m_movable.ValueRW.Speed = enemySpeed;
 
+        // "think" on following player
         var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
         var currentDir = m_movable.ValueRO.CurrentDir;
         var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
