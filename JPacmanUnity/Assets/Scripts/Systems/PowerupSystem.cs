@@ -23,6 +23,7 @@ public partial struct PowerupSystem : ISystem
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
         var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
+        powerupModeAspect.CheckEnemiesReturnedHome(mainEntity, ecb);
         if (powerupModeAspect.CheckPowerupCollected())
         {
             ecb.AddComponent(mainEntity, new PowerupModeActiveTag());

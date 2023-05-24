@@ -38,7 +38,10 @@ public struct SetLivesTextBufferElement : IBufferElementData
 
 public struct SetScoreTextBufferElement : IBufferElementData
 {
-    public int Value;
+    public bool HasAnimation;
+    public int Score;
+    public int DeltaScore;
+    public float3 WorldPos;
 }
 
 public struct SetLabelTextBufferElement : IBufferElementData
@@ -49,12 +52,6 @@ public struct SetLabelTextBufferElement : IBufferElementData
 public struct SetLabelPosBufferElement : IBufferElementData
 {
     public float3 Value;
-}
-
-public struct StartScoreAnimationBufferElement : IBufferElementData
-{
-    public int Score;
-    public float3 WorldPos;
 }
 
 public struct KillAllScoreAnimationBufferElement : IBufferElementData
@@ -97,7 +94,6 @@ public readonly partial struct MainAspect : IAspect
     public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
     public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;
     public readonly DynamicBuffer<SetLabelPosBufferElement> SetLabelPosBuffer;
-    public readonly DynamicBuffer<StartScoreAnimationBufferElement> StartScoreAnimationBuffer;
     public readonly DynamicBuffer<KillAllScoreAnimationBufferElement> KillAllScoreAnimationsBuffer;
     public readonly DynamicBuffer<FadeAnimationBufferElement> FadeAnimationBuffer;
     public readonly DynamicBuffer<ShowUIBufferElement> ShowUIBuffer;

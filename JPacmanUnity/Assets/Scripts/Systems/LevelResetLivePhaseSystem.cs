@@ -25,6 +25,8 @@ public partial struct LevelResetLivePhaseSystem : ISystem, ISystemStartStop
         ResetLevel(ref state, ecb);
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         gameAspect.InitLive(ecb, mainEntity, gameAspect.RandomSeed);
+        var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
+        powerupModeAspect.InitLive(gameAspect.LevelData);
 
         ecb.Playback(state.EntityManager);
         m_phaseTimer = 0;

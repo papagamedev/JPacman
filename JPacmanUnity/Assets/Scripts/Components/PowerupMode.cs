@@ -9,6 +9,7 @@ public struct PowerupMode : IComponentData
     public int DefaultEnemyScore;
     public float EnemyScaredTime;
     public int EnemyScaredCount;
+    public int EnemyReturnHomeCount;
     public bool BonusLevel;
 }
 
@@ -24,6 +25,11 @@ public struct EnemyEatenBufferElement : IBufferElementData
     public float3 WorldPos;
 }
 
+public struct EnemyReturnedHomeBufferElement : IBufferElementData
+{
+    public byte Dummy;
+}
+
 public readonly partial struct PowerupModeAspect : IAspect
 {
     const float kBlinkTime = 3.0f;
@@ -34,6 +40,17 @@ public readonly partial struct PowerupModeAspect : IAspect
     private readonly RefRW<PowerupMode> m_powerupMode;
     private readonly DynamicBuffer<PowerupCollectedBufferElement> m_powerupCollectedBuffer;
     private readonly DynamicBuffer<EnemyEatenBufferElement> m_enemyEatenBuffer;
+    private readonly DynamicBuffer<EnemyReturnedHomeBufferElement> m_enemyReturnedHomeBuffer;
+
+    public void InitLive(LevelConfigData levelData)
+    {
+        m_powerupMode.ValueRW.EnemyScaredTime = levelData.EnemyScaredTime;
+        m_powerupMode.ValueRW.DefaultEnemyScore = levelData.EnemyScore;
+        m_powerupMode.ValueRW.EnemyScore = levelData.EnemyScore;
+        m_powerupMode.ValueRW.BonusLevel = levelData.BonusLevel;
+        m_powerupMode.ValueRW.EnemyScaredCount = 0;
+        m_powerupMode.ValueRW.EnemyReturnHomeCount = 0;
+    }
 
     public void AddEnemyScaredCount(int count) => m_powerupMode.ValueRW.EnemyScaredCount += count;
 
@@ -97,8 +114,33 @@ public readonly partial struct PowerupModeAspect : IAspect
 
             m_powerupMode.ValueRW.EnemyScore *= 2;
             m_powerupMode.ValueRW.EnemyScaredCount--;
+
+            m_powerupMode.ValueRW.EnemyReturnHomeCount++;
+            if (m_powerupMode.ValueRW.EnemyReturnHomeCount == 1)
+            {
+                ecb.AppendToBuffer(mainEntity, new SoundEventBufferElement()
+                {
+                    SoundType = AudioEvents.SoundType.EnemyReturnHome
+                });
+            }
         }
         m_enemyEatenBuffer.Clear();
+    }
+
+    public void CheckEnemiesReturnedHome(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        foreach (var item in m_enemyReturnedHomeBuffer)
+        {
+            m_powerupMode.ValueRW.EnemyReturnHomeCount--;
+            if (m_powerupMode.ValueRW.EnemyReturnHomeCount == 0)
+            {
+                ecb.AppendToBuffer(mainEntity, new SoundStopEventBufferElement()
+                {
+                    SoundType = AudioEvents.SoundType.EnemyReturnHome
+                });
+            }
+        }
+        m_enemyReturnedHomeBuffer.Clear();
     }
 
     public void SetEnemyScaredBlinking(bool blinking) => m_powerupMode.ValueRW.EnemiesBlinking = blinking;

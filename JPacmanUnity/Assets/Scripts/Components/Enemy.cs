@@ -68,7 +68,7 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
     private readonly RefRO<EnemyFollowPlayerTag> m_enemyFollowPLayer;
     private readonly RefRO<CollisionCircle> m_collision;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, int enemyCI, float enemySpeed, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int sortKey, int enemyCI, float enemySpeed, bool isBonus, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var enemyWorldPos = m_transform.ValueRO.Position;
@@ -76,8 +76,15 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
 
         if (CollisionCircle.CheckCollision(enemyMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
         {
-            ecb.AddComponent(sortKey, mainEntity, new LevelDeadPhaseTag());
             ecb.RemoveComponent<LevelPlayingPhaseTag>(sortKey, mainEntity);
+            if (isBonus)
+            {
+                ecb.AddComponent(sortKey, mainEntity, new LevelWinPhaseTag());
+            }
+            else
+            {
+                ecb.AddComponent(sortKey, mainEntity, new LevelDeadPhaseTag());
+            }
             return;
         }
 
@@ -163,7 +170,7 @@ public readonly partial struct EnemyReturnHomeAspect : IAspect
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<EnemyReturnHomeTag> m_enemyScared;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var currentDir = m_movable.ValueRO.CurrentDir;
@@ -174,6 +181,10 @@ public readonly partial struct EnemyReturnHomeAspect : IAspect
         {
             ecb.RemoveComponent<EnemyReturnHomeTag>(sortKey, Entity);
             ecb.AddComponent(sortKey, Entity, new EnemyHomeTag() { });
+            ecb.AppendToBuffer(sortKey, mainEntity, new EnemyReturnedHomeBufferElement()
+            {
+                Dummy = 0
+            });
             return;
         }
 

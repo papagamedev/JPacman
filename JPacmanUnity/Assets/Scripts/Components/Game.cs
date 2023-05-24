@@ -37,6 +37,9 @@ public struct AddScoreBufferElement : IBufferElementData
 
 public readonly partial struct GameAspect : IAspect
 {
+    const int kNewLiveScore = 10000;
+
+
     public readonly Entity Entity;
     private readonly RefRW<Main> m_main;
     private readonly RefRW<Game> m_game;
@@ -45,39 +48,49 @@ public readonly partial struct GameAspect : IAspect
 
     public void ApplyAddScore(Entity mainEntity, EntityCommandBuffer ecb)
     {
-        bool scoreAdded = false;
-        foreach (var score in m_addScoreBuffer)
+        bool isBonus = LevelData.BonusLevel;
+        int scoreToAdd = 0;
+        int scoreBefore = m_game.ValueRO.Score;
+        foreach (var scoreItem in m_addScoreBuffer)
         {
-            m_game.ValueRW.Score += score.Score;
-
-            if (score.ScoreAnimation)
-            {
-                ecb.AppendToBuffer(mainEntity, new StartScoreAnimationBufferElement()
-                {
-                    Score = score.Score,
-                    WorldPos = score.WorldPos
-                });
-            }
-            else 
-            {
-                scoreAdded = true;
-            }
-
-            if (score.IsCollectible)
+            var score = scoreItem.Score;
+            var hasAnimation = scoreItem.ScoreAnimation;
+            if (scoreItem.IsCollectible)
             {
                 m_game.ValueRW.CollectibleCount--;
+                if (isBonus && m_game.ValueRO.CollectibleCount == 0)
+                {
+                    score = LevelData.FruitScore;
+                    hasAnimation = true;
+                }
             }
-        }
 
-        if (scoreAdded)
-        {
+            scoreToAdd += score;
             ecb.AppendToBuffer(mainEntity, new SetScoreTextBufferElement()
             {
-                Value = m_game.ValueRO.Score
+                Score = scoreBefore + scoreToAdd,
+                DeltaScore = score,
+                WorldPos = scoreItem.WorldPos,
+                HasAnimation = hasAnimation
             });
         }
-
         m_addScoreBuffer.Clear();
+
+        if (scoreToAdd > 0)
+        {
+            var newScore = scoreBefore + scoreToAdd;
+            m_game.ValueRW.Score = newScore;
+
+            var livesToAdd = (newScore / kNewLiveScore) - (scoreBefore / kNewLiveScore);
+            if (livesToAdd > 0)
+            {
+                m_game.ValueRW.Lives += livesToAdd;
+                ecb.AppendToBuffer(mainEntity, new SetLivesTextBufferElement()
+                {
+                    Value = m_game.ValueRO.Lives
+                });
+            }
+        }
     }
 
 
@@ -140,11 +153,6 @@ public readonly partial struct GameAspect : IAspect
 
     public void CreateLevel(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
     {
-        m_powerupMode.ValueRW.EnemyScaredTime = LevelData.EnemyScaredTime;
-        m_powerupMode.ValueRW.DefaultEnemyScore = LevelData.EnemyScore;
-        m_powerupMode.ValueRW.BonusLevel = LevelData.BonusLevel;
-        m_powerupMode.ValueRW.EnemyScaredCount = 0;
-
         m_game.ValueRW.CollectibleCount = 0;
         ref var mapData = ref GetCurrentMapData();
         bool isBonusLevel = LevelData.BonusLevel;

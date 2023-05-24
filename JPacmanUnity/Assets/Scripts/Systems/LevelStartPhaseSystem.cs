@@ -48,7 +48,8 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
         });
         ecb.AppendToBuffer(mainEntity, new SetScoreTextBufferElement()
         {
-            Value = gameAspect.Score
+            HasAnimation = false,
+            Score = gameAspect.Score
         });
         ecb.AppendToBuffer(mainEntity, new FadeAnimationBufferElement()
         {
@@ -58,6 +59,8 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
 
         uint randSeed = gameAspect.RandomSeed;
         gameAspect.CreateLevel(ecb, mainEntity, randSeed);
+        var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
+        powerupModeAspect.InitLive(gameAspect.LevelData);
 
         ecb.Playback(state.EntityManager);
 

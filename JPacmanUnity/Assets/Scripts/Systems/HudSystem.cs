@@ -9,8 +9,7 @@ public partial class HudSystem : SystemBase
     public Action<HudEvents.LabelMessage, int> OnSetLabelText;
     public Action<float3> OnSetLabelPos; 
     public Action<int> OnSetLivesText;
-    public Action<int> OnSetScoreText;
-    public Action<int, float3> OnStartScoreAnimation;
+    public Action<bool, int, int, float3> OnSetScoreText;
     public Action OnKillAllScoreAnimations;
     public Action<bool, float> OnFadeAnimation;
     public Action<HudEvents.ShowUIType> OnShowUI;
@@ -40,7 +39,7 @@ public partial class HudSystem : SystemBase
         {
             foreach (var element in mainAspect.SetScoreTextBuffer)
             {
-                OnSetScoreText(element.Value);
+                OnSetScoreText(element.HasAnimation, element.Score, element.DeltaScore, element.WorldPos);
             }
         }
         mainAspect.SetScoreTextBuffer.Clear();
@@ -74,15 +73,6 @@ public partial class HudSystem : SystemBase
             }
         }
         mainAspect.SetLabelPosBuffer.Clear();
-
-        if (OnStartScoreAnimation != null)
-        {
-            foreach (var element in mainAspect.StartScoreAnimationBuffer)
-            {
-                OnStartScoreAnimation(element.Score, element.WorldPos);
-            }
-        }
-        mainAspect.StartScoreAnimationBuffer.Clear();
 
         if (OnKillAllScoreAnimations != null)
         {

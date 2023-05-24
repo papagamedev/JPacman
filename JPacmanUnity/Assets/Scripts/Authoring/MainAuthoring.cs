@@ -36,13 +36,13 @@ public class MainAuthoring : MonoBehaviour
             AddBuffer<SetScoreTextBufferElement>(entity);
             AddBuffer<SetLabelTextBufferElement>(entity);
             AddBuffer<SetLabelPosBufferElement>(entity);
-            AddBuffer<StartScoreAnimationBufferElement>(entity);
             AddBuffer<KillAllScoreAnimationBufferElement>(entity);
             AddBuffer<FadeAnimationBufferElement>(entity);
             AddBuffer<ShowUIBufferElement>(entity);
             AddBuffer<AddScoreBufferElement>(entity);
             AddBuffer<PowerupCollectedBufferElement>(entity);
             AddBuffer<EnemyEatenBufferElement>(entity);
+            AddBuffer<EnemyReturnedHomeBufferElement>(entity);
         }
 
         private BlobAssetReference<LevelsConfigData> CreateLevelsConfigBlob(MainAuthoring authoring, List<MapConfig> maps)

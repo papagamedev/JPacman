@@ -40,6 +40,7 @@ public partial struct EnemySystem : ISystem
             PlayerCollisionRadius = playerCollisionRadius,
             EnemyCI = gameAspect.LevelData.EnemyCI,
             EnemySpeed = gameAspect.LevelData.EnemySpeed,
+            IsBonus = gameAspect.LevelData.BonusLevel,
             MainEntity = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
@@ -76,6 +77,7 @@ public partial struct EnemySystem : ISystem
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
             MapId = map.Id,
+            Main = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
     }
@@ -112,12 +114,13 @@ public partial struct EnemyFollowPlayerJob : IJobEntity
     public float PlayerCollisionRadius;
     public int EnemyCI;
     public float EnemySpeed;
+    public bool IsBonus;
     public Entity MainEntity;
     public EntityCommandBuffer.ParallelWriter ECB;
 
     private void Execute(EnemyFollowPlayerAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, sortKey, EnemyCI, EnemySpeed, MainEntity, ECB);
+        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, sortKey, EnemyCI, EnemySpeed, IsBonus, MainEntity, ECB);
     }
 }
 

@@ -88,6 +88,7 @@ public class HudEvents : MonoBehaviour
 
     private FadeState m_fadeAnimation;
     private List<ScoreAnimState> m_scoreAnimations;
+    private int m_score;
 
     public enum LabelMessage
     {
@@ -114,7 +115,6 @@ public class HudEvents : MonoBehaviour
         hudSystem.OnSetLabelPos += OnSetLabelPos;
         hudSystem.OnSetLivesText += OnSetLivesText;
         hudSystem.OnSetScoreText += OnSetScoreText;
-        hudSystem.OnStartScoreAnimation += OnStartScoreAnimation;
         hudSystem.OnKillAllScoreAnimations += OnKillAllScoreAnimations;
         hudSystem.OnFadeAnimation += OnFadeAnimation;
         hudSystem.OnShowUI += OnShowUI;
@@ -141,16 +141,30 @@ public class HudEvents : MonoBehaviour
             hudSystem.OnSetLabelPos -= OnSetLabelPos;
             hudSystem.OnSetLivesText -= OnSetLivesText;
             hudSystem.OnSetScoreText -= OnSetScoreText;
-            hudSystem.OnStartScoreAnimation -= OnStartScoreAnimation;
             hudSystem.OnFadeAnimation -= OnFadeAnimation;
             hudSystem.OnShowUI += OnShowUI;
         }
     }
 
-    private void OnStartScoreAnimation(int score, float3 worldPos)
+    private void UpdateScoreText()
     {
-        var gameObject = Instantiate(m_scoreAnimationPrefab, m_ingameRoot.transform);
-        m_scoreAnimations.Add(new ScoreAnimState(gameObject, score, worldPos, m_scoreLabel.rectTransform.localPosition));
+        var animScoresTotal = m_scoreAnimations.Select(x => x.Score).Sum();
+        m_scoreLabel.text = (m_score - animScoresTotal).ToString();
+    }
+
+    private void OnSetScoreText(bool hasAnimation, int score, int scoreDelta, float3 worldPos)
+    {
+        m_score = score;
+
+        if (hasAnimation)
+        {
+            var gameObject = Instantiate(m_scoreAnimationPrefab, m_ingameRoot.transform);
+            m_scoreAnimations.Add(new ScoreAnimState(gameObject, scoreDelta, worldPos, m_scoreLabel.rectTransform.localPosition));
+        }
+        else
+        {
+            UpdateScoreText();
+        }
     }
 
     private void OnKillAllScoreAnimations()
@@ -182,14 +196,8 @@ public class HudEvents : MonoBehaviour
         }
         if (scoreToAdd > 0)
         {
-            OnSetScoreText(System.Convert.ToInt32(m_scoreLabel.text) + scoreToAdd);
+            UpdateScoreText();
         }
-    }
-
-    private void OnSetScoreText(int score)
-    {
-        var animScoresTotal = m_scoreAnimations.Select(x => x.Score).Sum();
-        m_scoreLabel.text = (score - animScoresTotal).ToString();
     }
 
     private void OnSetLivesText(int value)
