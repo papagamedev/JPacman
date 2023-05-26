@@ -28,7 +28,7 @@ public struct MapConfigData
     public half2 FruitPos;
     public FixedList32Bytes<half2> PowerupPos;
     public FixedList128Bytes<half2> TunnelPos;
-    public Movable.Direction EnemyExitDir;
+    public Direction EnemyExitDir;
     public BlobArray<char> MapData;
 
     public bool IsDot(int x, int y) => x > 0 && y > 0 && IsChar(x, y, kDotChar) && IsChar(x - 1, y, kDotChar) && IsChar(x, y - 1, kDotChar) && IsChar(x - 1, y - 1, kDotChar);
@@ -55,11 +55,11 @@ public struct MapConfigData
 
     public static int OppositeTunnelIdx(int tunnelIdx) => tunnelIdx ^ 1;
 
-    public bool IsDirectionAllowed(int x, int y, Movable.Direction direction, bool lastTry = false)
+    public bool IsDirectionAllowed(int x, int y, Direction direction, bool lastTry = false)
     {
         switch (direction)
         {
-            case Movable.Direction.Left:
+            case Direction.Left:
                 if (x > 1
                     && !IsWall(x - 2, y)
                     && !IsWall(x - 2, y - 1))
@@ -67,7 +67,7 @@ public struct MapConfigData
                     return true;
                 }
                 break;
-            case Movable.Direction.Right:
+            case Direction.Right:
                 if (x < Width - 1
                     && !IsWall(x + 1, y)
                     && !IsWall(x + 1, y - 1))
@@ -75,7 +75,7 @@ public struct MapConfigData
                     return true;
                 }
                 break;
-            case Movable.Direction.Up:
+            case Direction.Up:
                 if (y > 1
                     && !IsWall(x, y - 2)
                     && !IsWall(x - 1, y - 2))
@@ -83,7 +83,7 @@ public struct MapConfigData
                     return true;
                 }
                 break;
-            case Movable.Direction.Down:
+            case Direction.Down:
                 if (y < Height - 1
                     && !IsWall(x, y + 1)
                     && !IsWall(x - 1, y + 1))

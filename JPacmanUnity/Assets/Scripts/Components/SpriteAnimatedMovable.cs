@@ -1,4 +1,3 @@
-using System.Collections;
 using Unity.Entities;
 
 public readonly partial struct SpriteAnimatedMovableAspect : IAspect
@@ -10,7 +9,7 @@ public readonly partial struct SpriteAnimatedMovableAspect : IAspect
     public void UpdateAnimation()
     {
         var currentDir = m_movable.ValueRO.CurrentDir;
-        if (currentDir == Movable.Direction.None)
+        if (currentDir == Direction.None)
         {
             return;
         }

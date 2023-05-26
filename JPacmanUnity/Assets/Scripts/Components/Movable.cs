@@ -1,89 +1,9 @@
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 public struct Movable : IComponentData
 {
-    static FixedList64Bytes<float2> m_dirVector = new FixedList64Bytes<float2>()
-    {
-        new float2(1, 0),
-        new float2(-1, 0),
-        new float2(0, 1),
-        new float2(0, -1),
-        new float2(0, 0)
-    };
-
-    public enum Direction
-    {
-        Right,
-        Left,
-        Down,
-        Up,
-        None
-    };
-
-    public static Direction OppositeDir(Direction dir)
-    {
-        return dir switch
-        {
-            Direction.Left => Direction.Right,
-            Direction.Up => Direction.Down,
-            Direction.Down => Direction.Up,
-            Direction.Right => Direction.Left,
-            _ => Direction.None,
-        };
-    }
-
-    public struct AvailableDirections
-    {
-        public bool Right;
-        public bool Left;
-        public bool Down;
-        public bool Up;
-
-        public int Count => (Right ? 1 : 0) + (Left ? 1 : 0) + (Down ? 1 : 0) + (Up ? 1 : 0);
-        public Direction First => Right ? Direction.Right : Left ? Direction.Left : Down ? Direction.Down : Up ? Direction.Up : Direction.None;
-        public bool Check(Direction direction)
-        {
-            return direction switch
-            {
-                Direction.Right => Right,
-                Direction.Left => Left,
-                Direction.Down => Down,
-                Direction.Up => Up,
-                _ => false,
-            };
-        }
-        public Direction RandomNotOpposite(Direction currentDir, ref Random random)
-        {
-            var oppositeDir = OppositeDir(currentDir);
-            if (Count <= 1)
-            {
-                var first = First;
-                return oppositeDir == first ? Direction.None : first;
-            }
-
-            var dir = random.NextInt(4);
-            while (!Check((Direction)dir) || dir == (int) oppositeDir)
-            {
-                dir = (dir + 1) % 4;
-            }
-            return (Direction)dir;
-        }
-
-        public FixedString32Bytes ToFixedString()
-        {
-            var str = new FixedString32Bytes();
-            if (Right) str.Append("R");
-            if (Left) str.Append("L");
-            if (Down) str.Append("D");
-            if (Up) str.Append("U");
-            if (Count == 0) str.Append("-");
-            return str;
-        }
-    }
-
     public float Speed;
     public float SpeedInTunnel;
     public bool AllowChangeDirInMidCell;
@@ -96,8 +16,6 @@ public struct Movable : IComponentData
     public bool Init;
     public Random Rand;
     public bool IsInTunnel;
-
-    public float2 GetDirVector(Direction dir) => m_dirVector[(int)dir];
 }
 
 public readonly partial struct MovableAspect : IAspect
@@ -152,7 +70,7 @@ public readonly partial struct MovableAspect : IAspect
         // if the new direction is none, no more movement this frame
         var currentDir = m_movable.ValueRO.CurrentDir;
         UpdateNextCellEdgeInfo(ref map, currentDir);
-        if (currentDir == Movable.Direction.None)
+        if (currentDir == Direction.None)
         {
             return;
         }
@@ -167,19 +85,19 @@ public readonly partial struct MovableAspect : IAspect
             float distanceToNextCell = 0;
             switch (currentDir)
             {
-                case Movable.Direction.Left:
+                case Direction.Left:
                     distanceToNextCell = mapPos.x - math.floor(mapPos.x);
                     break;
 
-                case Movable.Direction.Right:
+                case Direction.Right:
                     distanceToNextCell = math.ceil(mapPos.x) - mapPos.x;
                     break;
 
-                case Movable.Direction.Up:
+                case Direction.Up:
                     distanceToNextCell = mapPos.y - math.floor(mapPos.y);
                     break;
 
-                case Movable.Direction.Down:
+                case Direction.Down:
                     distanceToNextCell = math.ceil(mapPos.y) - mapPos.y;
                     break;
             }
@@ -192,7 +110,7 @@ public readonly partial struct MovableAspect : IAspect
 
         // execute the movement
 
-        mapPos += m_movable.ValueRO.GetDirVector(currentDir) * moveDistance;
+        mapPos += currentDir.Vector() * moveDistance;
         SetMapPos(ref map, mapPos);
 
 
@@ -216,7 +134,7 @@ public readonly partial struct MovableAspect : IAspect
         var currentDir = m_movable.ValueRO.CurrentDir;
 
         // if desired direction is different than current, evaluate if that direction is allowed
-        if (desiredDir != Movable.Direction.None && currentDir != desiredDir)
+        if (desiredDir != Direction.None && currentDir != desiredDir)
         {
             bool bChangeAllowed = false;
             if (!atCellEdge)
@@ -224,26 +142,26 @@ public readonly partial struct MovableAspect : IAspect
                 // if not at cell edge, opposite direction is always allowed
                 switch (currentDir)
                 {
-                    case Movable.Direction.Left:
-                        if (desiredDir == Movable.Direction.Right)
+                    case Direction.Left:
+                        if (desiredDir == Direction.Right)
                         {
                             bChangeAllowed = true;
                         }
                         break;
-                    case Movable.Direction.Up:
-                        if (desiredDir == Movable.Direction.Down)
+                    case Direction.Up:
+                        if (desiredDir == Direction.Down)
                         {
                             bChangeAllowed = true;
                         }
                         break;
-                    case Movable.Direction.Down:
-                        if (desiredDir == Movable.Direction.Up)
+                    case Direction.Down:
+                        if (desiredDir == Direction.Up)
                         {
                             bChangeAllowed = true;
                         }
                         break;
-                    case Movable.Direction.Right:
-                        if (desiredDir == Movable.Direction.Left)
+                    case Direction.Right:
+                        if (desiredDir == Direction.Left)
                         {
                             bChangeAllowed = true;
                         }
@@ -274,9 +192,9 @@ public readonly partial struct MovableAspect : IAspect
         }
 
         // check if the current direction is no longer valid
-        if (currentDir != Movable.Direction.None && !map.IsDirectionAllowed(mapX, mapY, currentDir))
+        if (currentDir != Direction.None && !map.IsDirectionAllowed(mapX, mapY, currentDir))
         {
-            m_movable.ValueRW.CurrentDir = Movable.Direction.None;
+            m_movable.ValueRW.CurrentDir = Direction.None;
             return true;
         }
 
@@ -284,27 +202,27 @@ public readonly partial struct MovableAspect : IAspect
         return false;
     }
 
-    public void UpdateNextCellEdgeInfo(ref MapConfigData map, Movable.Direction currentDir)
+    public void UpdateNextCellEdgeInfo(ref MapConfigData map, Direction currentDir)
     {
-        var nextMapPos = m_movable.ValueRO.LastCellEdgeMapPos + m_movable.ValueRO.GetDirVector(currentDir);
+        var nextMapPos = m_movable.ValueRO.LastCellEdgeMapPos + currentDir.Vector();
         m_movable.ValueRW.NextCellEdgeMapPos = nextMapPos;
         m_movable.ValueRW.NextCellEdgeAvailableDirections = GetAvailableDirections(ref map, nextMapPos);
     }
 
-    public Movable.AvailableDirections GetAvailableDirections(ref MapConfigData map, float2 mapPos)
+    public AvailableDirections GetAvailableDirections(ref MapConfigData map, float2 mapPos)
     {
         int x = (int) mapPos.x;
         int y = (int) mapPos.y;
-        return new Movable.AvailableDirections()
+        return new AvailableDirections()
         {
-            Left = map.IsDirectionAllowed(x, y, Movable.Direction.Left),
-            Right = map.IsDirectionAllowed(x, y, Movable.Direction.Right),
-            Up = map.IsDirectionAllowed(x, y, Movable.Direction.Up),
-            Down = map.IsDirectionAllowed(x, y, Movable.Direction.Down)
+            Left = map.IsDirectionAllowed(x, y, Direction.Left),
+            Right = map.IsDirectionAllowed(x, y, Direction.Right),
+            Up = map.IsDirectionAllowed(x, y, Direction.Up),
+            Down = map.IsDirectionAllowed(x, y, Direction.Down)
         };
     }
 
-    public static Movable.Direction ComputeFollowTargetDir(float2 movablePos, Movable.Direction currentDir, float2 targetPos, Movable.AvailableDirections nextAvailableDirs, int movableCI, ref Random random)
+    public static Direction ComputeFollowTargetDir(float2 movablePos, Direction currentDir, float2 targetPos, AvailableDirections nextAvailableDirs, int movableCI, ref Random random)
     {
         if (nextAvailableDirs.Count == 1)
         {
@@ -328,11 +246,11 @@ public readonly partial struct MovableAspect : IAspect
         }
     }
 
-    private static Movable.Direction CheckVerticalFollowDir(float2 targetToMovable, Movable.Direction currentDir, Movable.AvailableDirections nextAvailableDirs, int movableCI, ref Random random, bool lastTry)
+    private static Direction CheckVerticalFollowDir(float2 targetToMovable, Direction currentDir, AvailableDirections nextAvailableDirs, int movableCI, ref Random random, bool lastTry)
     {
         if (targetToMovable.y < 0)
         {
-            if ((!nextAvailableDirs.Down) || ((currentDir == Movable.Direction.Up) && (movableCI < 14)))
+            if ((!nextAvailableDirs.Down) || ((currentDir == Direction.Up) && (movableCI < 14)))
             {
                 if (lastTry)
                 {
@@ -340,11 +258,11 @@ public readonly partial struct MovableAspect : IAspect
                 }
                 return CheckHorizontalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
             }
-            return Movable.Direction.Down;
+            return Direction.Down;
         }
         else
         {
-            if ((!nextAvailableDirs.Up) || ((currentDir == Movable.Direction.Down) && (movableCI < 14)))
+            if ((!nextAvailableDirs.Up) || ((currentDir == Direction.Down) && (movableCI < 14)))
             {
                 if (lastTry)
                 {
@@ -352,15 +270,15 @@ public readonly partial struct MovableAspect : IAspect
                 }
                 return CheckHorizontalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
             }
-            return Movable.Direction.Up;
+            return Direction.Up;
         }
     }
 
-    private static Movable.Direction CheckHorizontalFollowDir(float2 targetToMovable, Movable.Direction currentDir, Movable.AvailableDirections nextAvailableDirs, int movableCI, ref Random random, bool lastTry)
+    private static Direction CheckHorizontalFollowDir(float2 targetToMovable, Direction currentDir, AvailableDirections nextAvailableDirs, int movableCI, ref Random random, bool lastTry)
     {
         if (targetToMovable.x < 0)
         {
-            if ((!nextAvailableDirs.Right) || ((currentDir == Movable.Direction.Left) && (movableCI < 14)))
+            if ((!nextAvailableDirs.Right) || ((currentDir == Direction.Left) && (movableCI < 14)))
             {
                 if (lastTry)
                 {
@@ -368,11 +286,11 @@ public readonly partial struct MovableAspect : IAspect
                 }
                 return CheckVerticalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
             }
-            return Movable.Direction.Right;
+            return Direction.Right;
         }
         else
         {
-            if ((!nextAvailableDirs.Left) || ((currentDir == Movable.Direction.Right) && (movableCI < 14)))
+            if ((!nextAvailableDirs.Left) || ((currentDir == Direction.Right) && (movableCI < 14)))
             {
                 if (lastTry)
                 {
@@ -380,7 +298,7 @@ public readonly partial struct MovableAspect : IAspect
                 }
                 return CheckVerticalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
             }
-            return Movable.Direction.Left;
+            return Direction.Left;
         }
     }
 }

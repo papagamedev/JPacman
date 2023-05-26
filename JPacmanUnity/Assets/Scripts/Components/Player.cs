@@ -29,19 +29,19 @@ public readonly partial struct PlayerAspect : IAspect
 
         if (desiredDirection.x > 0)
         {
-            m_movable.ValueRW.DesiredDir = Movable.Direction.Right;
+            m_movable.ValueRW.DesiredDir = Direction.Right;
         }
         else if (desiredDirection.y > 0)
         {
-            m_movable.ValueRW.DesiredDir = Movable.Direction.Down;
+            m_movable.ValueRW.DesiredDir = Direction.Down;
         }
         else if (desiredDirection.x < 0)
         {
-            m_movable.ValueRW.DesiredDir = Movable.Direction.Left;
+            m_movable.ValueRW.DesiredDir = Direction.Left;
         }
         else if (desiredDirection.y < 0)
         {
-            m_movable.ValueRW.DesiredDir = Movable.Direction.Up;
+            m_movable.ValueRW.DesiredDir = Direction.Up;
         }
     }
 

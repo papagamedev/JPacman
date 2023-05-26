@@ -161,12 +161,12 @@ public class MainAuthoring : MonoBehaviour
                 {
                     if (enemyHousePos.y > enemyExitPos.y)
                     {
-                        mapsArrayBuilder[i].EnemyExitDir = Movable.Direction.Up;
+                        mapsArrayBuilder[i].EnemyExitDir = Direction.Up;
                         mapsArrayBuilder[i].EnemyExitPos = new half2(enemyExitPos.x, (half)(enemyExitPos.y - 1));
                     }
                     else
                     {
-                        mapsArrayBuilder[i].EnemyExitDir = Movable.Direction.Down;
+                        mapsArrayBuilder[i].EnemyExitDir = Direction.Down;
                         mapsArrayBuilder[i].EnemyExitPos = new half2(enemyExitPos.x, (half)(enemyExitPos.y + 2));
                     }
                 }
@@ -174,12 +174,12 @@ public class MainAuthoring : MonoBehaviour
                 {
                     if (enemyHousePos.x > enemyExitPos.x)
                     {
-                        mapsArrayBuilder[i].EnemyExitDir = Movable.Direction.Left;
+                        mapsArrayBuilder[i].EnemyExitDir = Direction.Left;
                         mapsArrayBuilder[i].EnemyExitPos = new half2((half)(enemyExitPos.x - 1), enemyExitPos.y);
                     }
                     else
                     {
-                        mapsArrayBuilder[i].EnemyExitDir = Movable.Direction.Right;
+                        mapsArrayBuilder[i].EnemyExitDir = Direction.Right;
                         mapsArrayBuilder[i].EnemyExitPos = new half2((half)(enemyExitPos.x + 2), enemyExitPos.y);
                     }
                 }

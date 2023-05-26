@@ -247,19 +247,19 @@ public readonly partial struct GameAspect : IAspect
         int frame = 0;
         if (x == mapData.Width - 1 || mapData.IsWall(x + 1, y))
         {
-            frame |= 1 << (int) Movable.Direction.Right;
+            frame |= 1 << Direction.Right;
         }
         if (x == 0 || mapData.IsWall(x - 1, y))
         {
-            frame |= 1 << (int)Movable.Direction.Left;
+            frame |= 1 << Direction.Left;
         }
         if (y == mapData.Height - 1 || mapData.IsWall(x, y + 1))
         {
-            frame |= 1 << (int)Movable.Direction.Down;
+            frame |= 1 << Direction.Down;
         }
         if (y == 0 || mapData.IsWall(x, y - 1))
         {
-            frame |= 1 << (int)Movable.Direction.Up;
+            frame |= 1 << Direction.Up;
         }
         if (frame == 15)
         {
@@ -299,7 +299,7 @@ public readonly partial struct GameAspect : IAspect
     {
         for (var i = 0; i < 4; i++)
         {
-            CreateEnemy(ecb, ref mapData, x + i * 2.5f - 3.75f, y, i < 2 ? Movable.Direction.Right : Movable.Direction.Left, i, randSeed++);
+            CreateEnemy(ecb, ref mapData, x + i * 2.5f - 3.75f, y, i < 2 ? Direction.Right : Direction.Left, i, randSeed++);
         }
     }
 
@@ -307,11 +307,11 @@ public readonly partial struct GameAspect : IAspect
     {
         for (var i = 0; i < 4; i++)
         {
-            CreateEnemy(ecb, ref mapData, x, y + i * 2.5f - 3.75f, i < 2 ? Movable.Direction.Down : Movable.Direction.Up, i, randSeed++);
+            CreateEnemy(ecb, ref mapData, x, y + i * 2.5f - 3.75f, i < 2 ? Direction.Down : Direction.Up, i, randSeed++);
         }
     }
 
-    private void CreateEnemy(EntityCommandBuffer ecb, ref MapConfigData mapData, float x, float y, Movable.Direction direction, int id, uint randSeed)
+    private void CreateEnemy(EntityCommandBuffer ecb, ref MapConfigData mapData, float x, float y, Direction direction, int id, uint randSeed)
     {
         var enemy = ecb.Instantiate(m_main.ValueRO.EnemyPrefab);
         ecb.SetComponent(enemy,
@@ -328,7 +328,7 @@ public readonly partial struct GameAspect : IAspect
                 SpeedInTunnel = LevelData.EnemySpeedInTunnel,
                 AllowChangeDirInMidCell = false,
                 CurrentDir = direction,
-                DesiredDir = Movable.Direction.None,
+                DesiredDir = Direction.None,
                 Rand = new Random(randSeed)
             });
         ecb.AddComponent(enemy,

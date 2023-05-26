@@ -187,7 +187,7 @@ public readonly partial struct EnemyReturnHomeAspect : IAspect
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var currentDir = m_movable.ValueRO.CurrentDir;
-        var enemyExitDirOpposite = Movable.OppositeDir(mapData.EnemyExitDir);
+        var enemyExitDirOpposite = mapData.EnemyExitDir.Opposite();
         var lastCellPos = m_movable.ValueRO.LastCellEdgeMapPos;
 
         if (lastCellPos.Equals(mapData.EnemyHousePos))

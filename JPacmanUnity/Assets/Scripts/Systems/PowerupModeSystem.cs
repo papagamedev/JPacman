@@ -78,8 +78,8 @@ public partial struct PowerupModeSystem : ISystem, ISystemStartStop
             ecb.AddComponent(entity, new EnemyScaredTag() { });
             ecb.RemoveComponent<EnemyFollowPlayerTag>(entity);
 
-            movable.ValueRW.CurrentDir = Movable.OppositeDir(movable.ValueRO.CurrentDir);
-            movable.ValueRW.DesiredDir = Movable.Direction.None;
+            movable.ValueRW.CurrentDir = movable.ValueRO.CurrentDir.Opposite();
+            movable.ValueRW.DesiredDir = Direction.None;
             count++;
         }
 
@@ -88,8 +88,8 @@ public partial struct PowerupModeSystem : ISystem, ISystemStartStop
             ecb.AddComponent(entity, new EnemyHomeScaredTag() { });
             ecb.RemoveComponent<EnemyHomeTag>(entity);
 
-            movable.ValueRW.CurrentDir = Movable.OppositeDir(movable.ValueRO.CurrentDir);
-            movable.ValueRW.DesiredDir = Movable.Direction.None;
+            movable.ValueRW.CurrentDir = movable.ValueRO.CurrentDir.Opposite();
+            movable.ValueRW.DesiredDir = Direction.None;
             count++;
         }
 

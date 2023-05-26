@@ -1,6 +1,20 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
+public struct Main : IComponentData
+{
+    public Entity DotPrefab;
+    public Entity PlayerPrefab;
+    public Entity EnemyPrefab;
+    public Entity WallPrefab;
+    public Entity FruitPrefab;
+    public Entity PowerupPrefab;
+    public BlobAssetReference<LevelsConfigData> LevelsConfigBlob;
+    public BlobAssetReference<MapsConfigData> MapsConfigBlob;
+    public uint RandomSeed;
+}
+
+
 public struct LevelsConfigData
 {
     public BlobArray<LevelConfigData> LevelsData;
@@ -75,18 +89,6 @@ public struct ShowUIBufferElement : IBufferElementData
     public HudEvents.ShowUIType UI;
 }
 
-public struct Main : IComponentData
-{
-    public Entity DotPrefab;
-    public Entity PlayerPrefab;
-    public Entity EnemyPrefab;
-    public Entity WallPrefab;
-    public Entity FruitPrefab;
-    public Entity PowerupPrefab;
-    public BlobAssetReference<LevelsConfigData> LevelsConfigBlob;
-    public BlobAssetReference<MapsConfigData> MapsConfigBlob;
-    public uint RandomSeed;
-}
 
 public readonly partial struct MainAspect : IAspect
 {
