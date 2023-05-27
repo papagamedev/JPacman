@@ -226,7 +226,8 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         new UpdateIntroEnemyJob
         {
             NewDir = dir,
-            NewSpeed = enemySpeed
+            NewSpeed = enemySpeed,
+            Scared = enemyScared
         }.ScheduleParallel();
         new UpdateIntroPlayerJob
         {
