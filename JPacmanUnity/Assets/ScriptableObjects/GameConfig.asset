@@ -22,6 +22,7 @@ MonoBehaviour:
     type: 3}
   PowerupPrefab: {fileID: 1000010539885376, guid: 3a068e9a975821043a7cb5c0c7f26ad5,
     type: 3}
+  IntroConfig: {fileID: 11400000, guid: 1de3456d16bf522458ba10b8e3ccea84, type: 2}
   LevelConfigs:
   - RoundNumber: 1
     LevelNumber: 1

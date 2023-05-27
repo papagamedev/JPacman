@@ -104,3 +104,108 @@ public struct MapConfigData
         return IsDirectionAllowed(x, y, direction, true);
     }
 }
+
+public struct MapsConfigData
+{
+    public BlobArray<MapConfigData> MapsData;
+
+    public static BlobAssetReference<MapsConfigData> CreateMapsConfigBlob(MapConfig[] maps)
+    {
+        var builder = new BlobBuilder(Allocator.Temp);
+        ref var mapsConfigData = ref builder.ConstructRoot<MapsConfigData>();
+        var mapsCount = maps.Length;
+        var mapsArrayBuilder = builder.Allocate(ref mapsConfigData.MapsData, mapsCount);
+        for (int i = 0; i < mapsCount; i++)
+        {
+            var map = maps[i].Map;
+            var mapDataSize = map.m_height * map.m_width;
+            mapsArrayBuilder[i].Id = i;
+            mapsArrayBuilder[i].Width = map.m_width;
+            mapsArrayBuilder[i].Height = map.m_height;
+            var arrayBuilder = builder.Allocate(ref mapsArrayBuilder[i].MapData, mapDataSize);
+            var enemyHousePos = half2.zero;
+            var enemyExitPos = half2.zero;
+            for (int y = 0; y < map.m_height; y++)
+            {
+                for (int x = 0; x < map.m_width; x++)
+                {
+                    var c = map.m_data[x, y];
+                    arrayBuilder[y * map.m_width + x] = c;
+
+                    if (c == MapConfigData.kPlayerChar)
+                    {
+                        mapsArrayBuilder[i].PlayerPos = new half2((half)x, (half)y);
+                    }
+                    else if (c == MapConfigData.kLabelsChar)
+                    {
+                        mapsArrayBuilder[i].LabelMessagePos = new half2((half)x, (half)y);
+                    }
+                    else if (c == MapConfigData.kFruitChar)
+                    {
+                        mapsArrayBuilder[i].FruitPos = new half2((half)x, (half)y);
+                    }
+                    else if (c == MapConfigData.kEnemyExitChar)
+                    {
+                        enemyExitPos = new half2((half)x, (half)y);
+                    }
+                    else if (c >= MapConfigData.kTunnelFirstChar && c <= MapConfigData.kTunnelLastChar)
+                    {
+                        int tunnelIdx = c - MapConfigData.kTunnelFirstChar;
+                        var length = mapsArrayBuilder[i].TunnelPos.Length;
+                        if (tunnelIdx >= length)
+                        {
+                            var addCount = tunnelIdx - length + 1;
+                            mapsArrayBuilder[i].TunnelPos.AddReplicate(half2.zero, addCount);
+                        }
+                        mapsArrayBuilder[i].TunnelPos[tunnelIdx] = new half2((half)x, (half)y);
+                    }
+                    else if (c == MapConfigData.kEnemyHorizontalHomeChar ||
+                        c == MapConfigData.kEnemyVerticalHomeChar)
+                    {
+                        enemyHousePos = new half2((half)x, (half)y);
+                    }
+                    else if (c == MapConfigData.kPowerupVerticalChar)
+                    {
+                        mapsArrayBuilder[i].PowerupPos.Add(new half2((half)x, (half)(y + 0.5f)));
+                    }
+                    else if (c == MapConfigData.kPowerupHorizontalChar)
+                    {
+                        mapsArrayBuilder[i].PowerupPos.Add(new half2((half)(x + 0.5f), (half)y));
+                    }
+                }
+            }
+
+            if (enemyHousePos.x == enemyExitPos.x)
+            {
+                if (enemyHousePos.y > enemyExitPos.y)
+                {
+                    mapsArrayBuilder[i].EnemyExitDir = Direction.Up;
+                    mapsArrayBuilder[i].EnemyExitPos = new half2(enemyExitPos.x, (half)(enemyExitPos.y - 1));
+                }
+                else
+                {
+                    mapsArrayBuilder[i].EnemyExitDir = Direction.Down;
+                    mapsArrayBuilder[i].EnemyExitPos = new half2(enemyExitPos.x, (half)(enemyExitPos.y + 2));
+                }
+            }
+            else
+            {
+                if (enemyHousePos.x > enemyExitPos.x)
+                {
+                    mapsArrayBuilder[i].EnemyExitDir = Direction.Left;
+                    mapsArrayBuilder[i].EnemyExitPos = new half2((half)(enemyExitPos.x - 1), enemyExitPos.y);
+                }
+                else
+                {
+                    mapsArrayBuilder[i].EnemyExitDir = Direction.Right;
+                    mapsArrayBuilder[i].EnemyExitPos = new half2((half)(enemyExitPos.x + 2), enemyExitPos.y);
+                }
+            }
+            mapsArrayBuilder[i].EnemyHousePos = enemyHousePos;
+        }
+        var result = builder.CreateBlobAssetReference<MapsConfigData>(Allocator.Persistent);
+        builder.Dispose();
+        return result;
+    }
+}
+

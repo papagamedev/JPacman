@@ -34,11 +34,7 @@ public class GameConfig : ScriptableObject
     public GameObject WallPrefab;
     public GameObject FruitPrefab;
     public GameObject PowerupPrefab;
+    public IntroConfig IntroConfig;
     public LevelConfig[] LevelConfigs;
-    
-    public void AssignMapIds()
-    {
-
-    }
 }
 

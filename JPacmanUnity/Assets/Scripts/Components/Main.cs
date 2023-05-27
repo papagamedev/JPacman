@@ -11,18 +11,8 @@ public struct Main : IComponentData
     public Entity PowerupPrefab;
     public BlobAssetReference<LevelsConfigData> LevelsConfigBlob;
     public BlobAssetReference<MapsConfigData> MapsConfigBlob;
+    public BlobAssetReference<IntroConfigData> IntroConfigBlob;
     public uint RandomSeed;
-}
-
-
-public struct LevelsConfigData
-{
-    public BlobArray<LevelConfigData> LevelsData;
-}
-
-public struct MapsConfigData
-{
-    public BlobArray<MapConfigData> MapsData;
 }
 
 public struct IntroPhaseTag : IComponentData { }

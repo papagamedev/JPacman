@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "LevelConfig", menuName = "JPacman Data/Level Config")]
+[CreateAssetMenu(fileName = "MapConfig", menuName = "JPacman Data/Map Config")]
 public class MapConfig : ScriptableObject
 {
 

@@ -35,34 +35,5 @@ public partial class SpriteAnimationSystem : SystemBase
         {
             sprite.sprite = spriteDef.AnimationFrames[spriteAnimator.Frame];
         }).WithoutBurst().Run();
-
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in Enemy enemy, in EnemyHomeTag enemyHome) =>
-        {
-            sprite.color = enemyDef.EnemyColors[enemy.Id];
-        }).WithoutBurst().Run();
-
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in Enemy enemy, in EnemyFollowPlayerTag enemyFollowPlayerTag) =>
-        {
-            sprite.color = enemyDef.EnemyColors[enemy.Id];
-        }).WithoutBurst().Run();
-
-        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
-        var enemyScaredBlinking = powerupModeAspect.IsEnemyScaredBlinking;
-
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in EnemyScaredTag enemy) =>
-        {
-            sprite.color = enemyScaredBlinking ? enemyDef.EnemyScaredBlinkColor : enemyDef.EnemyScaredColor;
-        }).WithoutBurst().Run();
-
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in EnemyHomeScaredTag enemy) =>
-        {
-            sprite.color = enemyScaredBlinking ? enemyDef.EnemyScaredBlinkColor : enemyDef.EnemyScaredColor;
-        }).WithoutBurst().Run();
-
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in EnemyReturnHomeTag enemy) =>
-        {
-            sprite.color = enemyDef.EnemyReturnHomeColor;
-        }).WithoutBurst().Run();
     }
 }

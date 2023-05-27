@@ -7,7 +7,7 @@ public class SpriteAnimatorDef : IComponentData
     public Sprite[] AnimationFrames;
 }
 
-public struct SpriteAnimator : IComponentData, IEnableableComponent
+public struct SpriteAnimator : IComponentData
 {
     public float StartTime;
     public int Frame;

@@ -24,6 +24,10 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
         {
             UI = HudEvents.ShowUIType.Menu
         });
+        ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
+        {
+            MusicType = AudioEvents.MusicType.Menu
+        });
         ecb.Playback(state.EntityManager);
     }
 
