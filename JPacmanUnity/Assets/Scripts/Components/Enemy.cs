@@ -1,10 +1,11 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-public class EnemyDef : IComponentData
+public struct EnemyDef : IComponentData
 {
-    public UnityEngine.Color[] EnemyColors;
+    public FixedList128Bytes<UnityEngine.Color> EnemyColors;
     public UnityEngine.Color EnemyScaredColor;
     public UnityEngine.Color EnemyScaredBlinkColor;
     public UnityEngine.Color EnemyReturnHomeColor;

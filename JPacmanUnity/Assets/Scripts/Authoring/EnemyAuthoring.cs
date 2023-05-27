@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -13,10 +14,16 @@ public class EnemyAuthoring : MonoBehaviour
     {
         public override void Bake(EnemyAuthoring authoring)
         {
-            var entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponentObject(entity, new EnemyDef
+            var enemyColors = new FixedList128Bytes<Color>();
+            foreach (var color in authoring.m_enemyColors)
             {
-                EnemyColors = authoring.m_enemyColors,
+                enemyColors.Add(color);
+            }
+
+            var entity = GetEntity(TransformUsageFlags.Dynamic);
+            AddComponent(entity, new EnemyDef
+            {
+                EnemyColors = enemyColors,
                 EnemyScaredColor = authoring.m_enemyScaredColor,
                 EnemyScaredBlinkColor = authoring.EnemyScaredBlinkColor,
                 EnemyReturnHomeColor = authoring.EnemyReturnHomeColor

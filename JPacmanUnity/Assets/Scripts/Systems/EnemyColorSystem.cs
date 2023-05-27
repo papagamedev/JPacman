@@ -17,12 +17,12 @@ public partial class EnemyColorSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in Enemy enemy, in EnemyHomeTag enemyHome) =>
+        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in Enemy enemy, in EnemyHomeTag enemyHome) =>
         {
             sprite.color = enemyDef.EnemyColors[enemy.Id];
         }).WithoutBurst().Run();
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in Enemy enemy, in EnemyFollowPlayerTag enemyFollowPlayerTag) =>
+        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in Enemy enemy, in EnemyFollowPlayerTag enemyFollowPlayerTag) =>
         {
             sprite.color = enemyDef.EnemyColors[enemy.Id];
         }).WithoutBurst().Run();
@@ -31,17 +31,17 @@ public partial class EnemyColorSystem : SystemBase
         var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
         var enemyScaredBlinking = powerupModeAspect.IsEnemyScaredBlinking;
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in EnemyScaredTag enemy) =>
+        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in EnemyScaredTag enemy) =>
         {
             sprite.color = enemyScaredBlinking ? enemyDef.EnemyScaredBlinkColor : enemyDef.EnemyScaredColor;
         }).WithoutBurst().Run();
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in EnemyHomeScaredTag enemy) =>
+        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in EnemyHomeScaredTag enemy) =>
         {
             sprite.color = enemyScaredBlinking ? enemyDef.EnemyScaredBlinkColor : enemyDef.EnemyScaredColor;
         }).WithoutBurst().Run();
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, EnemyDef enemyDef, in EnemyReturnHomeTag enemy) =>
+        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in EnemyReturnHomeTag enemy) =>
         {
             sprite.color = enemyDef.EnemyReturnHomeColor;
         }).WithoutBurst().Run();
