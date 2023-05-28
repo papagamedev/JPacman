@@ -63,6 +63,7 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
         powerupModeAspect.InitLive(gameAspect.LevelData);
 
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
 
         m_phaseTimer = 0;
         m_labelMode = LabelMode.Round;
@@ -93,6 +94,7 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
                 break;
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

@@ -35,6 +35,7 @@ public partial struct LevelDeadPhaseSystem : ISystem, ISystemStartStop
         });
 
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
 
         m_phaseTimer = 0;
     }
@@ -64,6 +65,7 @@ public partial struct LevelDeadPhaseSystem : ISystem, ISystemStartStop
             }
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

@@ -29,6 +29,7 @@ public partial struct LevelResetLivePhaseSystem : ISystem, ISystemStartStop
         powerupModeAspect.InitLive(gameAspect.LevelData);
 
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
         m_phaseTimer = 0;
     }
 
@@ -44,6 +45,7 @@ public partial struct LevelResetLivePhaseSystem : ISystem, ISystemStartStop
             SwitchToLevelPlayingPhase(mainEntity, ecb);
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

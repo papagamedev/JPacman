@@ -47,6 +47,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         CreatePlayer(ref state, mainComponent, ref introData, mainEntity, ecb);
 
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
 
         m_enemyTime = 0;
         m_shapeTime = 0;
@@ -67,12 +68,12 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
             GoToMainMenu(mainEntity, ecb);
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]
     public void OnStopRunning(ref SystemState state)
     {
-        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         foreach (var (collectible, entity) in SystemAPI.Query<MoveAnimator>().WithEntityAccess())
         {
@@ -83,6 +84,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
             ecb.DestroyEntity(entity);
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

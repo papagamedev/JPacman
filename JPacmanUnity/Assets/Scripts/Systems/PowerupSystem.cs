@@ -29,6 +29,7 @@ public partial struct PowerupSystem : ISystem
             ecb.AddComponent(mainEntity, new PowerupModeActiveTag());
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

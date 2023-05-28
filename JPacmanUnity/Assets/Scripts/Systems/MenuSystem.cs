@@ -29,6 +29,7 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
             MusicType = AudioEvents.MusicType.Menu
         });
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]
@@ -40,6 +41,7 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
             var ecb = new EntityCommandBuffer(Allocator.Temp);
             StartGame(0, mainEntity, ecb);
             ecb.Playback(state.EntityManager);
+            ecb.Dispose();
         }
     }
 

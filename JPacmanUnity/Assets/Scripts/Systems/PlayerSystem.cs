@@ -32,6 +32,7 @@ public partial struct PlayerSystem : ISystem
         playerAspect.UpdateInput(desiredDirection);
 
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

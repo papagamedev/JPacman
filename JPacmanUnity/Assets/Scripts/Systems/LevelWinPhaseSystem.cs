@@ -44,6 +44,7 @@ public partial struct LevelWinPhaseSystem : ISystem, ISystemStartStop
         }
 
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
 
         m_phaseTimer = 0;
         m_mode = Mode.DeathAnim;
@@ -81,6 +82,7 @@ public partial struct LevelWinPhaseSystem : ISystem, ISystemStartStop
                 break;
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

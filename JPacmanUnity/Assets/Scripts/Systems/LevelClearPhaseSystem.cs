@@ -29,6 +29,7 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
             SwitchToLevelStartPhase(mainEntity, ecb);
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

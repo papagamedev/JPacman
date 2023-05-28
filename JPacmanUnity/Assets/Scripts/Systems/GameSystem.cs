@@ -29,6 +29,7 @@ public partial struct GameSystem : ISystem, ISystemStartStop
         {
         });
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]
@@ -39,16 +40,21 @@ public partial struct GameSystem : ISystem, ISystemStartStop
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         gameAspect.ApplyAddScore(mainEntity, ecb);
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]
     public void OnStopRunning(ref SystemState state)
     {
+        if (!SystemAPI.TryGetSingletonEntity<Main>(out var mainEntity))
+        {
+            return;
+        }
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         ecb.AppendToBuffer(mainEntity, new KillAllScoreAnimationBufferElement() { Dummy = 0 });
         ecb.RemoveComponent<PowerupMode>(mainEntity);
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

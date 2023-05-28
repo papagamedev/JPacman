@@ -33,6 +33,7 @@ public partial struct PowerupModeSystem : ISystem, ISystemStartStop
         SetEnemyScaredState(ref state, powerupModeAspect, mainEntity, ecb);
 
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
 
     }
 
@@ -49,6 +50,7 @@ public partial struct PowerupModeSystem : ISystem, ISystemStartStop
         }
         powerupModeAspect.UpdateActive(SystemAPI.Time.DeltaTime, mainEntity, ecb);
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]
@@ -59,7 +61,10 @@ public partial struct PowerupModeSystem : ISystem, ISystemStartStop
 
     public void OnStopRunning(ref SystemState state)
     {
-        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        if (!SystemAPI.TryGetSingletonEntity<Main>(out var mainEntity))
+        {
+            return;
+        }
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new SoundStopEventBufferElement()
         {
@@ -68,6 +73,7 @@ public partial struct PowerupModeSystem : ISystem, ISystemStartStop
         SetEnemyNormalState(ref state, mainEntity, ecb);
         ecb.RemoveComponent<PowerupModeActiveTag>(mainEntity);
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     private void SetEnemyScaredState(ref SystemState state, PowerupModeAspect powerupModeAspect, Entity mainEntity, EntityCommandBuffer ecb)

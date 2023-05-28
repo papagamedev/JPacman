@@ -25,6 +25,7 @@ public partial struct LevelGameOverPhaseSystem : ISystem, ISystemStartStop
             Value = HudEvents.LabelMessage.GameOver
         });
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]
@@ -39,6 +40,7 @@ public partial struct LevelGameOverPhaseSystem : ISystem, ISystemStartStop
             ecb.AddComponent(mainEntity, new LevelClearPhaseTag());
         }
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]

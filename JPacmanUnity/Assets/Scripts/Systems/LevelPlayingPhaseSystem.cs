@@ -25,6 +25,7 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
             MusicType = gameAspect.LevelData.BonusLevel ? AudioEvents.MusicType.LevelBonus : AudioEvents.MusicType.Level
         });
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
 
     }
 
@@ -43,12 +44,16 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         }
 
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
     [BurstCompile]
     public void OnStopRunning(ref SystemState state)
     {
-        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        if (!SystemAPI.TryGetSingletonEntity<Main>(out var mainEntity))
+        {
+            return;
+        }
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new SoundStopEventBufferElement()
         {
@@ -56,6 +61,7 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         });
         ecb.RemoveComponent<PowerupModeActiveTag>(mainEntity);
         ecb.Playback(state.EntityManager);
+        ecb.Dispose();
     }
 
 
