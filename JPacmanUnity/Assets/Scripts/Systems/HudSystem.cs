@@ -82,7 +82,7 @@ public partial class HudSystem : SystemBase
                 OnSetLevelIcon(element.IconIdx);
             }
         }
-        mainAspect.SetLabelPosBuffer.Clear();
+        mainAspect.SetLevelIconBuffer.Clear();
 
         if (OnKillAllScoreAnimations != null)
         {

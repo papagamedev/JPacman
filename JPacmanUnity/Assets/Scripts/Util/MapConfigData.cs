@@ -34,7 +34,10 @@ public struct MapConfigData
     public bool IsDot(int x, int y) => x > 0 && y > 0 && IsChar(x, y, kDotChar) && IsChar(x - 1, y, kDotChar) && IsChar(x, y - 1, kDotChar) && IsChar(x - 1, y - 1, kDotChar);
     public bool IsEnemyHorizontalHome(int x, int y) => IsChar(x, y, kEnemyHorizontalHomeChar);
     public bool IsEnemyVerticalHome(int x, int y) => IsChar(x, y, kEnemyVerticalHomeChar);
-    public bool IsWall(int x, int y) => IsChar(x, y, kWallChar);
+    public bool IsEnemyExit(int x, int y) => IsChar(x, y, kEnemyExitChar) 
+        || (x < Width - 1 && IsChar(x, y, kWallChar) && IsChar(x + 1, y, kEnemyExitChar))
+        || (y < Height - 1 && IsChar(x, y, kWallChar) && IsChar(x, y + 1, kEnemyExitChar));
+    public bool IsWall(int x, int y) => IsChar(x, y, kWallChar) || IsEnemyExit(x, y);
     public bool IsTunnelEntrance(float2 mapPos) => IsTunnelEntrance((int)mapPos.x, (int)mapPos.y);
     public bool IsTunnelEntrance(int x, int y) => IsChar(x, y, kTunnelEntranceChar);
     public bool IsTunnel(float2 mapPos, out int tunnelIdx) => IsTunnel((int)mapPos.x, (int)mapPos.y, out tunnelIdx);

@@ -112,9 +112,26 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
 
     private void SetLabelMessage(Entity mainEntity, GameAspect gameAspect, EntityCommandBuffer ecb)
     {
+        HudEvents.LabelMessage msg;
+        switch (gameAspect.LevelData.LevelType)
+        {
+            case LevelConfigData.ELevelType.Bonus:
+                msg = HudEvents.LabelMessage.Bonus;
+                break;
+            case LevelConfigData.ELevelType.Final:
+                msg = HudEvents.LabelMessage.LevelFinal;
+                break;
+            case LevelConfigData.ELevelType.Ultimate:
+                msg = HudEvents.LabelMessage.LevelUltimate;
+                break;
+            default:
+                msg = HudEvents.LabelMessage.Level;
+                break;
+        }
+
         var setLabel = new SetLabelTextBufferElement()
         {
-            Value = gameAspect.LevelData.BonusLevel ? HudEvents.LabelMessage.Bonus : HudEvents.LabelMessage.Level
+            Value = msg 
         };
         ecb.AppendToBuffer(mainEntity, setLabel);
         m_labelMode = LabelMode.Message;

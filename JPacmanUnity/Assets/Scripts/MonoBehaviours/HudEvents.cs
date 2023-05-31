@@ -13,9 +13,12 @@ public class HudEvents : MonoBehaviour
     public TMP_Text m_scoreLabel;
     public TMP_Text m_livesLabel;
     public TMP_Text m_messageLabel;
-    public GameObject m_levelIconsRoot;
     public GameObject m_scoreAnimationPrefab;
     public Image m_fade;
+    public SpriteAnimatorAuthoring m_fruitAnimConfig;
+    public GameObject m_levelIconTemplate;
+    public GameObject m_levelIconRoot;
+    public GameConfig m_gameConfig;
 
     private class FadeState
     {
@@ -95,6 +98,8 @@ public class HudEvents : MonoBehaviour
     {
         Round,
         Level,
+        LevelFinal,
+        LevelUltimate,
         Bonus,
         None,
         GameOver
@@ -224,6 +229,12 @@ public class HudEvents : MonoBehaviour
             case LabelMessage.Bonus:
                 m_messageLabel.text = "Nivel X";
                 return;
+            case LabelMessage.LevelFinal:
+                m_messageLabel.text = "Nivel Final";
+                return;
+            case LabelMessage.LevelUltimate:
+                m_messageLabel.text = "JA JA JA JA";
+                return;
             case LabelMessage.GameOver:
                 m_messageLabel.text = "Fin del Juego";
                 break;
@@ -237,11 +248,21 @@ public class HudEvents : MonoBehaviour
 
     private void OnSetLevelIcon(int iconIdx)
     {
-        var transform = m_levelIconsRoot.transform;
-        for (int i = 0; i < transform.childCount; i++)
+        var levelIconRootTransform = m_levelIconRoot.transform;
+        for (int i = 0; i < levelIconRootTransform.childCount; i++)
         {
-            var child = transform.GetChild(i);
-            child.gameObject.SetActive(i <= iconIdx);
+            var child = levelIconRootTransform.GetChild(i);
+            Destroy(child.gameObject);
+        }
+
+        var levelConfigs = m_gameConfig.LevelConfigs;
+        for (int i = 0; i <= iconIdx; i++)
+        {
+            var child = Instantiate(m_levelIconTemplate, levelIconRootTransform);
+            var image = child.GetComponent<Image>();
+            var spriteIdx = levelConfigs[i].FruitSpriteIdx;
+            image.sprite = m_fruitAnimConfig.AnimationFrames[spriteIdx];
+            child.SetActive(true);
         }
     }
 

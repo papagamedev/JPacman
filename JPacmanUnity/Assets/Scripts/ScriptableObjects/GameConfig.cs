@@ -8,7 +8,7 @@ public class GameConfig : ScriptableObject
     {
         public int RoundNumber;
         public int LevelNumber;
-        public bool BonusLevel;
+        public LevelConfigData.ELevelType LevelType;
         public bool MoveDots;
         public int MultiplyDots;
         public bool MovePowerups;
@@ -35,6 +35,11 @@ public class GameConfig : ScriptableObject
     public GameObject FruitPrefab;
     public GameObject PowerupPrefab;
     public IntroConfig IntroConfig;
+    public int LivesCount;
     public LevelConfig[] LevelConfigs;
+
+    [Header("Debugging")]
+    [Tooltip("-1 means go to intro and menu; 0+ means go straight to that level")]
+    public int DebugStartLevel = -1;
 }
 

@@ -4,10 +4,19 @@ using Unity.Entities;
 
 public struct LevelConfigData
 {
+    public enum ELevelType
+    {
+        Normal,
+        Bonus,
+        Final,
+        Ultimate
+    }
+
     public int Idx;
     public int RoundNumber;
     public int LevelNumber;
-    public bool BonusLevel;
+    public bool BonusLevel => LevelType == ELevelType.Bonus;
+    public ELevelType LevelType;
     public bool MoveDots;
     public int MultiplyDots;
     public bool MovePowerups;
@@ -45,7 +54,7 @@ public struct LevelsConfigData
             arrayBuilder[i].Idx = i;
             arrayBuilder[i].LevelNumber = levelsConfig[i].LevelNumber;
             arrayBuilder[i].RoundNumber = levelsConfig[i].RoundNumber;
-            arrayBuilder[i].BonusLevel = levelsConfig[i].BonusLevel;
+            arrayBuilder[i].LevelType = levelsConfig[i].LevelType;
             arrayBuilder[i].MoveDots = levelsConfig[i].MoveDots;
             arrayBuilder[i].MultiplyDots = levelsConfig[i].MultiplyDots;
             arrayBuilder[i].MovePowerups = levelsConfig[i].MovePowerups;

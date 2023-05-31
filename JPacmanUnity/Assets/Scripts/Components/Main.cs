@@ -13,6 +13,7 @@ public struct Main : IComponentData
     public BlobAssetReference<MapsConfigData> MapsConfigBlob;
     public BlobAssetReference<IntroConfigData> IntroConfigBlob;
     public uint RandomSeed;
+    public int LivesCount;
 }
 
 public struct IntroPhaseTag : IComponentData { }

@@ -1,7 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using static MapConfig;
 
 public struct Game : IComponentData
 {
@@ -245,26 +244,34 @@ public readonly partial struct GameAspect : IAspect
     private void CreateWall(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
     {
         int frame = 0;
-        if (x == mapData.Width - 1 || mapData.IsWall(x + 1, y))
+        if (mapData.IsEnemyExit(x, y))
         {
-            frame |= 1 << Direction.Right;
+            // last frame of this image stores the enemy exit sprite
+            frame = 15;
         }
-        if (x == 0 || mapData.IsWall(x - 1, y))
+        else
         {
-            frame |= 1 << Direction.Left;
-        }
-        if (y == mapData.Height - 1 || mapData.IsWall(x, y + 1))
-        {
-            frame |= 1 << Direction.Down;
-        }
-        if (y == 0 || mapData.IsWall(x, y - 1))
-        {
-            frame |= 1 << Direction.Up;
-        }
-        if (frame == 15)
-        {
-            // means an empty sprite, this is a wall surrounded by walls
-            return;
+            if (x == mapData.Width - 1 || mapData.IsWall(x + 1, y))
+            {
+                frame |= 1 << Direction.Right;
+            }
+            if (x == 0 || mapData.IsWall(x - 1, y))
+            {
+                frame |= 1 << Direction.Left;
+            }
+            if (y == mapData.Height - 1 || mapData.IsWall(x, y + 1))
+            {
+                frame |= 1 << Direction.Down;
+            }
+            if (y == 0 || mapData.IsWall(x, y - 1))
+            {
+                frame |= 1 << Direction.Up;
+            }
+            if (frame == 15)
+            {
+                // means an empty sprite, this is a wall surrounded by walls, skip creating a sprite
+                return;
+            }
         }
 
         var wall = ecb.Instantiate(m_main.ValueRO.WallPrefab);
