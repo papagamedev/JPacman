@@ -15,7 +15,6 @@ public class HudEvents : MonoBehaviour
     public TMP_Text m_messageLabel;
     public GameObject m_scoreAnimationPrefab;
     public Image m_fade;
-    public SpriteAnimatorAuthoring m_fruitAnimConfig;
     public GameObject m_levelIconTemplate;
     public GameObject m_levelIconRoot;
     public GameConfig m_gameConfig;
