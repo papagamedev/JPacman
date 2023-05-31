@@ -255,14 +255,25 @@ public class HudEvents : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        var levelConfigs = m_gameConfig.LevelConfigs;
-        for (int i = 0; i <= iconIdx; i++)
+        foreach (var config in m_gameConfig.RoundConfigs)
         {
-            var child = Instantiate(m_levelIconTemplate, levelIconRootTransform);
-            var image = child.GetComponent<Image>();
-            var spriteIdx = levelConfigs[i].FruitSpriteIdx;
-            image.sprite = m_fruitAnimConfig.AnimationFrames[spriteIdx];
-            child.SetActive(true);
+            foreach (var level in config.LevelConfigs)
+            {
+                var child = Instantiate(m_levelIconTemplate, levelIconRootTransform);
+                var image = child.GetComponent<Image>();
+                image.sprite = level.FruitConfig.Sprite;
+                child.SetActive(true);
+
+                iconIdx--;
+                if (iconIdx < 0)
+                {
+                    break;
+                }
+            }
+            if (iconIdx < 0)
+            {
+                break;
+            }
         }
     }
 

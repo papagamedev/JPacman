@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35c309c599fefbd45b5279faf8f3ed76, type: 3}
+  m_Name: Level 08
+  m_EditorClassIdentifier: 
+  LevelNumber: 7
+  LevelType: 0
+  MoveDots: 1
+  MultiplyDots: 1
+  MovePowerups: 1
+  PlayerSpeed: 8
+  EnemySpeed: 8
+  EnemySpeedInTunnel: 4
+  EnemySpeedScared: 4
+  EnemySpeedReturnHome: 16
+  EnemyInHomeTime: 1
+  EnemyScaredTime: 6
+  EnemyScore: 200
+  EnemyCI: 7
+  FruitConfig: {fileID: 11400000, guid: 8b2df53504da80648aae28e04a56ae68, type: 2}

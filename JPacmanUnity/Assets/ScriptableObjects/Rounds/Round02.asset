@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10be59f956aa0094cbfda238ab5f10bd, type: 3}
+  m_Name: Round02
+  m_EditorClassIdentifier: 
+  RoundNumber: 2
+  EnemyBaseCI: 3
+  MapConfig: {fileID: 11400000, guid: 0e60dad1c3d25be41b67f4c82abbb020, type: 2}
+  LevelConfigs:
+  - {fileID: 11400000, guid: 9d9330924d1f5144e8242d86a697ba40, type: 2}
+  - {fileID: 11400000, guid: ca6b8a91d65e6bd44bf2b38f848fa18f, type: 2}
+  - {fileID: 11400000, guid: d5ec653cb06dcae43b3c5027e710a4af, type: 2}
+  - {fileID: 11400000, guid: 33702503f0d0fe74c83b402a684a3303, type: 2}
+  - {fileID: 11400000, guid: ae7ab7c1fce70534e9774d5e93b0995d, type: 2}
+  - {fileID: 11400000, guid: 4f26c83c6ad336f498bf3a8186395b38, type: 2}
+  - {fileID: 11400000, guid: be59e49ce49b1ec46a319d18b4462e50, type: 2}
+  - {fileID: 11400000, guid: b9c56c848d6cc254ca96fd122d7ce0d3, type: 2}
+  - {fileID: 11400000, guid: 65c9bc6e0dfe2504e8f64b06c6edac3f, type: 2}
+  - {fileID: 11400000, guid: 8ae7990c52d2af9479612083ec3b779f, type: 2}

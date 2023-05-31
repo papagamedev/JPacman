@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16d98c9e2ea5fc44a8ddd2fe3978cd5, type: 3}
+  m_Name: 07 Apple
+  m_EditorClassIdentifier: 
+  Sprite: {fileID: -1223855546, guid: 10108f208a93939438d6e23754a4b9b7, type: 3}
+  SpriteIdx: 7
+  Score: 4000
+  WaitTime: 60
+  Duration: 20

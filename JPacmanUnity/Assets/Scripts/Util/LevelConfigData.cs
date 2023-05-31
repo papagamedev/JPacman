@@ -45,41 +45,54 @@ public struct LevelsConfigData
     {
         var builder = new BlobBuilder(Allocator.Temp);
         ref var levelsConfigData = ref builder.ConstructRoot<LevelsConfigData>();
-        var levelsConfig = authoring.Config.LevelConfigs;
-        var levelCount = levelsConfig.Length;
+        int levelCount = 0;
+        foreach (var roundConfig in authoring.Config.RoundConfigs)
+        {
+            levelCount += roundConfig.LevelConfigs.Length;
+        }
         var arrayBuilder = builder.Allocate(ref levelsConfigData.LevelsData, levelCount);
         var mapsDictionary = new Dictionary<MapConfig, int>();
-        for (int i = 0; i < levelCount; i++)
-        {
-            arrayBuilder[i].Idx = i;
-            arrayBuilder[i].LevelNumber = levelsConfig[i].LevelNumber;
-            arrayBuilder[i].RoundNumber = levelsConfig[i].RoundNumber;
-            arrayBuilder[i].LevelType = levelsConfig[i].LevelType;
-            arrayBuilder[i].MoveDots = levelsConfig[i].MoveDots;
-            arrayBuilder[i].MultiplyDots = levelsConfig[i].MultiplyDots;
-            arrayBuilder[i].MovePowerups = levelsConfig[i].MovePowerups;
-            arrayBuilder[i].PlayerSpeed = levelsConfig[i].PlayerSpeed;
-            arrayBuilder[i].EnemySpeed = levelsConfig[i].EnemySpeed;
-            arrayBuilder[i].EnemySpeedInTunnel = levelsConfig[i].EnemySpeedInTunnel;
-            arrayBuilder[i].EnemySpeedScared = levelsConfig[i].EnemySpeedScared;
-            arrayBuilder[i].EnemySpeedReturnHome = levelsConfig[i].EnemySpeedReturnHome;
-            arrayBuilder[i].EnemyInHomeTime = levelsConfig[i].EnemyInHomeTime;
-            arrayBuilder[i].EnemyScaredTime = levelsConfig[i].EnemyScaredTime;
-            arrayBuilder[i].EnemyScore = levelsConfig[i].EnemyScore;
-            arrayBuilder[i].EnemyCI = levelsConfig[i].EnemyCI;
-            arrayBuilder[i].FruitScore = levelsConfig[i].FruitScore;
-            arrayBuilder[i].FruitSpriteIdx = levelsConfig[i].FruitSpriteIdx;
-            arrayBuilder[i].FruitWaitTime = levelsConfig[i].FruitWaitTime;
-            arrayBuilder[i].FruitDuration = levelsConfig[i].FruitDuration;
 
-            var map = levelsConfig[i].MapConfig;
+        int levelIdx = 0;
+        foreach (var roundConfig in authoring.Config.RoundConfigs)
+        {
+            var map = roundConfig.MapConfig;
             if (!mapsDictionary.TryGetValue(map, out var mapId))
             {
                 mapId = maps.Count;
                 mapsDictionary.Add(map, mapId);
-                maps.Add(levelsConfig[i].MapConfig);
+                maps.Add(roundConfig.MapConfig);
             }
-            arrayBuilder[i].MapId = mapId;
+
+            foreach (var levelConfig in roundConfig.LevelConfigs)
+            {
+                arrayBuilder[levelIdx].Idx = levelIdx;
+                arrayBuilder[levelIdx].LevelNumber = levelConfig.LevelNumber;
+                arrayBuilder[levelIdx].RoundNumber = roundConfig.RoundNumber;
+                arrayBuilder[levelIdx].LevelType = levelConfig.LevelType;
+                arrayBuilder[levelIdx].MoveDots = levelConfig.MoveDots;
+                arrayBuilder[levelIdx].MultiplyDots = levelConfig.MultiplyDots;
+                arrayBuilder[levelIdx].MovePowerups = levelConfig.MovePowerups;
+                arrayBuilder[levelIdx].PlayerSpeed = levelConfig.PlayerSpeed;
+                arrayBuilder[levelIdx].EnemySpeed = levelConfig.EnemySpeed;
+                arrayBuilder[levelIdx].EnemySpeedInTunnel = levelConfig.EnemySpeedInTunnel;
+                arrayBuilder[levelIdx].EnemySpeedScared = levelConfig.EnemySpeedScared;
+                arrayBuilder[levelIdx].EnemySpeedReturnHome = levelConfig.EnemySpeedReturnHome;
+                arrayBuilder[levelIdx].EnemyInHomeTime = levelConfig.EnemyInHomeTime;
+                arrayBuilder[levelIdx].EnemyScaredTime = levelConfig.EnemyScaredTime;
+                arrayBuilder[levelIdx].EnemyScore = levelConfig.EnemyScore;
+                arrayBuilder[levelIdx].EnemyCI = levelConfig.EnemyCI + roundConfig.EnemyBaseCI;
+
+                var fruitConfig = levelConfig.FruitConfig;
+                arrayBuilder[levelIdx].FruitScore = fruitConfig.Score;
+                arrayBuilder[levelIdx].FruitSpriteIdx = fruitConfig.SpriteIdx;
+                arrayBuilder[levelIdx].FruitWaitTime = fruitConfig.WaitTime;
+                arrayBuilder[levelIdx].FruitDuration = fruitConfig.Duration;
+ 
+                arrayBuilder[levelIdx].MapId = mapId;
+
+                levelIdx++;
+            }
         }
         var result = builder.CreateBlobAssetReference<LevelsConfigData>(Allocator.Persistent);
         builder.Dispose();
