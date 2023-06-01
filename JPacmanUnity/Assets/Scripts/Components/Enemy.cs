@@ -50,14 +50,18 @@ public readonly partial struct EnemyHomeAspect : IAspect
 
         m_movable.ValueRW.Speed = enemySpeed;
 
-        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
+        UpdateMovableAtHome(m_movable);
+    }
+
+    public static void UpdateMovableAtHome(RefRW<Movable> movable)
+    {
+        var nextAvailableDirs = movable.ValueRO.NextCellEdgeAvailableDirections;
         if (nextAvailableDirs.Count == 1)
         {
-            m_movable.ValueRW.DesiredDir = nextAvailableDirs.First;
+            movable.ValueRW.DesiredDir = nextAvailableDirs.First;
         }
     }
 
-    
 }
 
 public readonly partial struct EnemyFollowPlayerAspect : IAspect
@@ -102,14 +106,7 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
         m_movable.ValueRW.Speed = enemySpeed;
         m_movable.ValueRW.SpeedInTunnel = enemySpeedInTunnel;
 
-        // "think" on following player
-        var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
-        var currentDir = m_movable.ValueRO.CurrentDir;
-        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
-        if (nextAvailableDirs.Count > 2 || !nextAvailableDirs.Check(currentDir))
-        {
-            m_movable.ValueRW.DesiredDir = MovableAspect.ComputeFollowTargetDir(nextCellPos, currentDir, playerMapPos, nextAvailableDirs, m_enemy.ValueRO.Id + enemyCI, ref m_movable.ValueRW.Rand);
-        }
+        MovableAspect.UpdateMovableFollowPos(m_movable, playerMapPos, m_enemy.ValueRO.Id + enemyCI);
     }
 }
 
@@ -146,15 +143,8 @@ public readonly partial struct EnemyScaredAspect : IAspect
         m_movable.ValueRW.Speed = enemySpeedScared;
         m_movable.ValueRW.SpeedInTunnel = enemySpeedScared;
 
-        var nextCellPos = m_movable.ValueRO.NextCellEdgeMapPos;
-        var currentDir = m_movable.ValueRO.CurrentDir;
-        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
-        if (nextAvailableDirs.Count > 2 || !nextAvailableDirs.Check(currentDir))
-        {
-            m_movable.ValueRW.DesiredDir = MovableAspect.ComputeFollowTargetDir(nextCellPos, currentDir, mapData.EnemyHousePos, nextAvailableDirs, 5, ref m_movable.ValueRW.Rand);
-        }
+        MovableAspect.UpdateMovableFollowPos(m_movable, mapData.EnemyHousePos, 5);
     }
-
 }
 
 public readonly partial struct EnemyHomeScaredAspect : IAspect
@@ -169,11 +159,7 @@ public readonly partial struct EnemyHomeScaredAspect : IAspect
 
         m_movable.ValueRW.Speed = enemySpeedScared;
 
-        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
-        if (nextAvailableDirs.Count == 1)
-        {
-            m_movable.ValueRW.DesiredDir = nextAvailableDirs.First;
-        }
+        EnemyHomeAspect.UpdateMovableAtHome(m_movable);
     }
 
 }
@@ -213,11 +199,7 @@ public readonly partial struct EnemyReturnHomeAspect : IAspect
         m_movable.ValueRW.Speed = enemySpeedRerturnHome;
         m_movable.ValueRW.SpeedInTunnel = enemySpeedRerturnHome;
 
-        var nextAvailableDirs = m_movable.ValueRO.NextCellEdgeAvailableDirections;
-        if (nextAvailableDirs.Count > 2 || !nextAvailableDirs.Check(currentDir))
-        {
-            m_movable.ValueRW.DesiredDir = MovableAspect.ComputeFollowTargetDir(nextCellPos, currentDir, mapData.EnemyExitPos, nextAvailableDirs, 13, ref m_movable.ValueRW.Rand);
-        }
+        MovableAspect.UpdateMovableFollowPos(m_movable, mapData.EnemyExitPos, 13);
     }
 
 }

@@ -17,7 +17,8 @@ public struct LevelConfigData
     public int LevelNumber;
     public bool BonusLevel => LevelType == ELevelType.Bonus;
     public ELevelType LevelType;
-    public bool MoveDots;
+    public float DotsMoveSpeed;
+    public float DotsMoveWaitTime;
     public int MultiplyDots;
     public bool MovePowerups;
     public float PlayerSpeed;
@@ -70,7 +71,8 @@ public struct LevelsConfigData
                 arrayBuilder[levelIdx].LevelNumber = levelConfig.LevelNumber;
                 arrayBuilder[levelIdx].RoundNumber = roundConfig.RoundNumber;
                 arrayBuilder[levelIdx].LevelType = levelConfig.LevelType;
-                arrayBuilder[levelIdx].MoveDots = levelConfig.MoveDots;
+                arrayBuilder[levelIdx].DotsMoveSpeed = levelConfig.DotsMoveSpeed;
+                arrayBuilder[levelIdx].DotsMoveWaitTime = levelConfig.DotsMoveWaitTime + roundConfig.BaseDotsMoveWaitTime;
                 arrayBuilder[levelIdx].MultiplyDots = levelConfig.MultiplyDots;
                 arrayBuilder[levelIdx].MovePowerups = levelConfig.MovePowerups;
                 arrayBuilder[levelIdx].PlayerSpeed = levelConfig.PlayerSpeed;
@@ -81,7 +83,7 @@ public struct LevelsConfigData
                 arrayBuilder[levelIdx].EnemyInHomeTime = levelConfig.EnemyInHomeTime;
                 arrayBuilder[levelIdx].EnemyScaredTime = levelConfig.EnemyScaredTime;
                 arrayBuilder[levelIdx].EnemyScore = levelConfig.EnemyScore;
-                arrayBuilder[levelIdx].EnemyCI = levelConfig.EnemyCI + roundConfig.EnemyBaseCI;
+                arrayBuilder[levelIdx].EnemyCI = levelConfig.EnemyCI + roundConfig.BaseEnemyCI;
 
                 var fruitConfig = levelConfig.FruitConfig;
                 arrayBuilder[levelIdx].FruitScore = fruitConfig.Score;

@@ -37,6 +37,7 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         gameAspect.UpdatePlayingTime(SystemAPI.Time.DeltaTime);
         gameAspect.CheckSpawnFruit(mainEntity, ecb);
+        gameAspect.CheckMoveDots(mainEntity, ecb);
 
         if (gameAspect.IsLevelCompleted() || Input.GetKeyDown(KeyCode.W))
         {
@@ -60,6 +61,7 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
             SoundType = AudioEvents.SoundType.EnemyReturnHome
         });
         ecb.RemoveComponent<PowerupModeActiveTag>(mainEntity);
+        ecb.RemoveComponent<DotsMovingTag>(mainEntity);
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
     }

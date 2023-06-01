@@ -35,7 +35,9 @@ public readonly partial struct MovableAspect : IAspect
         ref var map = ref mapBlobRef.Value.MapsData[mapId];
         var mapPos = map.WorldToMapPos(m_transform.ValueRO.Position);
         float2 mapPosAbs = math.abs(math.frac(mapPos));
-        bool atCellEdge = (mapPosAbs.x < 0.001 && mapPosAbs.y < 0.001);
+        bool atCellEdgeX = mapPosAbs.x < 0.001;
+        bool atCellEdgeY = mapPosAbs.y < 0.001;
+        bool atCellEdge = atCellEdgeX && atCellEdgeY;
         if (atCellEdge || !m_movable.ValueRO.Init)
         {
             m_movable.ValueRW.Init = true;
@@ -55,6 +57,20 @@ public readonly partial struct MovableAspect : IAspect
                 m_movable.ValueRW.LastCellEdgeMapPos = mapPos;
             }
         }
+        else if (m_movable.ValueRO.CurrentDir == Direction.None && m_movable.ValueRO.DesiredDir != Direction.None)
+        {
+            // special case when movable is not currently moving, not at cell edge, and is willing to move
+            // assume that if not at cell edge, then if Y pos is at a cell edge, then x movement is allowed
+            // or if X pos is at cell edge, then y movement is allowed
+
+            var desiredDir = m_movable.ValueRO.DesiredDir;
+            if ((atCellEdgeX && (desiredDir == Direction.Up || desiredDir == Direction.Down))
+                || (atCellEdgeY && (desiredDir == Direction.Left || desiredDir == Direction.Right)))
+            {
+                m_movable.ValueRW.CurrentDir = desiredDir;
+            }
+        }
+
 
         if (m_movable.ValueRO.AllowChangeDirInMidCell || atCellEdge)
         {
@@ -299,6 +315,17 @@ public readonly partial struct MovableAspect : IAspect
                 return CheckVerticalFollowDir(targetToMovable, currentDir, nextAvailableDirs, movableCI, ref random, true);
             }
             return Direction.Left;
+        }
+    }
+
+    public static void UpdateMovableFollowPos(RefRW<Movable> movable, float2 targetMapPos, int movableCI)
+    {
+        var nextCellPos = movable.ValueRO.NextCellEdgeMapPos;
+        var currentDir = movable.ValueRO.CurrentDir;
+        var nextAvailableDirs = movable.ValueRO.NextCellEdgeAvailableDirections;
+        if (nextAvailableDirs.Count > 2 || !nextAvailableDirs.Check(currentDir))
+        {
+            movable.ValueRW.DesiredDir = ComputeFollowTargetDir(nextCellPos, currentDir, targetMapPos, nextAvailableDirs, movableCI, ref movable.ValueRW.Rand);
         }
     }
 }

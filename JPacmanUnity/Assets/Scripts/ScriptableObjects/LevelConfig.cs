@@ -5,7 +5,8 @@ public class LevelConfig : ScriptableObject
 {
     public int LevelNumber;
     public LevelConfigData.ELevelType LevelType;
-    public bool MoveDots;
+    public float DotsMoveSpeed;
+    public float DotsMoveWaitTime;
     public int MultiplyDots;
     public bool MovePowerups;
     public float PlayerSpeed;

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Round02
   m_EditorClassIdentifier: 
   RoundNumber: 2
-  EnemyBaseCI: 3
+  BaseEnemyCI: 3
+  BaseDotsMoveWaitTime: -4
   MapConfig: {fileID: 11400000, guid: 0e60dad1c3d25be41b67f4c82abbb020, type: 2}
   LevelConfigs:
   - {fileID: 11400000, guid: 9d9330924d1f5144e8242d86a697ba40, type: 2}

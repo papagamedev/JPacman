@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LevelNumber: 7
   LevelType: 0
-  MoveDots: 1
+  DotsMoveSpeed: 4
+  DotsMoveWaitTime: 10
   MultiplyDots: 1
   MovePowerups: 1
   PlayerSpeed: 8

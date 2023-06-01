@@ -106,6 +106,8 @@ public struct MapConfigData
         y = (int) TunnelPos[tunnelIdx].y;
         return IsDirectionAllowed(x, y, direction, true);
     }
+
+    public float2 NewRandomMapPos(ref Random rand) => new float2(rand.NextInt(Width), rand.NextInt(Height));
 }
 
 public struct MapsConfigData

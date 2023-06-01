@@ -11,6 +11,8 @@ public struct Game : IComponentData
     public float LiveTime;
     public float LevelTime;
     public bool FruitSpawned;
+    public bool DotsMoving;
+    public bool PowerupsMoving;
     public int EnemyScore;
 }
 
@@ -109,6 +111,7 @@ public readonly partial struct GameAspect : IAspect
     public void InitLive(EntityCommandBuffer ecb, Entity mainEntity, uint randSeed)
     {
         m_game.ValueRW.LiveTime = 0;
+        m_game.ValueRW.DotsMoving = false;
 
         ref var mapData = ref GetCurrentMapData();
         int homeX = (int)mapData.EnemyHousePos.x;
@@ -165,6 +168,19 @@ public readonly partial struct GameAspect : IAspect
             });
     }
 
+    public void CheckMoveDots(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        if (m_game.ValueRO.DotsMoving || LevelData.DotsMoveSpeed <= 0 || m_game.ValueRO.LiveTime < LevelData.DotsMoveWaitTime)
+        {
+            return;
+        }
+        m_game.ValueRW.DotsMoving = true;
+        ecb.AddComponent(mainEntity,
+            new DotsMovingTag()
+            {
+            });
+    }
+
     public void SetNextLevel()
     {
         var levelId = m_game.ValueRO.LevelId;
@@ -187,6 +203,7 @@ public readonly partial struct GameAspect : IAspect
     {
         m_game.ValueRW.LevelTime = 0;
         m_game.ValueRW.FruitSpawned = false;
+        m_game.ValueRW.PowerupsMoving = false;
         m_game.ValueRW.CollectibleCount = 0;
 
         ref var mapData = ref GetCurrentMapData();
@@ -299,6 +316,7 @@ public readonly partial struct GameAspect : IAspect
                 Scale = 1.0f,
                 Rotation = quaternion.identity
             });
+        ecb.AddComponent(dot, new DotTag());
         m_game.ValueRW.CollectibleCount++;
     }
 
