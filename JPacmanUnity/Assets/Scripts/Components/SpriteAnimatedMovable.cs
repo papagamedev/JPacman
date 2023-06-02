@@ -1,10 +1,16 @@
 using Unity.Entities;
 
+public struct SpriteAnimatedMovableTag : IComponentData
+{
+}
+
+
 public readonly partial struct SpriteAnimatedMovableAspect : IAspect
 {
     public readonly Entity Entity;
     private readonly RefRO<Movable> m_movable;
     private readonly RefRW<SpriteAnimator> m_animator;
+    private readonly RefRO<SpriteAnimatedMovableTag> m_tag;
 
     public void UpdateAnimation()
     {

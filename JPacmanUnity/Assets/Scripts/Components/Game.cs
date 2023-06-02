@@ -112,6 +112,7 @@ public readonly partial struct GameAspect : IAspect
     {
         m_game.ValueRW.LiveTime = 0;
         m_game.ValueRW.DotsMoving = false;
+        m_game.ValueRW.PowerupsMoving = false;
 
         ref var mapData = ref GetCurrentMapData();
         int homeX = (int)mapData.EnemyHousePos.x;
@@ -177,6 +178,19 @@ public readonly partial struct GameAspect : IAspect
         m_game.ValueRW.DotsMoving = true;
         ecb.AddComponent(mainEntity,
             new DotsMovingTag()
+            {
+            });
+    }
+
+    public void CheckMovePowerups(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        if (m_game.ValueRO.PowerupsMoving || LevelData.PowerupsMoveSpeed <= 0 || m_game.ValueRO.LiveTime < LevelData.PowerupsMoveWaitTime)
+        {
+            return;
+        }
+        m_game.ValueRW.PowerupsMoving = true;
+        ecb.AddComponent(mainEntity,
+            new PowerupsMovingTag()
             {
             });
     }
@@ -256,6 +270,7 @@ public readonly partial struct GameAspect : IAspect
                     AllowChangeDirInMidCell = true,
                     Rand = new Random(randSeed)
                 });
+        ecb.AddComponent(player, new SpriteAnimatedMovableTag() { });
     }
 
     private void CreateWall(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
@@ -356,10 +371,11 @@ public readonly partial struct GameAspect : IAspect
                 DesiredDir = Direction.None,
                 Rand = new Random(randSeed)
             });
+        ecb.AddComponent(enemy, new SpriteAnimatedMovableTag() { });
         ecb.AddComponent(enemy,
             new Enemy()
             {
-                Id = id,
+                Id = id
             });
         ecb.AddComponent(enemy, new EnemyHomeTag() { });
     }
@@ -369,14 +385,25 @@ public readonly partial struct GameAspect : IAspect
         for (int i = 0; i < 4; i++)
         {
             var powerup = ecb.Instantiate(m_main.ValueRO.PowerupPrefab);
-            ecb.SetComponent(powerup,
-                new LocalTransform()
+            ResetPowerupPos(i, powerup, ecb, ref mapData);
+            ecb.AddComponent(powerup,
+                new Powerup()
                 {
-                    Position = mapData.MapToWorldPos(mapData.PowerupPos[i].x, mapData.PowerupPos[i].y),
-                    Scale = 1.0f,
-                    Rotation = quaternion.identity,
+                    Id = i
                 });
             m_game.ValueRW.CollectibleCount++;
         }
     }
+
+    public void ResetPowerupPos(int id, Entity powerupEntity, EntityCommandBuffer ecb, ref MapConfigData mapData)
+    {
+        ecb.SetComponent(powerupEntity,
+                new LocalTransform()
+                {
+                    Position = mapData.MapToWorldPos(mapData.PowerupPos[id].x, mapData.PowerupPos[id].y),
+                    Scale = 1.0f,
+                    Rotation = quaternion.identity,
+                });
+    }
+
 }

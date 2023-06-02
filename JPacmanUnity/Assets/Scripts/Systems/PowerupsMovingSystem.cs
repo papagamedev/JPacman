@@ -6,14 +6,14 @@ using Unity.Mathematics;
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(CollectibleSystem))]
-public partial struct DotsMovingSystem: ISystem , ISystemStartStop
+public partial struct PowerupsMovingSystem: ISystem , ISystemStartStop
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<LevelPlayingPhaseTag>();
         state.RequireForUpdate<Main>();
-        state.RequireForUpdate<DotsMovingTag>();
+        state.RequireForUpdate<PowerupsMovingTag>();
         state.RequireForUpdate<Game>();
     }
 
@@ -36,24 +36,19 @@ public partial struct DotsMovingSystem: ISystem , ISystemStartStop
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         ref var map = ref gameAspect.GetCurrentMapData();
-        var dotsMoveSpeed = gameAspect.LevelData.DotsMoveSpeed;
-        foreach (var (_, entity) in SystemAPI.Query<DotTag>().WithEntityAccess())
+        var powerupsMoveSpeed = gameAspect.LevelData.PowerupsMoveSpeed;
+        foreach (var (_, entity) in SystemAPI.Query<Powerup>().WithEntityAccess())
         {
             var rand = new Random(gameAspect.RandomSeed);
             ecb.AddComponent(entity, new Movable()
             {
-                Speed = dotsMoveSpeed,
-                SpeedInTunnel = dotsMoveSpeed,
+                Speed = powerupsMoveSpeed,
+                SpeedInTunnel = powerupsMoveSpeed,
                 AllowChangeDirInMidCell = false,
                 CurrentDir = Direction.None,
                 DesiredDir = Direction.None,
                 Rand = rand
             });
-            ecb.AddComponent(entity,
-                new RotateAnimator()
-                {
-                    Speed = 30.0f
-                });
             ecb.AddComponent(entity,
                 new RandomMover()
                 {
@@ -68,10 +63,9 @@ public partial struct DotsMovingSystem: ISystem , ISystemStartStop
     public void OnStopRunning(ref SystemState state)
     {
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        foreach (var (_, entity) in SystemAPI.Query<DotTag>().WithEntityAccess())
+        foreach (var (_, entity) in SystemAPI.Query<Powerup>().WithEntityAccess())
         {
             ecb.RemoveComponent<Movable>(entity);
-            ecb.RemoveComponent<RotateAnimator>(entity);
             ecb.RemoveComponent<RandomMover>(entity);
         }
         ecb.Playback(state.EntityManager);

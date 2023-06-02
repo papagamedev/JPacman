@@ -38,6 +38,7 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         gameAspect.UpdatePlayingTime(SystemAPI.Time.DeltaTime);
         gameAspect.CheckSpawnFruit(mainEntity, ecb);
         gameAspect.CheckMoveDots(mainEntity, ecb);
+        gameAspect.CheckMovePowerups(mainEntity, ecb);
 
         if (gameAspect.IsLevelCompleted() || Input.GetKeyDown(KeyCode.W))
         {
@@ -62,6 +63,7 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         });
         ecb.RemoveComponent<PowerupModeActiveTag>(mainEntity);
         ecb.RemoveComponent<DotsMovingTag>(mainEntity);
+        ecb.RemoveComponent<PowerupsMovingTag>(mainEntity);
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
     }

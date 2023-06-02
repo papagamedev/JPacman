@@ -6,6 +6,7 @@ public class RoundConfig : ScriptableObject
     public int RoundNumber;
     public int BaseEnemyCI;
     public int BaseDotsMoveWaitTime;
+    public int BasePowerupsMoveWaitTime;
     public MapConfig MapConfig;
     public LevelConfig[] LevelConfigs;
 }

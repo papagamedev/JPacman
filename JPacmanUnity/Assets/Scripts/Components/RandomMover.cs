@@ -15,7 +15,7 @@ public readonly partial struct RandomMoverAspect : IAspect
 
     public void Update()
     {
-        MovableAspect.UpdateMovableFollowPos(m_movable, m_randomMover.ValueRO.RandomMapPos, 5);
+        MovableAspect.UpdateMovableFollowPos(m_movable, m_randomMover.ValueRO.RandomMapPos, 1);
     }
 
 }

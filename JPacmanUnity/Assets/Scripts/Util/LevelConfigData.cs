@@ -19,6 +19,8 @@ public struct LevelConfigData
     public ELevelType LevelType;
     public float DotsMoveSpeed;
     public float DotsMoveWaitTime;
+    public float PowerupsMoveSpeed;
+    public float PowerupsMoveWaitTime;
     public int MultiplyDots;
     public bool MovePowerups;
     public float PlayerSpeed;
@@ -74,7 +76,8 @@ public struct LevelsConfigData
                 arrayBuilder[levelIdx].DotsMoveSpeed = levelConfig.DotsMoveSpeed;
                 arrayBuilder[levelIdx].DotsMoveWaitTime = levelConfig.DotsMoveWaitTime + roundConfig.BaseDotsMoveWaitTime;
                 arrayBuilder[levelIdx].MultiplyDots = levelConfig.MultiplyDots;
-                arrayBuilder[levelIdx].MovePowerups = levelConfig.MovePowerups;
+                arrayBuilder[levelIdx].PowerupsMoveSpeed = levelConfig.PowerupsMoveSpeed;
+                arrayBuilder[levelIdx].PowerupsMoveWaitTime = levelConfig.PowerupsMoveWaitTime + roundConfig.BasePowerupsMoveWaitTime;
                 arrayBuilder[levelIdx].PlayerSpeed = levelConfig.PlayerSpeed;
                 arrayBuilder[levelIdx].EnemySpeed = levelConfig.EnemySpeed;
                 arrayBuilder[levelIdx].EnemySpeedInTunnel = levelConfig.EnemySpeedInTunnel;

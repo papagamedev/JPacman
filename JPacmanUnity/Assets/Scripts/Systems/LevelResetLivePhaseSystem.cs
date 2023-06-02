@@ -27,7 +27,11 @@ public partial struct LevelResetLivePhaseSystem : ISystem, ISystemStartStop
         gameAspect.InitLive(ecb, mainEntity, gameAspect.RandomSeed);
         var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
         powerupModeAspect.InitLive(gameAspect.LevelData);
-
+        ref var mapData = ref gameAspect.GetCurrentMapData();
+        foreach (var (powerup, entity) in SystemAPI.Query<Powerup>().WithEntityAccess())
+        {
+            gameAspect.ResetPowerupPos(powerup.Id, entity, ecb, ref mapData);
+        }
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
         m_phaseTimer = 0;

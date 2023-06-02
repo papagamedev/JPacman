@@ -8,7 +8,8 @@ public class LevelConfig : ScriptableObject
     public float DotsMoveSpeed;
     public float DotsMoveWaitTime;
     public int MultiplyDots;
-    public bool MovePowerups;
+    public float PowerupsMoveSpeed;
+    public float PowerupsMoveWaitTime;
     public float PlayerSpeed;
     public float EnemySpeed;
     public float EnemySpeedInTunnel;

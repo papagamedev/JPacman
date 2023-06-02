@@ -17,7 +17,8 @@ MonoBehaviour:
   DotsMoveSpeed: 4
   DotsMoveWaitTime: 6
   MultiplyDots: 1
-  MovePowerups: 1
+  PowerupsMoveSpeed: 2
+  PowerupsMoveWaitTime: 13
   PlayerSpeed: 8
   EnemySpeed: 8
   EnemySpeedInTunnel: 4
