@@ -111,4 +111,25 @@ public partial class HudSystem : SystemBase
         }
         mainAspect.ShowUIBuffer.Clear();
     }
+
+    public void OnPausedContinue()
+    {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        gameAspect.SetPaused(false, mainEntity, ecb);
+        ecb.Playback(EntityManager);
+        ecb.Dispose();
+
+    }
+
+    public void OnPausedExit()
+    {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+        ecb.RemoveComponent<LevelPlayingPhaseTag>(mainEntity);
+        ecb.AddComponent(mainEntity, new LevelClearPhaseTag());
+        ecb.Playback(EntityManager);
+        ecb.Dispose();
+    }
 }

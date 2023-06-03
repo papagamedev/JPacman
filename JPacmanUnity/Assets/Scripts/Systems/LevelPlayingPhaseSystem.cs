@@ -34,6 +34,11 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        if (gameAspect.IsPaused)
+        {
+            return;
+        }
+
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         gameAspect.UpdatePlayingTime(SystemAPI.Time.DeltaTime);
         gameAspect.CheckSpawnFruit(mainEntity, ecb);
@@ -43,6 +48,11 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         if (gameAspect.IsLevelCompleted() || Input.GetKeyDown(KeyCode.W))
         {
             SwitchToWinPhase(mainEntity, ecb);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            gameAspect.SetPaused(true, mainEntity, ecb);
         }
 
         ecb.Playback(state.EntityManager);
@@ -80,6 +90,5 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         ecb.RemoveComponent<LevelPlayingPhaseTag>(mainEntity);
         ecb.AddComponent<LevelWinPhaseTag>(mainEntity);
     }
-
 }
 

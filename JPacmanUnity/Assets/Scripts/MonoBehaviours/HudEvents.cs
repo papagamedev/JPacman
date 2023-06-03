@@ -10,6 +10,7 @@ public class HudEvents : MonoBehaviour
 {
     public GameObject m_ingameRoot;
     public GameObject m_menuRoot;
+    public GameObject m_pausedRoot;
     public TMP_Text m_scoreLabel;
     public TMP_Text m_livesLabel;
     public TMP_Text m_messageLabel;
@@ -108,6 +109,7 @@ public class HudEvents : MonoBehaviour
     {
         Menu,
         Ingame,
+        Paused,
         None
     }
 
@@ -303,6 +305,7 @@ public class HudEvents : MonoBehaviour
     {
         m_menuRoot.SetActive(uiType == ShowUIType.Menu);
         m_ingameRoot.SetActive(uiType == ShowUIType.Ingame);
+        m_pausedRoot.SetActive(uiType == ShowUIType.Paused);
     }
 
     private static Vector3 WorldToUIPos(Vector3 worldPos)

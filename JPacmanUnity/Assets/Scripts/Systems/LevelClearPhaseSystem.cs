@@ -20,7 +20,7 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         DestroyLevel(ref state, ecb);
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
-        if (gameAspect.Lives == 0)
+        if (gameAspect.Lives == 0 || gameAspect.IsPaused)
         {
             SwitchToMenu(mainEntity, ecb);
         }

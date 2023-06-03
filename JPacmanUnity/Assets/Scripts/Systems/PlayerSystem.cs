@@ -21,6 +21,11 @@ public partial struct PlayerSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        if (gameAspect.IsPaused)
+        {
+            return;
+        }
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
         float inputX = Input.GetAxis("Horizontal");

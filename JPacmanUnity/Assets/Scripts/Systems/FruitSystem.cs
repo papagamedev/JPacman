@@ -18,6 +18,12 @@ public partial struct FruitSystem: ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        if (gameAspect.IsPaused)
+        {
+            return;
+        }
         var deltaTime = SystemAPI.Time.DeltaTime;
         var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
         new FruitJob

@@ -8,6 +8,7 @@ public partial class AudioSystem : SystemBase
     public Action<AudioEvents.SoundType> OnPlaySound;
     public Action<AudioEvents.SoundType> OnStopSound;
     public Action<AudioEvents.MusicType> OnPlayMusic;
+    public Action<bool> OnPauseAudio;
 
     protected override void OnCreate()
     {
@@ -27,6 +28,7 @@ public partial class AudioSystem : SystemBase
                 OnPlayMusic(music.MusicType);
             }
         }
+        mainAspect.MusicEventBuffer.Clear();
         if (OnPlaySound != null)
         {
             foreach (var sound in mainAspect.SoundEventBuffer)
@@ -34,6 +36,7 @@ public partial class AudioSystem : SystemBase
                 OnPlaySound(sound.SoundType);
             }
         }
+        mainAspect.SoundEventBuffer.Clear();
         if (OnStopSound != null)
         {
             foreach (var sound in mainAspect.SoundStopEventBuffer)
@@ -41,8 +44,14 @@ public partial class AudioSystem : SystemBase
                 OnStopSound(sound.SoundType);
             }
         }
-        mainAspect.MusicEventBuffer.Clear();
-        mainAspect.SoundEventBuffer.Clear();
         mainAspect.SoundStopEventBuffer.Clear();
+        if (OnPauseAudio != null)
+        {
+            foreach (var sound in mainAspect.PauseAudioEventBuffer)
+            {
+                OnPauseAudio(sound.Paused);
+            }
+        }
+        mainAspect.PauseAudioEventBuffer.Clear();
     }
 }

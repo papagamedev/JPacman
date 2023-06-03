@@ -42,6 +42,11 @@ public partial struct PowerupModeSystem : ISystem, ISystemStartStop
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        if (gameAspect.IsPaused)
+        {
+            return;
+        }
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
         if (powerupModeAspect.ProcessPowerupCollected(mainEntity, ecb))

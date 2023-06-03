@@ -35,6 +35,11 @@ public class AudioEvents : MonoBehaviour
     private AudioSource[] m_soundSource;
     private AudioSource m_musicSource;
 
+    [Range(0f, 1f)]
+    public float m_musicVolume = 0.5f;
+    [Range(0f, 1f)]
+    public float m_soundVolume = 1.0f;
+
     public AudioConfig SoundPlayerEatDot;
     public AudioConfig SoundPlayerEatPowerup;
     public AudioConfig SoundPlayerEatFruit;
@@ -55,14 +60,17 @@ public class AudioEvents : MonoBehaviour
         audioSystem.OnPlaySound += OnPlaySound;
         audioSystem.OnStopSound += OnStopSound;
         audioSystem.OnPlayMusic += OnPlayMusic;
+        audioSystem.OnPauseAudio += OnPauseAudio;
 
         var soundSourcesCount = Enum.GetValues(typeof(SoundType)).Length;
         m_soundSource = new AudioSource[soundSourcesCount];
         for (int i = 0; i < soundSourcesCount; i++)
         {
             m_soundSource[i] = gameObject.AddComponent<AudioSource>();
+            m_soundSource[i].volume = m_soundVolume;
         }
         m_musicSource = gameObject.AddComponent<AudioSource>();
+        m_musicSource.volume = m_musicVolume;
     }
 
     private void OnDisable()
@@ -71,7 +79,9 @@ public class AudioEvents : MonoBehaviour
         {
             var audioSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<AudioSystem>();
             audioSystem.OnPlaySound -= OnPlaySound;
+            audioSystem.OnStopSound -= OnStopSound;
             audioSystem.OnPlayMusic -= OnPlayMusic;
+            audioSystem.OnPauseAudio -= OnPauseAudio;
         }
     }
 
@@ -163,5 +173,25 @@ public class AudioEvents : MonoBehaviour
                 return;
         }
         PlaySource(m_musicSource, config);
+    }
+
+    private void OnPauseAudio(bool paused)
+    {
+        if (paused)
+        {
+            m_musicSource.Pause();
+            foreach (var src in m_soundSource)
+            {
+                src.Pause();
+            }
+        }
+        else
+        {
+            m_musicSource.UnPause();
+            foreach (var src in m_soundSource)
+            {
+                src.UnPause();
+            }
+        }
     }
 }

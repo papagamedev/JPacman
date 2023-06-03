@@ -20,8 +20,12 @@ public partial struct MovableSystem : ISystem
     {
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        if (gameAspect.IsPaused)
+        {
+            return;
+        }
+        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
         ref var map = ref gameAspect.GetCurrentMapData();
         new MoveEntityJob

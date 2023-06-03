@@ -35,6 +35,10 @@ public struct MusicEventBufferElement : IBufferElementData
     public AudioEvents.MusicType MusicType;
 }
 
+public struct PauseAudioEventBufferElement : IBufferElementData
+{
+    public bool Paused;
+}
 
 public struct SetLivesTextBufferElement : IBufferElementData
 {
@@ -88,6 +92,7 @@ public readonly partial struct MainAspect : IAspect
     public readonly DynamicBuffer<SoundEventBufferElement> SoundEventBuffer;
     public readonly DynamicBuffer<SoundStopEventBufferElement> SoundStopEventBuffer;
     public readonly DynamicBuffer<MusicEventBufferElement> MusicEventBuffer;
+    public readonly DynamicBuffer<PauseAudioEventBufferElement> PauseAudioEventBuffer;
     public readonly DynamicBuffer<SetLivesTextBufferElement> SetLivesTextBuffer;
     public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
     public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;

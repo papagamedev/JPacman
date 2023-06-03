@@ -27,6 +27,10 @@ public partial struct EnemySystem : ISystem
         var playerWorldPos = playerAspect.GetWorldPos();
         var playerCollisionRadius = playerAspect.GetCollisionRadius();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        if (gameAspect.IsPaused)
+        {
+            return;
+        }
         var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
         ref var map = ref gameAspect.GetCurrentMapData();
         var playerMapPos = map.WorldToMapPos(playerWorldPos);

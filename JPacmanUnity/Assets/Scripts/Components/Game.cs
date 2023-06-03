@@ -14,6 +14,7 @@ public struct Game : IComponentData
     public bool DotsMoving;
     public bool PowerupsMoving;
     public int EnemyScore;
+    public bool Paused;
 }
 
 public struct LevelStartPhaseTag : IComponentData { }
@@ -49,6 +50,20 @@ public readonly partial struct GameAspect : IAspect
     private readonly RefRW<Game> m_game;
     private readonly RefRW<PowerupMode> m_powerupMode;
     private readonly DynamicBuffer<AddScoreBufferElement> m_addScoreBuffer;
+
+    public bool IsPaused => m_game.ValueRO.Paused;
+    public void SetPaused(bool paused, Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        m_game.ValueRW.Paused = paused;
+        ecb.AppendToBuffer(mainEntity, new PauseAudioEventBufferElement()
+        {
+            Paused = paused
+        });
+        ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
+        {
+            UI = paused ? HudEvents.ShowUIType.Paused : HudEvents.ShowUIType.Ingame 
+        });
+    }
 
     public void ApplyAddScore(Entity mainEntity, EntityCommandBuffer ecb)
     {
