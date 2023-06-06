@@ -26,23 +26,31 @@ public partial struct PlayerSystem : ISystem
         {
             return;
         }
-        var ecb = new EntityCommandBuffer(Allocator.Temp);
 
         float inputX = Input.GetAxis("Horizontal");
         float inputY = Input.GetAxis("Vertical");
-        float2 desiredDirection = new float2(math.sign(inputX), -math.sign(inputY));
+        var desiredDirection = new float2(math.sign(inputX), -math.sign(inputY));
 
-        var entity = SystemAPI.GetSingletonEntity<PlayerAspect>();
-        var playerAspect = SystemAPI.GetAspect<PlayerAspect>(entity);
-        playerAspect.UpdateInput(desiredDirection);
-
-        ecb.Playback(state.EntityManager);
-        ecb.Dispose();
+        new PlayerJob
+        {
+            DesiredDirection = desiredDirection
+        }.ScheduleParallel();
     }
 
     [BurstCompile]
     public void OnDestroy(ref SystemState state)
     {
 
+    }
+}
+
+
+public partial struct PlayerJob : IJobEntity
+{
+    public float2 DesiredDirection;
+
+    private void Execute(PlayerAspect player)
+    {
+        player.UpdateInput(DesiredDirection);
     }
 }

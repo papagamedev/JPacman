@@ -15,6 +15,7 @@ public class MainAuthoring : MonoBehaviour
             var levelsConfigBlob = LevelsConfigData.CreateLevelsConfigBlob(authoring, maps);
             var mapsConfigBlob = MapsConfigData.CreateMapsConfigBlob(maps.ToArray());
             var introConfigBlob = IntroConfigData.CreateIntroConfigBlob(authoring);
+            var menuConfigBlob = MenuConfigData.CreateMenuConfigBlob(authoring);
             var gameConfig = authoring.Config;
             var livesCount = gameConfig.LivesCount;
             AddComponent(entity, new Main
@@ -28,6 +29,7 @@ public class MainAuthoring : MonoBehaviour
                 LevelsConfigBlob = levelsConfigBlob,
                 MapsConfigBlob = mapsConfigBlob,
                 IntroConfigBlob = introConfigBlob,
+                MenuConfigBlob = menuConfigBlob,
                 RandomSeed = (uint)(System.DateTime.Now.Ticks % 1000000000),
                 LivesCount = livesCount
             });

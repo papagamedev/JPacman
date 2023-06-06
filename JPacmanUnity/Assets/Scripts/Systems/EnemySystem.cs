@@ -22,10 +22,6 @@ public partial struct EnemySystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
-        var player = SystemAPI.GetSingletonEntity<PlayerAspect>();
-        var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
-        var playerWorldPos = playerAspect.GetWorldPos();
-        var playerCollisionRadius = playerAspect.GetCollisionRadius();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         if (gameAspect.IsPaused)
         {
@@ -33,13 +29,30 @@ public partial struct EnemySystem : ISystem
         }
         var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
         ref var map = ref gameAspect.GetCurrentMapData();
-        var playerMapPos = map.WorldToMapPos(playerWorldPos);
+        var player = SystemAPI.GetSingletonEntity<Player>();
+        bool playerIsTeleporting;
+        float playerCollisionRadius = 0;
+        float2 playerMapPos = float2.zero;
+        if (!SystemAPI.HasComponent<Movable>(player))
+        {
+            // player is teleporting!
+            playerIsTeleporting = true;
+        }
+        else
+        {
+            playerIsTeleporting = false;
+            var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
+            var playerWorldPos = playerAspect.GetWorldPos();
+            playerCollisionRadius = playerAspect.GetCollisionRadius();
+            playerMapPos = map.WorldToMapPos(playerWorldPos);
+        }
         var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
         new EnemyFollowPlayerJob
         {
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
             MapId = map.Id,
+            PlayerIsTeleporting = playerIsTeleporting,
             PlayerMapPos = playerMapPos,
             PlayerCollisionRadius = playerCollisionRadius,
             EnemyCI = gameAspect.LevelData.EnemyCI,
@@ -54,6 +67,7 @@ public partial struct EnemySystem : ISystem
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
             MapId = map.Id,
+            PlayerIsTeleporting = playerIsTeleporting,
             PlayerMapPos = playerMapPos,
             PlayerCollisionRadius = playerCollisionRadius,
             EnemySpeedScared = gameAspect.LevelData.EnemySpeedScared,
@@ -117,6 +131,7 @@ public partial struct EnemyFollowPlayerJob : IJobEntity
     public float DeltaTime;
     public BlobAssetReference<MapsConfigData> BlobMapsRef;
     public int MapId;
+    public bool PlayerIsTeleporting;
     public float2 PlayerMapPos;
     public float PlayerCollisionRadius;
     public int EnemyCI;
@@ -128,7 +143,7 @@ public partial struct EnemyFollowPlayerJob : IJobEntity
 
     private void Execute(EnemyFollowPlayerAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, EnemyCI, EnemySpeed, EnemySpeedInTunnel, IsBonus, sortKey, MainEntity, ECB);
+        enemy.Update(BlobMapsRef, MapId, PlayerIsTeleporting, PlayerMapPos, PlayerCollisionRadius, EnemyCI, EnemySpeed, EnemySpeedInTunnel, IsBonus, sortKey, MainEntity, ECB);
     }
 }
 
@@ -137,6 +152,7 @@ public partial struct EnemyScaredJob : IJobEntity
     public float DeltaTime;
     public BlobAssetReference<MapsConfigData> BlobMapsRef;
     public int MapId;
+    public bool PlayerIsTeleporting;
     public float2 PlayerMapPos;
     public float PlayerCollisionRadius;
     public float EnemySpeedScared;
@@ -145,7 +161,7 @@ public partial struct EnemyScaredJob : IJobEntity
 
     private void Execute(EnemyScaredAspect enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, EnemySpeedScared, sortKey, Main, ECB);
+        enemy.Update(BlobMapsRef, MapId, PlayerIsTeleporting, PlayerMapPos, PlayerCollisionRadius, EnemySpeedScared, sortKey, Main, ECB);
     }
 }
 

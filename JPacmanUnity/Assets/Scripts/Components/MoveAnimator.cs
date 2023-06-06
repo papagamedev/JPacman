@@ -5,7 +5,7 @@ using Unity.Transforms;
 public struct MoveAnimator: IComponentData
 {
     public float Speed;
-    public float2 Direction;
+    public Direction Direction;
 }
 
 public readonly partial struct MoveAnimatorAspect : IAspect
@@ -16,7 +16,7 @@ public readonly partial struct MoveAnimatorAspect : IAspect
 
     public void UpdateAnimation(float timeDelta)
     {
-        var direction = new float3(m_animator.ValueRO.Direction, 0);
+        var direction = new float3(m_animator.ValueRO.Direction.Vector(), 0);
         var speed = m_animator.ValueRO.Speed;
         var position = m_transform.ValueRO.Position;
         var posDelta = direction * timeDelta * speed;

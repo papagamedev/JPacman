@@ -64,6 +64,9 @@ MonoBehaviour:
   SoundEnemyReturnHome:
     m_audioClip: {fileID: 8300000, guid: 3d83b7e7d5d9d014e8ee6f6db38b4d93, type: 3}
     m_loop: 1
+  SoundTeleport:
+    m_audioClip: {fileID: 8300000, guid: dab07c3ec5e4bb0409743692b9f9694b, type: 3}
+    m_loop: 0
   MusicDead:
     m_audioClip: {fileID: 8300000, guid: 9a427680434e8fe40aa93baf2cc24e07, type: 3}
     m_loop: 0

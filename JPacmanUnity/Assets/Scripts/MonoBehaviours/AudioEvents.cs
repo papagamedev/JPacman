@@ -13,6 +13,7 @@ public class AudioEvents : MonoBehaviour
         PlayerEatEnemy,
         EnemyScared,
         EnemyReturnHome,
+        Teleport,
     }
 
     public enum MusicType
@@ -72,6 +73,7 @@ public class AudioEvents : MonoBehaviour
     public AudioConfig SoundPlayerEatEnemy;
     public AudioConfig SoundEnemyScared;
     public AudioConfig SoundEnemyReturnHome;
+    public AudioConfig SoundTeleport;
     public AudioConfig MusicDead;
     public AudioConfig MusicIntro;
     public AudioConfig MusicMenu;
@@ -150,6 +152,10 @@ public class AudioEvents : MonoBehaviour
 
             case SoundType.EnemyReturnHome:
                 config = SoundEnemyReturnHome;
+                break;
+
+            case SoundType.Teleport:
+                config = SoundTeleport;
                 break;
 
             default:

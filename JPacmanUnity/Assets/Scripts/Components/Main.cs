@@ -12,6 +12,7 @@ public struct Main : IComponentData
     public BlobAssetReference<LevelsConfigData> LevelsConfigBlob;
     public BlobAssetReference<MapsConfigData> MapsConfigBlob;
     public BlobAssetReference<IntroConfigData> IntroConfigBlob;
+    public BlobAssetReference<MenuConfigData> MenuConfigBlob;
     public uint RandomSeed;
     public int LivesCount;
 }
@@ -19,6 +20,10 @@ public struct Main : IComponentData
 public struct IntroPhaseTag : IComponentData { }
 
 public struct MenuPhaseTag : IComponentData { }
+
+public struct IntroSpriteTag : IComponentData { }
+
+public struct MenuSpriteTag : IComponentData { }
 
 public struct SoundEventBufferElement : IBufferElementData
 {

@@ -73,7 +73,7 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
     private readonly RefRO<EnemyFollowPlayerTag> m_enemyFollowPLayer;
     private readonly RefRO<CollisionCircle> m_collision;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int enemyCI, float enemySpeed, float enemySpeedInTunnel, bool isBonus, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, bool playerIsTeleporting, float2 playerMapPos, float playerCollisionRadius, int enemyCI, float enemySpeed, float enemySpeedInTunnel, bool isBonus, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var enemyWorldPos = m_transform.ValueRO.Position;
@@ -88,7 +88,7 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
         }
 
         // check if player is captured
-        if (CollisionCircle.CheckCollision(enemyMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
+        if (!playerIsTeleporting && CollisionCircle.CheckCollision(enemyMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
         {
             ecb.RemoveComponent<LevelPlayingPhaseTag>(sortKey, mainEntity);
             if (isBonus)
@@ -118,13 +118,13 @@ public readonly partial struct EnemyScaredAspect : IAspect
     private readonly RefRO<EnemyScaredTag> m_enemyScared;
     private readonly RefRO<CollisionCircle> m_collision;
 
-    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, float enemySpeedScared, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
+    public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, bool playerIsTeleporting, float2 playerMapPos, float playerCollisionRadius, float enemySpeedScared, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
         ref var mapData = ref mapsBlobRef.Value.MapsData[mapId];
         var enemyWorldPos = m_transform.ValueRO.Position;
         var enemyMapPos = mapData.WorldToMapPos(enemyWorldPos);
 
-        if (CollisionCircle.CheckCollision(enemyMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
+        if (!playerIsTeleporting && CollisionCircle.CheckCollision(enemyMapPos, playerMapPos, playerCollisionRadius + m_collision.ValueRO.Radius))
         {
             ecb.RemoveComponent<EnemyScaredTag>(sortKey, Entity);
             ecb.AddComponent(sortKey, Entity, new EnemyReturnHomeTag() { });

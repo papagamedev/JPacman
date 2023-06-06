@@ -93,7 +93,12 @@ public partial struct PowerupModeSystem : ISystem, ISystemStartStop
             movable.ValueRW.DesiredDir = Direction.None;
             count++;
         }
-
+        foreach (var (enemy, movable, entity) in SystemAPI.Query<EnemyFollowPlayerTag, RefRW<Teleportable>>().WithEntityAccess())
+        {
+            ecb.AddComponent(entity, new EnemyScaredTag() { });
+            ecb.RemoveComponent<EnemyFollowPlayerTag>(entity);
+            count++;
+        }
         foreach (var (enemy, movable, entity) in SystemAPI.Query<EnemyHomeTag, RefRW<Movable>>().WithEntityAccess())
         {
             ecb.AddComponent(entity, new EnemyHomeScaredTag() { });

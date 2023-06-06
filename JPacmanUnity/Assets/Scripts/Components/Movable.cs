@@ -16,6 +16,7 @@ public struct Movable : IComponentData
     public bool Init;
     public Random Rand;
     public bool IsInTunnel;
+    public bool CanDoTeleporting;
 }
 
 public readonly partial struct MovableAspect : IAspect
@@ -29,11 +30,12 @@ public readonly partial struct MovableAspect : IAspect
         m_transform.ValueRW.Position = map.MapToWorldPos(mapPos);
     }
 
-    public void Move(BlobAssetReference<MapsConfigData> mapBlobRef, int mapId, float deltaTime)
+    public void Move(BlobAssetReference<MapsConfigData> mapBlobRef, int mapId, float deltaTime, Entity mainEntity, int sortKey, EntityCommandBuffer.ParallelWriter ecb)
     {
         // check if we are in a cell edge; if that's the case, check if movement direction is changed
         ref var map = ref mapBlobRef.Value.MapsData[mapId];
-        var mapPos = map.WorldToMapPos(m_transform.ValueRO.Position);
+        var worldPos = m_transform.ValueRO.Position;
+        var mapPos = map.WorldToMapPos(worldPos);
         float2 mapPosAbs = math.abs(math.frac(mapPos));
         bool atCellEdgeX = mapPosAbs.x < 0.001;
         bool atCellEdgeY = mapPosAbs.y < 0.001;
@@ -51,10 +53,34 @@ public readonly partial struct MovableAspect : IAspect
             {
                 m_movable.ValueRW.IsInTunnel = !m_movable.ValueRW.IsInTunnel;
             }
-            else if (map.IsTunnel(m_movable.ValueRO.LastCellEdgeMapPos, out var tunnelIdx))
+            else if (!m_movable.ValueRO.ForcedDir && map.IsTunnel(m_movable.ValueRO.LastCellEdgeMapPos, out var tunnelIdx))
             {
-                mapPos = map.TunnelPos[MapConfigData.OppositeTunnelIdx(tunnelIdx)];
-                m_movable.ValueRW.LastCellEdgeMapPos = mapPos;
+                var targetTunnelMapPos = map.TunnelPos[MapConfigData.OppositeTunnelIdx(tunnelIdx)];
+                if (m_movable.ValueRO.CanDoTeleporting)
+                {
+                    ecb.RemoveComponent<Movable>(sortKey, Entity);
+                    ecb.AddComponent(sortKey, Entity, new Teleportable()
+                    {
+                        Duration = 0.5f,
+                        TargetMapPos = targetTunnelMapPos,
+                        StartWorldPos = worldPos,
+                        TargetWorldPos = map.MapToWorldPos(targetTunnelMapPos),
+                        MovableAllowChangeDirInMidCell = m_movable.ValueRO.AllowChangeDirInMidCell,
+                        MovableSpeed = m_movable.ValueRO.Speed,
+                        MovableSpeedInTunnel = m_movable.ValueRO.SpeedInTunnel,
+                        MovableDirection = m_movable.ValueRO.CurrentDir,
+                        Rand = new Random(m_movable.ValueRO.Rand.state)
+                    });
+                    ecb.AppendToBuffer(sortKey, mainEntity, new SoundEventBufferElement()
+                    {
+                        SoundType = AudioEvents.SoundType.Teleport
+                    });
+                }
+                else
+                {
+                    mapPos = targetTunnelMapPos;
+                    m_movable.ValueRW.LastCellEdgeMapPos = mapPos;
+                }
             }
         }
         else if (m_movable.ValueRO.CurrentDir == Direction.None && m_movable.ValueRO.DesiredDir != Direction.None)
@@ -135,7 +161,7 @@ public readonly partial struct MovableAspect : IAspect
         deltaTime -= moveDistance / speed;
         if (deltaTime > 0.001)
         {
-            Move(mapBlobRef, mapId, deltaTime);
+            Move(mapBlobRef, mapId, deltaTime, mainEntity, sortKey, ecb);
         }
     }
 
@@ -186,7 +212,6 @@ public readonly partial struct MovableAspect : IAspect
             }
             else if (forcedDir)
             {
-                m_movable.ValueRW.ForcedDir = false;
                 bChangeAllowed = true;
             }
             else
@@ -200,6 +225,7 @@ public readonly partial struct MovableAspect : IAspect
                 return true;
             }
         }
+        m_movable.ValueRW.ForcedDir = false;
 
         // if not at cell edge, just continue with current direction
         if (!atCellEdge)

@@ -1,6 +1,5 @@
 
 using System.Collections.Generic;
-using System.IO.Compression;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;

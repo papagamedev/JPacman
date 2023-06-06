@@ -79,11 +79,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
     public void OnStopRunning(ref SystemState state)
     {
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        foreach (var (collectible, entity) in SystemAPI.Query<MoveAnimator>().WithEntityAccess())
-        {
-            ecb.DestroyEntity(entity);
-        }
-        foreach (var (collectible, entity) in SystemAPI.Query<IntroDotAnimator>().WithEntityAccess())
+        foreach (var (_, entity) in SystemAPI.Query<IntroSpriteTag>().WithEntityAccess())
         {
             ecb.DestroyEntity(entity);
         }
@@ -128,6 +124,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
                 {
                     Idx = i,
                 });
+            ecb.AddComponent(dot, new IntroSpriteTag());
         }
     }
 
@@ -145,8 +142,9 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
                 new MoveAnimator()
                 {
                     Speed = introData.PlayerSpeed,
-                    Direction = new float2(1, 0)
+                    Direction = Direction.Right
                 });
+        ecb.AddComponent(player, new IntroSpriteTag());
     }
 
     private void CreateEnemies(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
@@ -165,7 +163,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
                 new MoveAnimator()
                 {
                     Speed = introData.EnemyFollowSpeed,
-                    Direction = new float2(1, 0)
+                    Direction = Direction.Right
                 });
             ecb.AddComponent(enemy,
                 new Enemy()
@@ -177,6 +175,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
                 {
                     Color = Color.white
                 });
+            ecb.AddComponent(enemy, new IntroSpriteTag());
         }
     }
 
@@ -303,7 +302,7 @@ public partial struct UpdateIntroEnemyJob : IJobEntity
     private void Execute(RefRO<Enemy> enemy, RefRW<MoveAnimator> animator, RefRW<SpriteAnimator> spriteAnim, RefRW<SpriteSetColor> spriteColor, RefRO<EnemyDef> enemyDef)
     {
         animator.ValueRW.Speed = NewSpeed;
-        animator.ValueRW.Direction = NewDir.Vector();
+        animator.ValueRW.Direction = NewDir;
 
         int framesPerDirAnim = spriteAnim.ValueRO.FramesCount / 4;
         spriteAnim.ValueRW.StartFrame = framesPerDirAnim * (int)NewDir;
@@ -320,7 +319,7 @@ public partial struct UpdateIntroPlayerJob : IJobEntity
 
     private void Execute(RefRO<Player> player, RefRW<MoveAnimator> animator, RefRW<SpriteAnimator> spriteAnim)
     {
-        animator.ValueRW.Direction = NewDir.Vector();
+        animator.ValueRW.Direction = NewDir;
 
         int framesPerDirAnim = spriteAnim.ValueRO.FramesCount / 4;
         spriteAnim.ValueRW.StartFrame = framesPerDirAnim * (int)NewDir;

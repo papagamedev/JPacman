@@ -10,6 +10,7 @@ public class GameConfig : ScriptableObject
     public GameObject FruitPrefab;
     public GameObject PowerupPrefab;
     public IntroConfig IntroConfig;
+    public MenuConfig MenuConfig;
     public int LivesCount;
     public RoundConfig[] RoundConfigs;
 

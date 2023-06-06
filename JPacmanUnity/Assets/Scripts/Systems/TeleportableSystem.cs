@@ -4,37 +4,31 @@ using Unity.Entities;
 
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-[UpdateAfter(typeof(PlayerSystem))]
-public partial struct MovableSystem : ISystem
+[UpdateAfter(typeof(CollectibleSystem))]
+public partial struct TeleportableSystem: ISystem
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<LevelPlayingPhaseTag>();
-        state.RequireForUpdate<Movable>();
         state.RequireForUpdate<Main>();
+        state.RequireForUpdate<Teleportable>();
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         if (gameAspect.IsPaused)
         {
             return;
         }
-        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
-        var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
-        ref var map = ref gameAspect.GetCurrentMapData();
+        var deltaTime = SystemAPI.Time.DeltaTime;
         var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
-        new MoveEntityJob
+        new TeleportableJob
         {
             DeltaTime = deltaTime,
-            BlobMapsRef = mapsBlobRef,
-            MapId = map.Id,
-            MainEntity = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
     }
@@ -46,17 +40,14 @@ public partial struct MovableSystem : ISystem
     }
 }
 
-public partial struct MoveEntityJob : IJobEntity
+public partial struct TeleportableJob : IJobEntity
 {
     public float DeltaTime;
-    public BlobAssetReference<MapsConfigData> BlobMapsRef;
-    public Entity MainEntity;
-    public int MapId;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(MovableAspect movable, [EntityIndexInQuery] int sortKey)
+    private void Execute(TeleportableAspect teleportable, [EntityIndexInQuery] int sortKey)
     {
-       movable.Move(BlobMapsRef, MapId, DeltaTime, MainEntity, sortKey, ECB);
+        teleportable.Teleport(DeltaTime, sortKey, ECB);
     }
 }
 

@@ -8,7 +8,7 @@ public struct Direction
     public const int Up = 3;
     public const int None = -1;
 
-    private int m_value;
+    public int m_value;
 
     public static bool operator ==(Direction left, Direction right) => left.m_value == right.m_value;
 

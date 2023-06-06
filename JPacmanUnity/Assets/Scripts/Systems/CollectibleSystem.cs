@@ -21,16 +21,22 @@ public partial struct CollectibleSystem : ISystem
     {
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
-        var player = SystemAPI.GetSingletonEntity<PlayerAspect>();
-        var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
-        var playerWorldPos = playerAspect.GetWorldPos();
-        var playerCollisionRadius = playerAspect.GetCollisionRadius();
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         if (gameAspect.IsPaused)
         {
             return;
         }
+
+        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
+        var player = SystemAPI.GetSingletonEntity<Player>();
+        if (!SystemAPI.HasComponent<Movable>(player))
+        {
+            // player is teleporting!
+            return;
+        }
+        var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
+        var playerWorldPos = playerAspect.GetWorldPos();
+        var playerCollisionRadius = playerAspect.GetCollisionRadius();
         var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
         ref var map = ref gameAspect.GetCurrentMapData();
         var playerMapPos = map.WorldToMapPos(playerWorldPos);

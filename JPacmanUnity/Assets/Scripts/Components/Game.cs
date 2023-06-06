@@ -283,9 +283,15 @@ public readonly partial struct GameAspect : IAspect
                     Speed = LevelData.PlayerSpeed,
                     SpeedInTunnel = LevelData.PlayerSpeed,
                     AllowChangeDirInMidCell = true,
-                    Rand = new Random(randSeed)
+                    Rand = new Random(randSeed),
+                    CanDoTeleporting = true
                 });
         ecb.AddComponent(player, new SpriteAnimatedMovableTag() { });
+        ecb.AddComponent(player,
+            new SpriteSetOpacity()
+            {
+                Opacity = 1.0f
+            });
     }
 
     private void CreateWall(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
@@ -384,13 +390,19 @@ public readonly partial struct GameAspect : IAspect
                 AllowChangeDirInMidCell = false,
                 CurrentDir = direction,
                 DesiredDir = Direction.None,
-                Rand = new Random(randSeed)
+                Rand = new Random(randSeed),
+                CanDoTeleporting = true
             });
         ecb.AddComponent(enemy, new SpriteAnimatedMovableTag() { });
         ecb.AddComponent(enemy,
             new Enemy()
             {
                 Id = id
+            });
+        ecb.AddComponent(enemy,
+            new SpriteSetOpacity()
+            {
+                Opacity = 1.0f
             });
         ecb.AddComponent(enemy, new EnemyHomeTag() { });
     }
