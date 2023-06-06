@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class HudEvents : MonoBehaviour
 {
+    public GameObject m_levelBackgroundRoot;
     public GameObject m_ingameRoot;
     public GameObject m_menuRoot;
     public GameObject m_pausedRoot;
@@ -278,7 +279,7 @@ public class HudEvents : MonoBehaviour
         }
     }
 
-    private void OnFadeAnimation(bool isFadeIn, float duration)
+    public void OnFadeAnimation(bool isFadeIn, float duration)
     {
         m_fadeAnimation = new FadeState()
         {
@@ -306,6 +307,7 @@ public class HudEvents : MonoBehaviour
         m_menuRoot.SetActive(uiType == ShowUIType.Menu);
         m_ingameRoot.SetActive(uiType == ShowUIType.Ingame);
         m_pausedRoot.SetActive(uiType == ShowUIType.Paused);
+        m_levelBackgroundRoot.SetActive(uiType == ShowUIType.Ingame || uiType == ShowUIType.Paused);
     }
 
     private static Vector3 WorldToUIPos(Vector3 worldPos)

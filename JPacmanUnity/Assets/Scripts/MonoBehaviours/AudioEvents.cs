@@ -1,5 +1,6 @@
 using System;
 using Unity.Entities;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class AudioEvents : MonoBehaviour
@@ -32,8 +33,33 @@ public class AudioEvents : MonoBehaviour
         public bool m_loop;
     }
 
+    private class FadeMusicState
+    {
+        public bool IsFadeIn;
+        public float FadeDuration;
+        public float FadeStartTime;
+        public bool IsFinished;
+
+        public void Update(AudioSource musicSource, float fullVolume)
+        {
+            var currentTime = Time.time - FadeStartTime;
+            var currentVolume = currentTime / FadeDuration;
+            if (currentVolume > 1.0f)
+            {
+                currentVolume = 1.0f;
+                IsFinished = true;
+            }
+            if (!IsFadeIn)
+            {
+                currentVolume = 1.0f - currentVolume;
+            }
+            musicSource.volume = currentVolume * fullVolume;
+        }
+    };
+
     private AudioSource[] m_soundSource;
     private AudioSource m_musicSource;
+    private FadeMusicState m_fadeMusic;
 
     [Range(0f, 1f)]
     public float m_musicVolume = 0.5f;
@@ -61,6 +87,7 @@ public class AudioEvents : MonoBehaviour
         audioSystem.OnStopSound += OnStopSound;
         audioSystem.OnPlayMusic += OnPlayMusic;
         audioSystem.OnPauseAudio += OnPauseAudio;
+        audioSystem.OnFadeMusic += OnFadeMusic;
 
         var soundSourcesCount = Enum.GetValues(typeof(SoundType)).Length;
         m_soundSource = new AudioSource[soundSourcesCount];
@@ -73,6 +100,11 @@ public class AudioEvents : MonoBehaviour
         m_musicSource.volume = m_musicVolume;
     }
 
+    private void Update()
+    {
+        UpdateFadeMusic();
+    }
+
     private void OnDisable()
     {
         if (World.DefaultGameObjectInjectionWorld != null)
@@ -82,10 +114,11 @@ public class AudioEvents : MonoBehaviour
             audioSystem.OnStopSound -= OnStopSound;
             audioSystem.OnPlayMusic -= OnPlayMusic;
             audioSystem.OnPauseAudio -= OnPauseAudio;
+            audioSystem.OnFadeMusic -= OnFadeMusic;
         }
     }
 
-    private void OnPlaySound(SoundType sound)
+    public void OnPlaySound(SoundType sound)
     {
         var source = m_soundSource[(int)sound];
         if (source.isPlaying)
@@ -144,7 +177,9 @@ public class AudioEvents : MonoBehaviour
 
     private void OnPlayMusic(MusicType music)
     {
+        m_fadeMusic = null;
         m_musicSource.Stop();
+        m_musicSource.volume = m_musicVolume;
         AudioConfig config;
         switch (music)
         {
@@ -193,5 +228,28 @@ public class AudioEvents : MonoBehaviour
                 src.UnPause();
             }
         }
+    }
+
+    public void OnFadeMusic(bool isFadeIn, float duration)
+    {
+        m_fadeMusic = new FadeMusicState()
+        {
+            IsFadeIn = isFadeIn,
+            FadeDuration = duration,
+            FadeStartTime = Time.time
+        };
+    }
+
+    public void UpdateFadeMusic()
+    {
+        if (m_fadeMusic != null)
+        {
+            m_fadeMusic.Update(m_musicSource, m_musicVolume);
+            if (m_fadeMusic.IsFinished)
+            {
+                m_fadeMusic = null;
+            }
+        }
+
     }
 }

@@ -112,6 +112,24 @@ public partial class HudSystem : SystemBase
         mainAspect.ShowUIBuffer.Clear();
     }
 
+    public void OnMenuPlay(int levelIndex)
+    {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
+        var lives = mainComponent.ValueRO.LivesCount;
+        ecb.RemoveComponent<MenuPhaseTag>(mainEntity);
+        ecb.AddComponent(mainEntity, new Game()
+        {
+            Lives = lives,
+            Score = 0,
+            LevelId = levelIndex
+        });
+        ecb.Playback(EntityManager);
+        ecb.Dispose();
+
+    }
+
     public void OnPausedContinue()
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();

@@ -35,6 +35,7 @@ public class MainAuthoring : MonoBehaviour
             AddBuffer<SoundStopEventBufferElement>(entity);
             AddBuffer<MusicEventBufferElement>(entity);
             AddBuffer<PauseAudioEventBufferElement>(entity);
+            AddBuffer<FadeMusicEventBufferElement>(entity);
             AddBuffer<SetLivesTextBufferElement>(entity);
             AddBuffer<SetScoreTextBufferElement>(entity);
             AddBuffer<SetLabelTextBufferElement>(entity);

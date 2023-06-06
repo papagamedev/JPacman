@@ -40,6 +40,12 @@ public struct PauseAudioEventBufferElement : IBufferElementData
     public bool Paused;
 }
 
+public struct FadeMusicEventBufferElement : IBufferElementData
+{
+    public bool IsFadeIn;
+    public float Duration;
+}
+
 public struct SetLivesTextBufferElement : IBufferElementData
 {
     public int Value;
@@ -93,6 +99,7 @@ public readonly partial struct MainAspect : IAspect
     public readonly DynamicBuffer<SoundStopEventBufferElement> SoundStopEventBuffer;
     public readonly DynamicBuffer<MusicEventBufferElement> MusicEventBuffer;
     public readonly DynamicBuffer<PauseAudioEventBufferElement> PauseAudioEventBuffer;
+    public readonly DynamicBuffer<FadeMusicEventBufferElement> FadeMusicEventBuffer;
     public readonly DynamicBuffer<SetLivesTextBufferElement> SetLivesTextBuffer;
     public readonly DynamicBuffer<SetScoreTextBufferElement> SetScoreTextBuffer;
     public readonly DynamicBuffer<SetLabelTextBufferElement> SetLabelTextBuffer;

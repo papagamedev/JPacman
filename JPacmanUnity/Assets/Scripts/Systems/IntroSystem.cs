@@ -9,16 +9,21 @@ using UnityEngine;
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public partial struct IntroSystem : ISystem, ISystemStartStop
 {
+    const float kFadeTime = 0.5f;
+
     enum EnemyPhase
     {
         Start,
         Follow,
         Scared
     }
+
     private EnemyPhase m_enemyPhase;
     private float m_enemyTime;
     private float m_shapeTime;
     private int m_shapeIdx;
+    private float m_fadeTime;
+    private bool m_inFade;
 
     [BurstCompile]
     public void OnCreate(ref SystemState state)
@@ -51,22 +56,21 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
 
         m_enemyTime = 0;
         m_shapeTime = 0;
+        m_fadeTime = 0;
         m_shapeIdx = 0;
+        m_inFade = false;
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var ecb = new EntityCommandBuffer(Allocator.Temp);
+        var ecb = new EntityCommandBuffer(Allocator.Temp);        
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         ref var introData = ref mainComponent.ValueRO.IntroConfigBlob.Value;
         UpdateDotsShape(ref state, mainComponent, ref introData, mainEntity, ecb);
         UpdatePlayerEnemies(ref state, mainComponent, ref introData, mainEntity, ecb);
-        if (Input.anyKeyDown)
-        {
-            GoToMainMenu(mainEntity, ecb);
-        }
+        UpdateFade(ref state, mainEntity, ecb);
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
     }
@@ -178,15 +182,21 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
 
     private void UpdateDotsShape(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
     {
+        if (m_shapeIdx >= introData.ShapeData.Length)
+        {
+            return;
+        }
+
         var deltaTime = SystemAPI.Time.DeltaTime;
         m_shapeTime += deltaTime;
         if (m_shapeTime >= introData.ShapeData[m_shapeIdx].Duration)
         {
             m_shapeTime = 0;
             m_shapeIdx++;
+
             if (m_shapeIdx == introData.ShapeData.Length)
             {
-                GoToMainMenu(mainEntity, ecb);
+                StartFade(mainEntity, ecb);
                 return;
             }
         }
@@ -235,6 +245,40 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         {
             NewDir = dir,
         }.ScheduleParallel();
+    }
+
+    private void StartFade(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        m_inFade = true;
+        ecb.AppendToBuffer(mainEntity, new FadeAnimationBufferElement()
+        {
+            Duration = kFadeTime,
+            IsFadeIn = false
+        });
+        ecb.AppendToBuffer(mainEntity, new FadeMusicEventBufferElement()
+        {
+            IsFadeIn = false,
+            Duration = kFadeTime
+        });
+    }
+
+    private void UpdateFade(ref SystemState state, Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        if (!m_inFade)
+        {
+            if (Input.anyKeyDown)
+            {
+                StartFade(mainEntity, ecb);
+            }
+            return;
+        }
+
+        var deltaTime = SystemAPI.Time.DeltaTime;
+        m_fadeTime += deltaTime;
+        if (m_fadeTime >= kFadeTime)
+        {
+            GoToMainMenu(mainEntity, ecb);
+        }
     }
 }
 

@@ -35,14 +35,6 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        if (Input.anyKeyDown)
-        {
-            var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-            var ecb = new EntityCommandBuffer(Allocator.Temp);
-            StartGame(ref state, 0, mainEntity, ecb);
-            ecb.Playback(state.EntityManager);
-            ecb.Dispose();
-        }
     }
 
     [BurstCompile]
@@ -56,17 +48,4 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
 
     }
 
-    private void StartGame(ref SystemState state, int levelIndex, Entity mainEntity, EntityCommandBuffer ecb)
-    {
-        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
-
-        var lives = mainComponent.ValueRO.LivesCount;
-        ecb.RemoveComponent<MenuPhaseTag>(mainEntity);
-        ecb.AddComponent(mainEntity, new Game()
-        {
-            Lives = lives,
-            Score = 0,
-            LevelId = levelIndex
-        });
-    }
 }

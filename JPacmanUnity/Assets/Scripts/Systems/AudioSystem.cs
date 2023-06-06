@@ -9,6 +9,7 @@ public partial class AudioSystem : SystemBase
     public Action<AudioEvents.SoundType> OnStopSound;
     public Action<AudioEvents.MusicType> OnPlayMusic;
     public Action<bool> OnPauseAudio;
+    public Action<bool, float> OnFadeMusic;
 
     protected override void OnCreate()
     {
@@ -53,5 +54,13 @@ public partial class AudioSystem : SystemBase
             }
         }
         mainAspect.PauseAudioEventBuffer.Clear();
+        if (OnFadeMusic!= null)
+        {
+            foreach (var fade in mainAspect.FadeMusicEventBuffer)
+            {
+                OnFadeMusic(fade.IsFadeIn, fade.Duration);
+            }
+        }
+        mainAspect.FadeMusicEventBuffer.Clear();
     }
 }
