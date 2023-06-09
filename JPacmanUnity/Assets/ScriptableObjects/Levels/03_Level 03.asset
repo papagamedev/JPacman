@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35c309c599fefbd45b5279faf8f3ed76, type: 3}
-  m_Name: Level Ultimate
+  m_Name: 03_Level 03
   m_EditorClassIdentifier: 
-  LevelNumber: 0
-  LevelType: 3
-  DotsMoveSpeed: 4
-  DotsMoveWaitTime: 2
-  DotsCloneFactor: 0.5
-  DotsRemainingCloneThreshold: 10
-  PowerupsMoveSpeed: 2
-  PowerupsMoveWaitTime: 9
+  LevelNumber: 3
+  LevelType: 0
+  DotsMoveSpeed: 0
+  DotsMoveWaitTime: 0
+  DotsCloneFactor: 0
+  DotsRemainingCloneThreshold: 0
+  PowerupsMoveSpeed: 0
+  PowerupsMoveWaitTime: 0
   PlayerSpeed: 8
-  EnemySpeed: 8
+  EnemySpeed: 7
   EnemySpeedInTunnel: 4
   EnemySpeedScared: 4
   EnemySpeedReturnHome: 16
-  EnemyInHomeTime: 1
-  EnemyScaredTime: 0.1
+  EnemyInHomeTime: 5
+  EnemyScaredTime: 11
   EnemyScore: 200
-  EnemyCI: 10
-  FruitConfig: {fileID: 11400000, guid: e169e0d3257f3074d8e11951182fbc0c, type: 2}
+  EnemyCI: 2
+  FruitConfig: {fileID: 11400000, guid: 812ff37d76f5b844ca4814eebdb8dc6f, type: 2}

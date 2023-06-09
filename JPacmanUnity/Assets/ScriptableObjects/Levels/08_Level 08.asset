@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35c309c599fefbd45b5279faf8f3ed76, type: 3}
-  m_Name: Level 01
+  m_Name: 08_Level 08
   m_EditorClassIdentifier: 
-  LevelNumber: 1
+  LevelNumber: 7
   LevelType: 0
-  DotsMoveSpeed: 0
-  DotsMoveWaitTime: 0
+  DotsMoveSpeed: 3
+  DotsMoveWaitTime: 14
   DotsCloneFactor: 0
   DotsRemainingCloneThreshold: 0
-  PowerupsMoveSpeed: 0
-  PowerupsMoveWaitTime: 0
-  PlayerSpeed: 8
-  EnemySpeed: 6
+  PowerupsMoveSpeed: 2
+  PowerupsMoveWaitTime: 21
+  PlayerSpeed: 8.5
+  EnemySpeed: 8.5
   EnemySpeedInTunnel: 4
   EnemySpeedScared: 4
   EnemySpeedReturnHome: 16
-  EnemyInHomeTime: 7
-  EnemyScaredTime: 13
+  EnemyInHomeTime: 2
+  EnemyScaredTime: 6
   EnemyScore: 200
-  EnemyCI: 0
-  FruitConfig: {fileID: 11400000, guid: bab4337e515f9a7459e0b0907b0ef87f, type: 2}
+  EnemyCI: 7
+  FruitConfig: {fileID: 11400000, guid: 8b2df53504da80648aae28e04a56ae68, type: 2}
