@@ -44,8 +44,13 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         gameAspect.CheckSpawnFruit(mainEntity, ecb);
         gameAspect.CheckMoveDots(mainEntity, ecb);
         gameAspect.CheckMovePowerups(mainEntity, ecb);
+        gameAspect.CheckCloneDots(mainEntity, ecb);
 
-        if (gameAspect.IsLevelCompleted() || Input.GetKeyDown(KeyCode.W))
+        if (gameAspect.IsLevelCompleted()
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            || Input.GetKeyDown(KeyCode.W)
+#endif
+            )
         {
             SwitchToWinPhase(mainEntity, ecb);
         }

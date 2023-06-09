@@ -29,4 +29,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2ded9cb2a28fde34c85a1613a44d2bce, type: 2}
   - {fileID: 11400000, guid: b5ce6c809cb297d4fa444b1ec13d8b25, type: 2}
   - {fileID: 11400000, guid: 372f6b46e879ef44f97b31b2706e987b, type: 2}
+  DotCloneColors:
+  - {r: 0, g: 1, b: 0.016062975, a: 1}
+  - {r: 1, g: 0.18745571, b: 0, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
   DebugStartLevel: -1

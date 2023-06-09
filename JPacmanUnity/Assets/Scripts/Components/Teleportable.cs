@@ -21,7 +21,6 @@ public readonly partial struct TeleportableAspect : IAspect
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Teleportable> m_teleportable;
-    private readonly RefRW<SpriteSetOpacity> m_spriteSetOpacity;
 
     public void Teleport(float deltaTime, int sortKey, EntityCommandBuffer.ParallelWriter ecb)
     {
@@ -36,17 +35,15 @@ public readonly partial struct TeleportableAspect : IAspect
             factor = factor * factor * (3.0f - 2.0f * factor);      // [0 , 1]
             m_transform.ValueRW.Position = targetPos * factor + startPos * (1.0f - factor);
 
-            var opacityFactor = math.abs(factor - 0.5f); // [0.0 , 0.5]
-            opacityFactor *= opacityFactor;             // [0.0 , 0.25]
-            var opacity = 0.25f + opacityFactor * 3.0f;  // [0.25 , 1.0]
-            m_transform.ValueRW.Scale = opacity;
-            m_spriteSetOpacity.ValueRW.Opacity = opacity;
+            var scaleFactor = math.abs(factor - 0.5f); // [0.0 , 0.5]
+            scaleFactor *= scaleFactor * scaleFactor;             // [0.0 , 0.125]
+            var scale = 0.125f + scaleFactor * 7.0f;  // [0.125 , 1.0]
+            m_transform.ValueRW.Scale = scale;
             return;
         }
 
         m_transform.ValueRW.Position = m_teleportable.ValueRO.TargetWorldPos;
         m_transform.ValueRW.Scale = 1.0f;
-        m_spriteSetOpacity.ValueRW.Opacity = 1.0f;
 
         ecb.RemoveComponent<Teleportable>(sortKey, Entity);
         ecb.AddComponent(sortKey, Entity, new Movable()
@@ -62,6 +59,7 @@ public readonly partial struct TeleportableAspect : IAspect
             NextCellEdgeMapPos = m_teleportable.ValueRO.TargetMapPos,
             IsInTunnel = true,
             CanDoTeleporting = true,
+            JustTeleported = true,
             Rand = new Random(m_teleportable.ValueRO.Rand.state)
         });
     }

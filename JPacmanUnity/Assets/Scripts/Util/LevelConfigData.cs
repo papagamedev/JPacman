@@ -21,7 +21,8 @@ public struct LevelConfigData
     public float DotsMoveWaitTime;
     public float PowerupsMoveSpeed;
     public float PowerupsMoveWaitTime;
-    public int MultiplyDots;
+    public float DotsCloneFactor;
+    public float DotsRemainingCloneThreshold;
     public bool MovePowerups;
     public float PlayerSpeed;
     public float EnemySpeed;
@@ -75,7 +76,8 @@ public struct LevelsConfigData
                 arrayBuilder[levelIdx].LevelType = levelConfig.LevelType;
                 arrayBuilder[levelIdx].DotsMoveSpeed = levelConfig.DotsMoveSpeed;
                 arrayBuilder[levelIdx].DotsMoveWaitTime = levelConfig.DotsMoveWaitTime + roundConfig.BaseDotsMoveWaitTime;
-                arrayBuilder[levelIdx].MultiplyDots = levelConfig.MultiplyDots;
+                arrayBuilder[levelIdx].DotsCloneFactor = levelConfig.DotsCloneFactor;
+                arrayBuilder[levelIdx].DotsRemainingCloneThreshold = levelConfig.DotsRemainingCloneThreshold;
                 arrayBuilder[levelIdx].PowerupsMoveSpeed = levelConfig.PowerupsMoveSpeed;
                 arrayBuilder[levelIdx].PowerupsMoveWaitTime = levelConfig.PowerupsMoveWaitTime + roundConfig.BasePowerupsMoveWaitTime;
                 arrayBuilder[levelIdx].PlayerSpeed = levelConfig.PlayerSpeed;

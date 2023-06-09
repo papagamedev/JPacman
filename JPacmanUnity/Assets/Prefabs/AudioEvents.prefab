@@ -45,46 +45,64 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_musicVolume: 0.503
-  m_soundVolume: 1
+  m_soundVolume: 0.509
   SoundPlayerEatDot:
-    m_audioClip: {fileID: 8300000, guid: 7cfda2ee54aafa342823a6b72c2e8e81, type: 3}
+    m_audioClip: {fileID: 8300000, guid: 0669464744d1b7441836f03e951f6d7d, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0.05
   SoundPlayerEatPowerup:
-    m_audioClip: {fileID: 8300000, guid: 7cfda2ee54aafa342823a6b72c2e8e81, type: 3}
+    m_audioClip: {fileID: 8300000, guid: 4ef42684737f44142b479845c3327b7b, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0
   SoundPlayerEatFruit:
     m_audioClip: {fileID: 8300000, guid: dab07c3ec5e4bb0409743692b9f9694b, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0
   SoundPlayerEatEnemy:
     m_audioClip: {fileID: 8300000, guid: f309c04cf87b81448b2877835d88596f, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0
   SoundEnemyScared:
     m_audioClip: {fileID: 8300000, guid: dccc3673624e67f40bdcf9d00f606bef, type: 3}
     m_loop: 1
+    m_pitchRandomRange: 0
   SoundEnemyReturnHome:
     m_audioClip: {fileID: 8300000, guid: 3d83b7e7d5d9d014e8ee6f6db38b4d93, type: 3}
     m_loop: 1
+    m_pitchRandomRange: 0
   SoundTeleport:
-    m_audioClip: {fileID: 8300000, guid: dab07c3ec5e4bb0409743692b9f9694b, type: 3}
+    m_audioClip: {fileID: 8300000, guid: 022bb818171325b459e3fe6fedc1ce17, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0.2
+  SoundCloneDot:
+    m_audioClip: {fileID: 8300000, guid: cb7ce2ed0d33b6248a4abb1f8b4c4360, type: 3}
+    m_loop: 0
+    m_pitchRandomRange: 0.2
   MusicDead:
     m_audioClip: {fileID: 8300000, guid: 9a427680434e8fe40aa93baf2cc24e07, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0
   MusicIntro:
     m_audioClip: {fileID: 8300000, guid: e309c728fccd6574693e4daac0d6c18e, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0
   MusicMenu:
     m_audioClip: {fileID: 8300000, guid: dee330155bceff74bb97db23c6299d4f, type: 3}
     m_loop: 1
+    m_pitchRandomRange: 0
   MusicLevelStart:
     m_audioClip: {fileID: 8300000, guid: 663924864423d59458370593b8afafe5, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0
   MusicLevel:
     m_audioClip: {fileID: 8300000, guid: 200699ba81b9d954097aac9503ee36c6, type: 3}
     m_loop: 1
+    m_pitchRandomRange: 0
   MusicLevelEnd:
     m_audioClip: {fileID: 8300000, guid: a216f2435b9793843a8c317b7404eadc, type: 3}
     m_loop: 0
+    m_pitchRandomRange: 0
   MusicLevelBonus:
     m_audioClip: {fileID: 8300000, guid: 7af825c43707cf44b9d9b48378ceda63, type: 3}
     m_loop: 1
+    m_pitchRandomRange: 0

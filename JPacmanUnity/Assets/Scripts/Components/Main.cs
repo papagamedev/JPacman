@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
@@ -15,6 +16,7 @@ public struct Main : IComponentData
     public BlobAssetReference<MenuConfigData> MenuConfigBlob;
     public uint RandomSeed;
     public int LivesCount;
+    public FixedList128Bytes<UnityEngine.Color> DotCloneColors;
 }
 
 public struct IntroPhaseTag : IComponentData { }

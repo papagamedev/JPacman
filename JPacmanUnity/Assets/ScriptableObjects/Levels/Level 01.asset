@@ -16,7 +16,8 @@ MonoBehaviour:
   LevelType: 0
   DotsMoveSpeed: 0
   DotsMoveWaitTime: 0
-  MultiplyDots: 0
+  DotsCloneFactor: 0
+  DotsRemainingCloneThreshold: 0
   PowerupsMoveSpeed: 0
   PowerupsMoveWaitTime: 0
   PlayerSpeed: 8

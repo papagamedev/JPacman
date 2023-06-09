@@ -14,6 +14,7 @@ public class AudioEvents : MonoBehaviour
         EnemyScared,
         EnemyReturnHome,
         Teleport,
+        CloneDot
     }
 
     public enum MusicType
@@ -32,6 +33,7 @@ public class AudioEvents : MonoBehaviour
     {
         public AudioClip m_audioClip;
         public bool m_loop;
+        public float m_pitchRandomRange;
     }
 
     private class FadeMusicState
@@ -74,6 +76,7 @@ public class AudioEvents : MonoBehaviour
     public AudioConfig SoundEnemyScared;
     public AudioConfig SoundEnemyReturnHome;
     public AudioConfig SoundTeleport;
+    public AudioConfig SoundCloneDot;
     public AudioConfig MusicDead;
     public AudioConfig MusicIntro;
     public AudioConfig MusicMenu;
@@ -158,6 +161,10 @@ public class AudioEvents : MonoBehaviour
                 config = SoundTeleport;
                 break;
 
+            case SoundType.CloneDot:
+                config = SoundCloneDot;
+                break;
+
             default:
                 return;
         }
@@ -168,6 +175,12 @@ public class AudioEvents : MonoBehaviour
     {
         source.loop = config.m_loop;
         source.clip = config.m_audioClip;
+
+        var pitchRandomRange = config.m_pitchRandomRange;
+        if (pitchRandomRange > 0)
+        {
+            source.pitch = UnityEngine.Random.Range(1.0f - pitchRandomRange, 1.0f + pitchRandomRange);
+        }
         source.Play();
     }
 

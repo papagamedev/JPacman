@@ -8,6 +8,7 @@ public struct Game : IComponentData
     public int Score;
     public int LevelId;
     public int CollectibleCount;
+    public int LevelTotalCollectibles;
     public float LiveTime;
     public float LevelTime;
     public bool FruitSpawned;
@@ -40,6 +41,14 @@ public struct AddScoreBufferElement : IBufferElementData
     public bool IsCollectible;
 }
 
+public struct DotCloneBufferElement : IBufferElementData
+{
+    public float3 WorldPos;
+    public Direction Direction;
+    public int Generation;
+    public int BaseScore;
+}
+
 public readonly partial struct GameAspect : IAspect
 {
     const int kNewLiveScore = 10000;
@@ -50,6 +59,7 @@ public readonly partial struct GameAspect : IAspect
     private readonly RefRW<Game> m_game;
     private readonly RefRW<PowerupMode> m_powerupMode;
     private readonly DynamicBuffer<AddScoreBufferElement> m_addScoreBuffer;
+    private readonly DynamicBuffer<DotCloneBufferElement> m_dotCloneBuffer;
 
     public bool IsPaused => m_game.ValueRO.Paused;
     public void SetPaused(bool paused, Entity mainEntity, EntityCommandBuffer ecb)
@@ -61,7 +71,7 @@ public readonly partial struct GameAspect : IAspect
         });
         ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
         {
-            UI = paused ? HudEvents.ShowUIType.Paused : HudEvents.ShowUIType.Ingame 
+            UI = paused ? HudEvents.ShowUIType.Paused : HudEvents.ShowUIType.Ingame
         });
     }
 
@@ -114,6 +124,8 @@ public readonly partial struct GameAspect : IAspect
 
 
     public bool IsLevelCompleted() => m_game.ValueRO.CollectibleCount <= 0;
+    public int RemainingCollectibles => m_game.ValueRO.CollectibleCount;
+    public int TotalCollectibles => m_game.ValueRO.LevelTotalCollectibles;
 
     public ref LevelConfigData LevelData => ref m_main.ValueRO.LevelsConfigBlob.Value.LevelsData[m_game.ValueRO.LevelId];
 
@@ -210,6 +222,65 @@ public readonly partial struct GameAspect : IAspect
             });
     }
 
+    private UnityEngine.Color GetDotCloneColor(int generation)
+    {
+        var dotCloneColors = m_main.ValueRO.DotCloneColors;
+        var idx = (generation - 1) % dotCloneColors.Length;
+        return dotCloneColors[idx];
+    }
+
+    public void CheckCloneDots(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        ref var map = ref GetCurrentMapData();
+        foreach (var item in m_dotCloneBuffer)
+        {
+            var generation = item.Generation;
+            var dot = CreateDotEntity(ecb, item.WorldPos, generation);
+            SetDotMovable(dot, item.Direction, ref map, ecb);
+            ecb.AddComponent(dot, new SpriteSetColor()
+            {
+                Color = GetDotCloneColor(generation)
+            });
+            ecb.AppendToBuffer(mainEntity, new SoundEventBufferElement()
+            {
+                SoundType = AudioEvents.SoundType.CloneDot
+            });
+            ecb.SetComponent(dot, new Collectible()
+            {
+                Score = item.BaseScore * (generation + 1),
+                ScoreAnimation = false,
+                SoundType = AudioEvents.SoundType.PlayerEatDot,
+                Type = Collectible.EType.Dot
+            });
+        }
+        m_dotCloneBuffer.Clear();
+    }
+
+    public void SetDotMovable(Entity dotEntity, Direction direction, ref MapConfigData map, EntityCommandBuffer ecb)
+    {
+        var dotsMoveSpeed = LevelData.DotsMoveSpeed;
+        var rand = new Random(RandomSeed);
+        ecb.AddComponent(dotEntity, new Movable()
+        {
+            Speed = dotsMoveSpeed,
+            SpeedInTunnel = dotsMoveSpeed,
+            AllowChangeDirInMidCell = false,
+            CurrentDir = Direction.None,
+            DesiredDir = Direction.None,
+            Rand = rand
+        });
+        ecb.AddComponent(dotEntity,
+            new RotateAnimator()
+            {
+                Speed = 30.0f
+            });
+        ecb.AddComponent(dotEntity,
+            new RandomMover()
+            {
+                RandomMapPos = map.NewRandomMapPos(ref rand)
+            });
+    }
+
     public void SetNextLevel()
     {
         var levelId = m_game.ValueRO.LevelId;
@@ -243,7 +314,7 @@ public readonly partial struct GameAspect : IAspect
             {
                 if (!isBonusLevel && mapData.IsDot(x, y))
                 {
-                    CreateDot(ecb, ref mapData, x, y);
+                    CreateDotEntity(ecb, mapData.MapToWorldPos(x, y), 0);
                 }
                 else if (mapData.IsWall(x, y))
                 {
@@ -263,6 +334,8 @@ public readonly partial struct GameAspect : IAspect
         });
 
         CreatePowerups(ecb, ref mapData);
+
+        m_game.ValueRW.LevelTotalCollectibles = m_game.ValueRO.CollectibleCount;
 
         InitLive(ecb, mainEntity, randSeed++);
     }
@@ -287,11 +360,6 @@ public readonly partial struct GameAspect : IAspect
                     CanDoTeleporting = true
                 });
         ecb.AddComponent(player, new SpriteAnimatedMovableTag() { });
-        ecb.AddComponent(player,
-            new SpriteSetOpacity()
-            {
-                Opacity = 1.0f
-            });
     }
 
     private void CreateWall(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
@@ -342,18 +410,22 @@ public readonly partial struct GameAspect : IAspect
             });
     }
 
-    private void CreateDot(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y)
+    private Entity CreateDotEntity(EntityCommandBuffer ecb, float3 worldPos, int generation)
     {
         var dot = ecb.Instantiate(m_main.ValueRO.DotPrefab);
         ecb.SetComponent(dot,
             new LocalTransform()
             {
-                Position = mapData.MapToWorldPos(x, y),
+                Position = worldPos,
                 Scale = 1.0f,
                 Rotation = quaternion.identity
             });
-        ecb.AddComponent(dot, new DotTag());
+        ecb.AddComponent(dot, new Dot()
+        {
+            Generation = generation
+        });
         m_game.ValueRW.CollectibleCount++;
+        return dot;
     }
 
     private void CreateEnemyHorizontalHome(EntityCommandBuffer ecb, ref MapConfigData mapData, int x, int y, uint randSeed)
@@ -398,11 +470,6 @@ public readonly partial struct GameAspect : IAspect
             new Enemy()
             {
                 Id = id
-            });
-        ecb.AddComponent(enemy,
-            new SpriteSetOpacity()
-            {
-                Opacity = 1.0f
             });
         ecb.AddComponent(enemy, new EnemyHomeTag() { });
     }

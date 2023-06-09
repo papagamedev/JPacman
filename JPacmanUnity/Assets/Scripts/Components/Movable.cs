@@ -17,6 +17,7 @@ public struct Movable : IComponentData
     public Random Rand;
     public bool IsInTunnel;
     public bool CanDoTeleporting;
+    public bool JustTeleported;
 }
 
 public readonly partial struct MovableAspect : IAspect
@@ -98,7 +99,7 @@ public readonly partial struct MovableAspect : IAspect
         }
 
 
-        if (m_movable.ValueRO.AllowChangeDirInMidCell || atCellEdge)
+        if ((m_movable.ValueRO.AllowChangeDirInMidCell || atCellEdge) && !m_movable.ValueRO.JustTeleported)
         {
             var dirChanged = CheckDirectionChange(ref map, mapPos, atCellEdge);
             if (dirChanged && atCellEdge)
@@ -107,6 +108,10 @@ public readonly partial struct MovableAspect : IAspect
                 mapPos = math.round(mapPos);
                 SetMapPos(ref map, mapPos);
             }
+        }
+        if (!atCellEdge)
+        {
+            m_movable.ValueRW.JustTeleported = false;
         }
 
         // if the new direction is none, no more movement this frame

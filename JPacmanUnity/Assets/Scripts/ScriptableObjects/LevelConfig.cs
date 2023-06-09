@@ -7,7 +7,8 @@ public class LevelConfig : ScriptableObject
     public LevelConfigData.ELevelType LevelType;
     public float DotsMoveSpeed;
     public float DotsMoveWaitTime;
-    public int MultiplyDots;
+    public float DotsCloneFactor;
+    public float DotsRemainingCloneThreshold;
     public float PowerupsMoveSpeed;
     public float PowerupsMoveWaitTime;
     public float PlayerSpeed;

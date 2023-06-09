@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
@@ -18,6 +19,11 @@ public class MainAuthoring : MonoBehaviour
             var menuConfigBlob = MenuConfigData.CreateMenuConfigBlob(authoring);
             var gameConfig = authoring.Config;
             var livesCount = gameConfig.LivesCount;
+            var dotCloneColors = new FixedList128Bytes<UnityEngine.Color>();
+            foreach (var color in gameConfig.DotCloneColors)
+            {
+                dotCloneColors.Add(color);
+            }
             AddComponent(entity, new Main
             {
                 DotPrefab = GetEntity(gameConfig.DotPrefab, TransformUsageFlags.None),
@@ -31,7 +37,8 @@ public class MainAuthoring : MonoBehaviour
                 IntroConfigBlob = introConfigBlob,
                 MenuConfigBlob = menuConfigBlob,
                 RandomSeed = (uint)(System.DateTime.Now.Ticks % 1000000000),
-                LivesCount = livesCount
+                LivesCount = livesCount,
+                DotCloneColors = dotCloneColors
             });
             AddBuffer<SoundEventBufferElement>(entity);
             AddBuffer<SoundStopEventBufferElement>(entity);
@@ -47,6 +54,7 @@ public class MainAuthoring : MonoBehaviour
             AddBuffer<FadeAnimationBufferElement>(entity);
             AddBuffer<ShowUIBufferElement>(entity);
             AddBuffer<AddScoreBufferElement>(entity);
+            AddBuffer<DotCloneBufferElement>(entity);
             AddBuffer<PowerupCollectedBufferElement>(entity);
             AddBuffer<EnemyEatenBufferElement>(entity);
             AddBuffer<EnemyReturnedHomeBufferElement>(entity);

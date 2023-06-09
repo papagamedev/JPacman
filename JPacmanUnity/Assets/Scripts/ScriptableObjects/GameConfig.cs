@@ -13,6 +13,7 @@ public class GameConfig : ScriptableObject
     public MenuConfig MenuConfig;
     public int LivesCount;
     public RoundConfig[] RoundConfigs;
+    public Color[] DotCloneColors;
 
     [Header("Debugging")]
     [Tooltip("-1 means go to intro and menu; 0+ means go straight to that level")]
