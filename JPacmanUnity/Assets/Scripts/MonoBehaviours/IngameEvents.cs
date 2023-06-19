@@ -6,44 +6,15 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HudEvents : MonoBehaviour
+public class IngameEvents : MonoBehaviour
 {
-    public GameObject m_levelBackgroundRoot;
-    public GameObject m_ingameRoot;
-    public GameObject m_menuRoot;
-    public GameObject m_pausedRoot;
     public TMP_Text m_scoreLabel;
     public TMP_Text m_livesLabel;
     public TMP_Text m_messageLabel;
     public GameObject m_scoreAnimationPrefab;
-    public Image m_fade;
     public GameObject m_levelIconTemplate;
     public GameObject m_levelIconRoot;
     public GameConfig m_gameConfig;
-
-    private class FadeState
-    {
-        public bool IsFadeIn;
-        public float FadeDuration;
-        public float FadeStartTime;
-        public bool IsFinished;
-
-        public void Update(Image fade)
-        {
-            var currentTime = Time.time - FadeStartTime;
-            var currentOpacity = currentTime / FadeDuration;
-            if (currentOpacity > 1.0f)
-            {
-                currentOpacity = 1.0f;
-                IsFinished = true;
-            }
-            if (IsFadeIn)
-            {
-                currentOpacity = 1.0f - currentOpacity;
-            }
-            fade.color = new Color(1, 1, 1, currentOpacity);
-        }
-    };
 
     private class ScoreAnimState
     {
@@ -63,7 +34,7 @@ public class HudEvents : MonoBehaviour
         {
             Score = score;
             m_transform = gameObject.GetComponent<RectTransform>();
-            m_startPos = WorldToUIPos(worldPos);
+            m_startPos = UIEvents.WorldToUIPos(worldPos);
             m_targetPos = targetPos;
             m_time = 0.0f;
             m_transform.localPosition = m_startPos;
@@ -91,7 +62,6 @@ public class HudEvents : MonoBehaviour
         }
     }
 
-    private FadeState m_fadeAnimation;
     private List<ScoreAnimState> m_scoreAnimations;
     private int m_score;
 
@@ -106,18 +76,8 @@ public class HudEvents : MonoBehaviour
         GameOver
     }
 
-    public enum ShowUIType
-    {
-        Menu,
-        Ingame,
-        Paused,
-        None
-    }
-
     private void OnEnable()
     {
-        OnShowUI(ShowUIType.None);
-
         var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
         hudSystem.OnSetLabelText += OnSetLabelText;
         hudSystem.OnSetLabelPos += OnSetLabelPos;
@@ -125,17 +85,11 @@ public class HudEvents : MonoBehaviour
         hudSystem.OnSetLevelIcon += OnSetLevelIcon;
         hudSystem.OnSetScoreText += OnSetScoreText;
         hudSystem.OnKillAllScoreAnimations += OnKillAllScoreAnimations;
-        hudSystem.OnFadeAnimation += OnFadeAnimation;
-        hudSystem.OnShowUI += OnShowUI;
-
-        Application.targetFrameRate = 60;
-
         m_scoreAnimations = new List<ScoreAnimState>();
     }
 
     private void Update()
     {
-        UpdateFade();
         UpdateScoreAnimations();
     }
 
@@ -151,8 +105,6 @@ public class HudEvents : MonoBehaviour
             hudSystem.OnSetLivesText -= OnSetLivesText;
             hudSystem.OnSetLevelIcon -= OnSetLevelIcon;
             hudSystem.OnSetScoreText -= OnSetScoreText;
-            hudSystem.OnFadeAnimation -= OnFadeAnimation;
-            hudSystem.OnShowUI += OnShowUI;
         }
     }
 
@@ -168,7 +120,7 @@ public class HudEvents : MonoBehaviour
 
         if (hasAnimation)
         {
-            var gameObject = Instantiate(m_scoreAnimationPrefab, m_ingameRoot.transform);
+            var gameObject = Instantiate(m_scoreAnimationPrefab, transform);
             m_scoreAnimations.Add(new ScoreAnimState(gameObject, scoreDelta, worldPos, m_scoreLabel.rectTransform.localPosition));
         }
         else
@@ -245,7 +197,7 @@ public class HudEvents : MonoBehaviour
 
     private void OnSetLabelPos(float3 worldPos)
     {
-        m_messageLabel.rectTransform.localPosition = WorldToUIPos(worldPos);
+        m_messageLabel.rectTransform.localPosition = UIEvents.WorldToUIPos(worldPos);
     }
 
     private void OnSetLevelIcon(int iconIdx)
@@ -277,41 +229,5 @@ public class HudEvents : MonoBehaviour
                 break;
             }
         }
-    }
-
-    public void OnFadeAnimation(bool isFadeIn, float duration)
-    {
-        m_fadeAnimation = new FadeState()
-        {
-            IsFadeIn = isFadeIn,
-            FadeDuration = duration,
-            FadeStartTime = Time.time
-        };
-    }
-
-    private void UpdateFade()
-    {
-        if (m_fadeAnimation != null)
-        {
-            m_fadeAnimation.Update(m_fade);
-            if (m_fadeAnimation.IsFinished)
-            {
-                m_fadeAnimation = null;
-            }
-        }
-
-    }
-
-    private void OnShowUI(ShowUIType uiType)
-    {
-        m_menuRoot.SetActive(uiType == ShowUIType.Menu);
-        m_ingameRoot.SetActive(uiType == ShowUIType.Ingame);
-        m_pausedRoot.SetActive(uiType == ShowUIType.Paused);
-        m_levelBackgroundRoot.SetActive(uiType == ShowUIType.Ingame || uiType == ShowUIType.Paused);
-    }
-
-    private static Vector3 WorldToUIPos(Vector3 worldPos)
-    {
-        return new Vector3(worldPos.x * 16, (worldPos.y - 1) * 16, 0);
     }
 }

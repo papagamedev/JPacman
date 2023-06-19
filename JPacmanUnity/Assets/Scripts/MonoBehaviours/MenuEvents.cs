@@ -5,7 +5,7 @@ using UnityEngine;
 public class MenuEvents : MonoBehaviour
 {
     public AudioEvents m_audioEvents;
-    public HudEvents m_hudEvents;
+    public UIEvents m_hudEvents;
     public float m_fadeTime;
 
     protected IEnumerator OnClickButtonFadeAsync(AudioEvents.SoundType clickSound)

@@ -73,6 +73,7 @@ public class MainMenuEvents : MenuEvents
     private void OnScores()
     {
         m_audioEvents.OnPlaySound(AudioEvents.SoundType.PlayerEatDot);
+        m_hudEvents.OnShowUI(UIEvents.ShowUIType.Scores);
 
 
     }

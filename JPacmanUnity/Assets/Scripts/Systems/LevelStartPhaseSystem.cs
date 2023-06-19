@@ -40,7 +40,7 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
         });
         ecb.AppendToBuffer(mainEntity, new SetLabelTextBufferElement()
         {
-            Value = HudEvents.LabelMessage.Round
+            Value = IngameEvents.LabelMessage.Round
         });
         ecb.AppendToBuffer(mainEntity, new SetLivesTextBufferElement()
         {
@@ -112,20 +112,20 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
 
     private void SetLabelMessage(Entity mainEntity, GameAspect gameAspect, EntityCommandBuffer ecb)
     {
-        HudEvents.LabelMessage msg;
+        IngameEvents.LabelMessage msg;
         switch (gameAspect.LevelData.LevelType)
         {
             case LevelConfigData.ELevelType.Bonus:
-                msg = HudEvents.LabelMessage.Bonus;
+                msg = IngameEvents.LabelMessage.Bonus;
                 break;
             case LevelConfigData.ELevelType.Final:
-                msg = HudEvents.LabelMessage.LevelFinal;
+                msg = IngameEvents.LabelMessage.LevelFinal;
                 break;
             case LevelConfigData.ELevelType.Ultimate:
-                msg = HudEvents.LabelMessage.LevelUltimate;
+                msg = IngameEvents.LabelMessage.LevelUltimate;
                 break;
             default:
-                msg = HudEvents.LabelMessage.Level;
+                msg = IngameEvents.LabelMessage.Level;
                 break;
         }
 
@@ -141,7 +141,7 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
     {
         var setLabel = new SetLabelTextBufferElement()
         {
-            Value = HudEvents.LabelMessage.None
+            Value = IngameEvents.LabelMessage.None
         };
         ecb.AppendToBuffer(mainEntity, setLabel);
         ecb.RemoveComponent<LevelStartPhaseTag>(mainEntity);

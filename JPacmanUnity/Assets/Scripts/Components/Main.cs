@@ -68,7 +68,7 @@ public struct SetScoreTextBufferElement : IBufferElementData
 
 public struct SetLabelTextBufferElement : IBufferElementData
 {
-    public HudEvents.LabelMessage Value;
+    public IngameEvents.LabelMessage Value;
 }
 
 public struct SetLabelPosBufferElement : IBufferElementData
@@ -94,7 +94,7 @@ public struct FadeAnimationBufferElement : IBufferElementData
 
 public struct ShowUIBufferElement : IBufferElementData
 {
-    public HudEvents.ShowUIType UI;
+    public UIEvents.ShowUIType UI;
 }
 
 

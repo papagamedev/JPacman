@@ -71,7 +71,7 @@ public readonly partial struct GameAspect : IAspect
         });
         ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
         {
-            UI = paused ? HudEvents.ShowUIType.Paused : HudEvents.ShowUIType.Ingame
+            UI = paused ? UIEvents.ShowUIType.Paused : UIEvents.ShowUIType.Ingame
         });
     }
 

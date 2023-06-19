@@ -23,7 +23,7 @@ public partial struct GameSystem : ISystem, ISystemStartStop
         StartLevel(mainEntity, ecb);
         ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
         {
-            UI = HudEvents.ShowUIType.Ingame
+            UI = UIEvents.ShowUIType.Ingame
         });
         ecb.AddComponent(mainEntity, new PowerupMode()
         {

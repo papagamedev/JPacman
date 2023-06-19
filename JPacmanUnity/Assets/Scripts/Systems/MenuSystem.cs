@@ -26,7 +26,7 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
         {
-            UI = HudEvents.ShowUIType.Menu
+            UI = UIEvents.ShowUIType.Menu
         });
         ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
         {

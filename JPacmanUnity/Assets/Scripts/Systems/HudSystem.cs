@@ -6,14 +6,14 @@ using Unity.Mathematics;
 [UpdateAfter(typeof(CollectibleSystem))]
 public partial class HudSystem : SystemBase
 {
-    public Action<HudEvents.LabelMessage, int> OnSetLabelText;
+    public Action<IngameEvents.LabelMessage, int> OnSetLabelText;
     public Action<float3> OnSetLabelPos; 
     public Action<int> OnSetLivesText;
     public Action<int> OnSetLevelIcon;
     public Action<bool, int, int, float3> OnSetScoreText;
     public Action OnKillAllScoreAnimations;
     public Action<bool, float> OnFadeAnimation;
-    public Action<HudEvents.ShowUIType> OnShowUI;
+    public Action<UIEvents.ShowUIType> OnShowUI;
 
     protected override void OnCreate()
     {
@@ -53,11 +53,11 @@ public partial class HudSystem : SystemBase
                 int value = 0;
                 switch (element.Value)
                 {
-                    case HudEvents.LabelMessage.Round:
+                    case IngameEvents.LabelMessage.Round:
                         value = gameAspect.LevelData.RoundNumber;
                         break;
 
-                    case HudEvents.LabelMessage.Level:
+                    case IngameEvents.LabelMessage.Level:
                         value = gameAspect.LevelData.LevelNumber;
                         break;
                 }

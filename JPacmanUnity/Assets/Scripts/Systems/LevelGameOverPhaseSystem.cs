@@ -22,7 +22,7 @@ public partial struct LevelGameOverPhaseSystem : ISystem, ISystemStartStop
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new SetLabelTextBufferElement()
         {
-            Value = HudEvents.LabelMessage.GameOver
+            Value = IngameEvents.LabelMessage.GameOver
         });
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
