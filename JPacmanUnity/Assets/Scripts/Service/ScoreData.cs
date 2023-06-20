@@ -1,5 +1,5 @@
-public struct ScoreData
+public class ScoreData
 {
-    public string Name;
+    public string Message;
     public int Score;
 }

@@ -12,6 +12,7 @@ public class GameConfig : ScriptableObject
     public IntroConfig IntroConfig;
     public MenuConfig MenuConfig;
     public int LivesCount;
+    public MapConfig[] MapConfigs;
     public RoundConfig[] RoundConfigs;
     public Color[] DotCloneColors;
 

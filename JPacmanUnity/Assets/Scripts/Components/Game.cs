@@ -1,6 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine.SocialPlatforms.Impl;
 
 public struct Game : IComponentData
 {
@@ -167,7 +168,28 @@ public readonly partial struct GameAspect : IAspect
         return m_game.ValueRO.Lives;
     }
 
-    public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public void CheatGameOverWithScore(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        m_game.ValueRW.Lives = 1;
+
+        var rand = new Random(RandomSeed);
+        var score = rand.NextInt(100000) + 10000;
+        ecb.AppendToBuffer(mainEntity, new SetScoreTextBufferElement()
+        {
+            Score = m_game.ValueRW.Score + score,
+            DeltaScore = score,
+            WorldPos = 0,
+            HasAnimation = true
+        });
+        m_game.ValueRW.Score += score;
+        ecb.RemoveComponent<LevelPlayingPhaseTag>(mainEntity);
+        ecb.AddComponent<LevelDeadPhaseTag>(mainEntity);
+    }
+#endif
+
+
+public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
     {
         if (m_game.ValueRO.FruitSpawned || m_game.ValueRO.LevelTime < LevelData.FruitWaitTime)
         {

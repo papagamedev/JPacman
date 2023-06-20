@@ -39,7 +39,7 @@ public class IngameEvents : MonoBehaviour
             m_time = 0.0f;
             m_transform.localPosition = m_startPos;
             var textComponent = gameObject.GetComponent<TMP_Text>();
-            textComponent.text = score.ToString();
+            textComponent.text = ScoreEntryUI.GetFormattedScore(score);
         }
 
         public void Update(float deltaTime)
@@ -72,8 +72,7 @@ public class IngameEvents : MonoBehaviour
         LevelFinal,
         LevelUltimate,
         Bonus,
-        None,
-        GameOver
+        None
     }
 
     private void OnEnable()
@@ -111,7 +110,7 @@ public class IngameEvents : MonoBehaviour
     private void UpdateScoreText()
     {
         var animScoresTotal = m_scoreAnimations.Select(x => x.Score).Sum();
-        m_scoreLabel.text = (m_score - animScoresTotal).ToString();
+        m_scoreLabel.text = ScoreEntryUI.GetFormattedScore(m_score - animScoresTotal);
     }
 
     private void OnSetScoreText(bool hasAnimation, int score, int scoreDelta, float3 worldPos)
@@ -189,9 +188,6 @@ public class IngameEvents : MonoBehaviour
             case LabelMessage.LevelUltimate:
                 m_messageLabel.text = "JA JA JA JA";
                 return;
-            case LabelMessage.GameOver:
-                m_messageLabel.text = "Fin del Juego";
-                break;
         }
     }
 

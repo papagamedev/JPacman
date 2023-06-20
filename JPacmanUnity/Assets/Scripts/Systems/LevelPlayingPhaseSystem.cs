@@ -60,6 +60,13 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
             gameAspect.SetPaused(true, mainEntity, ecb);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            gameAspect.CheatGameOverWithScore(mainEntity, ecb);
+        }
+#endif
+
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
     }

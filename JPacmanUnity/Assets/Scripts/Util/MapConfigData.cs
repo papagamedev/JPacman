@@ -18,7 +18,8 @@ public struct MapConfigData
     public const char kTunnelFirstChar = 'a';
     public const char kTunnelLastChar = 'z';
 
-    public int Id;
+    public FixedString32Bytes Id;
+    public int Idx;
     public int Width;
     public int Height;
     public half2 PlayerPos;
@@ -124,7 +125,8 @@ public struct MapsConfigData
         {
             var map = maps[i].Map;
             var mapDataSize = map.m_height * map.m_width;
-            mapsArrayBuilder[i].Id = i;
+            mapsArrayBuilder[i].Id = map.m_id;
+            mapsArrayBuilder[i].Idx = i;
             mapsArrayBuilder[i].Width = map.m_width;
             mapsArrayBuilder[i].Height = map.m_height;
             var arrayBuilder = builder.Allocate(ref mapsArrayBuilder[i].MapData, mapDataSize);

@@ -20,9 +20,9 @@ public partial struct LevelGameOverPhaseSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        ecb.AppendToBuffer(mainEntity, new SetLabelTextBufferElement()
+        ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
         {
-            Value = IngameEvents.LabelMessage.GameOver
+            UI = UIEvents.ShowUIType.GameOver
         });
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
@@ -31,16 +31,6 @@ public partial struct LevelGameOverPhaseSystem : ISystem, ISystemStartStop
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-
-        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var ecb = new EntityCommandBuffer(Allocator.Temp);
-        if (Input.anyKeyDown)
-        {
-            ecb.RemoveComponent<LevelGameOverPhaseTag>(mainEntity);
-            ecb.AddComponent(mainEntity, new LevelClearPhaseTag());
-        }
-        ecb.Playback(state.EntityManager);
-        ecb.Dispose();
     }
 
     [BurstCompile]

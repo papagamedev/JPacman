@@ -51,7 +51,7 @@ public partial struct EnemySystem : ISystem
         {
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
-            MapId = map.Id,
+            MapId = map.Idx,
             PlayerIsTeleporting = playerIsTeleporting,
             PlayerMapPos = playerMapPos,
             PlayerCollisionRadius = playerCollisionRadius,
@@ -66,7 +66,7 @@ public partial struct EnemySystem : ISystem
         {
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
-            MapId = map.Id,
+            MapId = map.Idx,
             PlayerIsTeleporting = playerIsTeleporting,
             PlayerMapPos = playerMapPos,
             PlayerCollisionRadius = playerCollisionRadius,
@@ -78,7 +78,7 @@ public partial struct EnemySystem : ISystem
         {
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
-            MapId = map.Id,
+            MapId = map.Idx,
             EnemySpeedScared = gameAspect.LevelData.EnemySpeedScared,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();
@@ -86,7 +86,7 @@ public partial struct EnemySystem : ISystem
         {
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
-            MapId = map.Id,
+            MapId = map.Idx,
             LiveTime = gameAspect.LiveTime,
             ExitHomeTime = gameAspect.LevelData.EnemyInHomeTime,
             EnemySpeed = gameAspect.LevelData.EnemySpeed,
@@ -96,7 +96,7 @@ public partial struct EnemySystem : ISystem
         {
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
-            MapId = map.Id,
+            MapId = map.Idx,
             EnemySpeedReturnHome = gameAspect.LevelData.EnemySpeedReturnHome,
             Main = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()

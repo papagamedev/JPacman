@@ -150,4 +150,30 @@ public partial class HudSystem : SystemBase
         ecb.Playback(EntityManager);
         ecb.Dispose();
     }
+
+    public void OnGameOverExit()
+    {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+        ecb.RemoveComponent<LevelGameOverPhaseTag>(mainEntity);
+        ecb.AddComponent(mainEntity, new LevelClearPhaseTag());
+        ecb.Playback(EntityManager);
+        ecb.Dispose();
+    }
+
+    public void OnGameOverPostScore()
+    {
+        OnGameOverExit();
+    }
+
+    public void GetGameOverParams(out int score, out string mapId, out int round)
+    {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var mainComponent = SystemAPI.GetComponent<Main>(mainEntity);
+        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var mapIdx = gameAspect.LevelData.MapId;
+        mapId = mainComponent.MapsConfigBlob.Value.MapsData[mapIdx].Id.ToString();
+        round = gameAspect.LevelData.RoundNumber;
+        score = gameAspect.Score;
+    }
 }

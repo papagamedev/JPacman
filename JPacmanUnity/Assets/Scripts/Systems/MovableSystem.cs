@@ -33,7 +33,7 @@ public partial struct MovableSystem : ISystem
         {
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
-            MapId = map.Id,
+            MapId = map.Idx,
             MainEntity = mainEntity,
             ECB = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
         }.ScheduleParallel();

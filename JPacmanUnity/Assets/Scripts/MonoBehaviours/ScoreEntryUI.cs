@@ -10,7 +10,9 @@ public class ScoreEntryUI : MonoBehaviour
 
     public void Set(ScoreData data)
     {
-        m_nameText.text = data.Name;
-        m_scoreText.text = data.Score.ToString();
+        m_nameText.text = data.Message;
+        m_scoreText.text = GetFormattedScore(data.Score);
     }
+
+    public static string GetFormattedScore(int score) => $"{score:n0}";
 }

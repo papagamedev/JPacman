@@ -25,6 +25,10 @@ MonoBehaviour:
   IntroConfig: {fileID: 11400000, guid: 1de3456d16bf522458ba10b8e3ccea84, type: 2}
   MenuConfig: {fileID: 11400000, guid: fb014d93813f731459f4039ebf7f21bf, type: 2}
   LivesCount: 3
+  MapConfigs:
+  - {fileID: 11400000, guid: d6978cb65151c4248b5ee6ad08834b6f, type: 2}
+  - {fileID: 11400000, guid: 0e60dad1c3d25be41b67f4c82abbb020, type: 2}
+  - {fileID: 11400000, guid: 26d0008ff471acf4581dcdda2ee98986, type: 2}
   RoundConfigs:
   - {fileID: 11400000, guid: 2ded9cb2a28fde34c85a1613a44d2bce, type: 2}
   - {fileID: 11400000, guid: b5ce6c809cb297d4fa444b1ec13d8b25, type: 2}

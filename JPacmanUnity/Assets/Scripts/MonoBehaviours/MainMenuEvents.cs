@@ -19,7 +19,7 @@ public class MainMenuEvents : MenuEvents
         m_optionsButton.onClick.AddListener(OnOptions);
         m_scoresButton.onClick.AddListener(OnScores);
         m_exitButton.onClick.AddListener(OnExit);
-        m_hudEvents.OnFadeAnimation(true, 0.5f);
+        m_uiEvents.OnFadeAnimation(true, 0.5f);
     }
 
     void OnDisable()
@@ -73,7 +73,7 @@ public class MainMenuEvents : MenuEvents
     private void OnScores()
     {
         m_audioEvents.OnPlaySound(AudioEvents.SoundType.PlayerEatDot);
-        m_hudEvents.OnShowUI(UIEvents.ShowUIType.Scores);
+        m_uiEvents.OnShowUI(UIEvents.ShowUIType.Scores);
 
 
     }

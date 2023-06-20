@@ -45,7 +45,7 @@ public partial struct CollectibleSystem : ISystem
         {
             DeltaTime = deltaTime,
             BlobMapsRef = mapsBlobRef,
-            MapId = map.Id,
+            MapId = map.Idx,
             PlayerMapPos = playerMapPos,
             PlayerCollisionRadius = playerCollisionRadius,
             FruitScore = gameAspect.LevelData.FruitScore,

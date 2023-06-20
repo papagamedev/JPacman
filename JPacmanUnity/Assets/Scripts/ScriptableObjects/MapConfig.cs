@@ -9,6 +9,7 @@ public class MapConfig : ScriptableObject
 
 	public class MapData
 	{
+		public string m_id;
 		public int m_width;
 		public int m_height;
 		public char[,] m_data;
@@ -38,7 +39,7 @@ public class MapConfig : ScriptableObject
 				y++;
 				x = 0;
 			}
-
+			data.m_id = name;
 			data.m_width = width;
 			data.m_height = height;
 			data.m_data = mapChars;
