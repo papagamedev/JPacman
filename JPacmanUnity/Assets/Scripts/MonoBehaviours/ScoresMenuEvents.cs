@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,10 @@ public class ScoresMenuEvents : MenuEvents
     public GameObject m_scoreEntry;
     public GameObject m_scoreListRoot;
     public Button m_mapButton;
+    public TMP_Text m_mapButtonText;
     public Button m_roundButton;
+    public TMP_Text m_roundButtonText;
+    public TMP_Text m_messageText;
     public GameConfig m_gameConfig;
 
     private int m_mapIdx = 0;
@@ -35,6 +39,7 @@ public class ScoresMenuEvents : MenuEvents
             StopCoroutine(m_getScoresRoutine);
             m_getScoresRoutine = null;
         }
+
         m_getScoresRoutine = StartCoroutine(GetUpdatedScoresAsync());
     }
 
@@ -42,7 +47,9 @@ public class ScoresMenuEvents : MenuEvents
     {
         var mapId = m_gameConfig.MapConfigs[m_mapIdx].name;
         var roundId = m_gameConfig.RoundConfigs[m_roundIdx].RoundNumber;
-        Debug.Log($"map={mapId} round={roundId}");
+        m_mapButtonText.text = m_gameConfig.GetMapDisplayName(mapId);
+        m_roundButtonText.text = m_gameConfig.GetRoundDisplayName(roundId);
+        m_messageText.text = "Obteniendo puntajes...";
         var task = BackendClient.Instance.GetScores(mapId, roundId);
         while (!task.IsCompleted)
         {
@@ -52,9 +59,10 @@ public class ScoresMenuEvents : MenuEvents
         var result = task.Result;
         if (result == null)
         {
-            AddScore(new ScoreData() { Message = "Error al obtener puntajes!" });
+            m_messageText.text = "Error al obtener puntajes!";
             yield break;
         }
+        m_messageText.text = "";
 
         foreach (var entry in result)
         {

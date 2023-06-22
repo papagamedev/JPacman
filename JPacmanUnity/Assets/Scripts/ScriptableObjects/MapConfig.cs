@@ -7,6 +7,8 @@ public class MapConfig : ScriptableObject
 	[SerializeField, Multiline(30)]
 	string m_map;
 
+    public string DisplayName;
+
 	public class MapData
 	{
 		public string m_id;

@@ -19,5 +19,30 @@ public class GameConfig : ScriptableObject
     [Header("Debugging")]
     [Tooltip("-1 means go to intro and menu; 0+ means go straight to that level")]
     public int DebugStartLevel = -1;
+
+    public string GetMapDisplayName(string mapId)
+    {
+        foreach (var map in MapConfigs)
+        {
+            if (map.Map.m_id == mapId)
+            {
+                return map.DisplayName;
+            }
+        }
+        return null;
+    }
+
+    public string GetRoundDisplayName(int roundId)
+    {
+        foreach (var round in RoundConfigs)
+        {
+            if (round.RoundNumber == roundId)
+            {
+                return round.DisplayName;
+            }
+        }
+        return null;
+    }
+
 }
 

@@ -174,7 +174,7 @@ public class IngameEvents : MonoBehaviour
                 m_messageLabel.text = "";
                 return;
             case LabelMessage.Round:
-                m_messageLabel.text = "Ronda " + value;
+                m_messageLabel.text = "Ronda " + m_gameConfig.GetRoundDisplayName(value);
                 return;
             case LabelMessage.Level:
                 m_messageLabel.text = "Nivel " + value;
