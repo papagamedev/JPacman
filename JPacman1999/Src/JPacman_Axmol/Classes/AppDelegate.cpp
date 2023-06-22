@@ -54,7 +54,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     }
 
     // turn on display FPS
-    director->setStatsDisplay(true);
+//    director->setStatsDisplay(true);
 
     director->setAnimationInterval(1.0f / 30);
 
