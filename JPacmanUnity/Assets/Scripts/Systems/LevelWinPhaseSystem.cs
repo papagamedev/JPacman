@@ -101,7 +101,7 @@ public partial struct LevelWinPhaseSystem : ISystem, ISystemStartStop
     private void SwitchToLevelClearPhase(Entity mainEntity, EntityCommandBuffer ecb)
     {
         ecb.RemoveComponent<LevelWinPhaseTag>(mainEntity);
-        ecb.AddComponent<LevelClearPhaseTag>(mainEntity);
+        ecb.AddComponent<LevelClearPhase>(mainEntity);
     }
 
 }

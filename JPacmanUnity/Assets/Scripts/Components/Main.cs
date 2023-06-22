@@ -21,7 +21,10 @@ public struct Main : IComponentData
 
 public struct IntroPhaseTag : IComponentData { }
 
-public struct MenuPhaseTag : IComponentData { }
+public struct MenuPhase : IComponentData 
+{
+    public UIEvents.ShowUIType UIType;
+}
 
 public struct IntroSpriteTag : IComponentData { }
 

@@ -96,7 +96,10 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
     private void GoToMainMenu(Entity mainEntity, EntityCommandBuffer ecb)
     {
         ecb.RemoveComponent<IntroPhaseTag>(mainEntity);
-        ecb.AddComponent(mainEntity, new MenuPhaseTag());
+        ecb.AddComponent(mainEntity, new MenuPhase()
+        {
+            UIType = UIEvents.ShowUIType.Menu
+        });
     }
 
     private void CreateDots(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)

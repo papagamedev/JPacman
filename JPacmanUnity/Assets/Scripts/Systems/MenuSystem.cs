@@ -15,7 +15,7 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<Main>();
-        state.RequireForUpdate<MenuPhaseTag>();
+        state.RequireForUpdate<MenuPhase>();
     }
 
 
@@ -24,9 +24,10 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
+        var menuPhase = SystemAPI.GetComponent<MenuPhase>(mainEntity);
         ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
         {
-            UI = UIEvents.ShowUIType.Menu
+            UI = menuPhase.UIType
         });
         ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
         {

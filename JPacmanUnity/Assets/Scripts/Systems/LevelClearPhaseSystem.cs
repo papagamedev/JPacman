@@ -9,7 +9,7 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<LevelClearPhaseTag>();
+        state.RequireForUpdate<LevelClearPhase>();
         state.RequireForUpdate<Main>();
     }
 
@@ -18,11 +18,13 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
+        var clearPhaseComponent = SystemAPI.GetComponent<LevelClearPhase>(mainEntity);
+        var mainMenuType = clearPhaseComponent.MenuUIType;
         DestroyLevel(ref state, ecb);
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         if (gameAspect.Lives == 0 || gameAspect.IsPaused)
         {
-            SwitchToMenu(mainEntity, ecb);
+            SwitchToMenu(mainEntity, ecb, mainMenuType);
         }
         else
         {
@@ -71,14 +73,17 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
 
     private void SwitchToLevelStartPhase(Entity mainEntity, EntityCommandBuffer ecb)
     {
-        ecb.RemoveComponent<LevelClearPhaseTag>(mainEntity);
+        ecb.RemoveComponent<LevelClearPhase>(mainEntity);
         ecb.AddComponent<LevelStartPhaseTag>(mainEntity);
     }
 
-    private void SwitchToMenu(Entity mainEntity, EntityCommandBuffer ecb)
+    private void SwitchToMenu(Entity mainEntity, EntityCommandBuffer ecb, UIEvents.ShowUIType uiType)
     {
-        ecb.RemoveComponent<LevelClearPhaseTag>(mainEntity);
-        ecb.AddComponent<MenuPhaseTag>(mainEntity);
+        ecb.RemoveComponent<LevelClearPhase>(mainEntity);
+        ecb.AddComponent(mainEntity, new MenuPhase()
+        {
+            UIType = uiType
+        });
         ecb.RemoveComponent<Game>(mainEntity);
     }
 }

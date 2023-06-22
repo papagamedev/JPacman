@@ -27,7 +27,10 @@ public struct LevelDeadPhaseTag : IComponentData { }
 
 public struct LevelWinPhaseTag : IComponentData { }
 
-public struct LevelClearPhaseTag : IComponentData { }
+public struct LevelClearPhase : IComponentData 
+{
+    public UIEvents.ShowUIType MenuUIType;
+}
 
 public struct LevelResetLivePhaseTag : IComponentData { }
 

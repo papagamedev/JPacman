@@ -118,7 +118,7 @@ public partial class HudSystem : SystemBase
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         var lives = mainComponent.ValueRO.LivesCount;
-        ecb.RemoveComponent<MenuPhaseTag>(mainEntity);
+        ecb.RemoveComponent<MenuPhase>(mainEntity);
         ecb.AddComponent(mainEntity, new Game()
         {
             Lives = lives,
@@ -141,29 +141,32 @@ public partial class HudSystem : SystemBase
 
     }
 
-    public void OnPausedExit()
+    private void SwitchToMainMenu<PreviousPhaseType>(UIEvents.ShowUIType menuType)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
-        ecb.RemoveComponent<LevelPlayingPhaseTag>(mainEntity);
-        ecb.AddComponent(mainEntity, new LevelClearPhaseTag());
+        ecb.RemoveComponent<PreviousPhaseType>(mainEntity);
+        ecb.AddComponent(mainEntity, new LevelClearPhase()
+        {
+            MenuUIType = menuType
+        });
         ecb.Playback(EntityManager);
         ecb.Dispose();
+    }
+
+    public void OnPausedExit()
+    {
+        SwitchToMainMenu<LevelPlayingPhaseTag>(UIEvents.ShowUIType.Menu);
     }
 
     public void OnGameOverExit()
     {
-        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
-        ecb.RemoveComponent<LevelGameOverPhaseTag>(mainEntity);
-        ecb.AddComponent(mainEntity, new LevelClearPhaseTag());
-        ecb.Playback(EntityManager);
-        ecb.Dispose();
+        SwitchToMainMenu<LevelGameOverPhaseTag>(UIEvents.ShowUIType.Menu);
     }
 
     public void OnGameOverPostScore()
     {
-        OnGameOverExit();
+        SwitchToMainMenu<LevelGameOverPhaseTag>(UIEvents.ShowUIType.Scores);
     }
 
     public void GetGameOverParams(out int score, out string mapId, out int round)
