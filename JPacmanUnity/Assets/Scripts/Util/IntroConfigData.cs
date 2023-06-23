@@ -40,18 +40,18 @@ public struct IntroConfigData
         for (int i = 0; i < shapesCount; i++)
         {
             var shape = shapes[i];
-            var shapePos = new float2(shape.Pos.x, -shape.Pos.y);
             shapesArrayBuilder[i].Duration = shape.Duration;
-            CreateDotsShapePosArray(builder, dotSpacing, shape.Shape, shapePos, ref shapesArrayBuilder[i].DotPos);
+            shapesArrayBuilder[i].ShapePos = new float2(shape.Pos.x, -shape.Pos.y);
+            CreateDotsShapePosArray(builder, dotSpacing, shape.Shape, ref shapesArrayBuilder[i].DotPos);
         }
         var result = builder.CreateBlobAssetReference<IntroConfigData>(Allocator.Persistent);
         builder.Dispose();
         return result;
     }
 
-    public static void CreateDotsShapePosArray(BlobBuilder builder, float dotSpacing, string shape, float2 shapePos, ref BlobArray<float2> blobArray)
+    public static void CreateDotsShapePosArray(BlobBuilder builder, float dotSpacing, string shape, ref BlobArray<float2> blobArray)
     {
-        var dotPosList = GetDotsShapePosList(dotSpacing, shape, shapePos);
+        var dotPosList = GetDotsShapePosList(dotSpacing, shape);
         var dotsCount = dotPosList.Count;
         var arrayBuilder = builder.Allocate(ref blobArray, dotsCount);
         var j = 0;
@@ -61,7 +61,7 @@ public struct IntroConfigData
         }
     }
 
-    private static List<float2> GetDotsShapePosList(float dotSpacing, string shape, float2 shapePos)
+    private static List<float2> GetDotsShapePosList(float dotSpacing, string shape)
     {
         var shapeLines = shape.Split("\n");
         var dotPosList = new List<float2>();
@@ -73,7 +73,7 @@ public struct IntroConfigData
             {
                 if (c == '#')
                 {
-                    var pos = shapePos + new float2(x, -y) * dotSpacing;
+                    var pos = new float2(x, -y) * dotSpacing;
                     dotPosList.Add(pos);
                 }
                 x++;
@@ -88,5 +88,6 @@ public struct IntroConfigData
 public struct IntroShapeData
 {
     public BlobArray<float2> DotPos;
+    public float2 ShapePos;
     public float Duration;
 }

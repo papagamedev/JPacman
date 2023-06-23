@@ -12,17 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1dc7ad37dfda514aafad024cf52c579, type: 3}
   m_Name: Menu
   m_EditorClassIdentifier: 
-  DotSpacing: 0.625
   PlayerSpeed: 15
   EnemySpeed: 10
   PlayerBoundsSize: {x: 30, y: 5}
   EnemiesBoundsSize: {x: 30, y: 16}
-  DotsShapePos: {x: -18.25, y: -13}
-  DotsShape: "       #############################################\r\n\r\n              
-    # ###   ##   ##  #   #  ##  #  #                 \r\n               # #  # # 
-    # #  # ## ## #  # ## #                 \r\n               # #  # #  # #    #
-    # # #  # ## #    \r\n               # ###  #  # #    # # # #  # # ##        
-    \r\n               # #    #### #    #   # #### # ##   \r\n            #  # #   
-    #  # #  # #   # #  # #  #      \r\n             ##  #    #  #  ##  #   # #  #
-    #  #                 \r\n                                           \r\n      
-    #############################################"

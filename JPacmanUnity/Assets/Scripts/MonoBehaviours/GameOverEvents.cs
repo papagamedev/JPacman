@@ -22,7 +22,7 @@ public class GameOverEvents : MenuEvents
         m_exitButton.onClick.AddListener(OnExit);
         m_inputField.onValueChanged.AddListener(OnMessageChanged);
 
-        HudSystem.Instance?.GetGameOverParams(out m_score, out m_mapId, out m_round);
+        UISystem.Instance?.GetGameOverParams(out m_score, out m_mapId, out m_round);
         m_scoreText.text = "Puntaje: " + ScoreEntryUI.GetFormattedScore(m_score); 
         m_inputField.text = "";
         UpdateButtons();
@@ -42,7 +42,7 @@ public class GameOverEvents : MenuEvents
     private IEnumerator OnExitAsync()
     {
         yield return OnClickButtonFadeAsync(AudioEvents.SoundType.PlayerEatFruit);
-        HudSystem.Instance?.OnGameOverExit();
+        UISystem.Instance?.OnGameOverExit();
     }
 
     private bool IsValid()
@@ -81,7 +81,7 @@ public class GameOverEvents : MenuEvents
             UpdateButtons();
             yield break;
         }
-        HudSystem.Instance?.OnGameOverPostScore();
+        UISystem.Instance?.OnGameOverPostScore();
     }
 
     private void OnMessageChanged(string message)

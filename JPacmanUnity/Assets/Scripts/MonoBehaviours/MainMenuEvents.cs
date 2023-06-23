@@ -56,7 +56,7 @@ public class MainMenuEvents : MenuEvents
     private IEnumerator OnPlayAsync()
     {
         yield return OnClickButtonFadeAsync(AudioEvents.SoundType.PlayerEatFruit);
-        HudSystem.Instance?.OnMenuPlay(m_startLevel);
+        UISystem.Instance?.OnMenuPlay(m_startLevel);
     }
 
     private void OnOptions()

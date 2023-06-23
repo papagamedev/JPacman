@@ -15,7 +15,6 @@ public partial struct MenuDotShapeSystem : ISystem, ISystemStartStop
         state.RequireForUpdate<MenuDotShape>();
     }
 
-
     [BurstCompile]
     public void OnStartRunning(ref SystemState state)
     {
@@ -26,7 +25,7 @@ public partial struct MenuDotShapeSystem : ISystem, ISystemStartStop
 
         ref var introData = ref mainComponent.ValueRO.IntroConfigBlob.Value;
 
-        CreateDots(ref state, mainComponent, ref introData, menuDotShape.ValueRO.ShapeIdx, mainEntity, ecb);
+        CreateDots(ref state, mainComponent, ref introData, menuDotShape.ValueRO.ShapeIdx, menuDotShape.ValueRO.ShapePos, mainEntity, ecb);
 
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
@@ -45,6 +44,7 @@ public partial struct MenuDotShapeSystem : ISystem, ISystemStartStop
         {
             DeltaTime = deltaTime,
             ShapeIdx = menuDotShape.ValueRO.ShapeIdx,
+            ShapePos = menuDotShape.ValueRO.ShapePos,
             BlobIntro = mainComponent.ValueRO.IntroConfigBlob
         }.ScheduleParallel();
         ecb.Playback(state.EntityManager);
@@ -70,7 +70,7 @@ public partial struct MenuDotShapeSystem : ISystem, ISystemStartStop
     }
 
 
-    private void CreateDots(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, int shapeIdx, Entity mainEntity, EntityCommandBuffer ecb)
+    private void CreateDots(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, int shapeIdx, float2 shapePos, Entity mainEntity, EntityCommandBuffer ecb)
     {
         ref var dotsPos = ref introData.ShapeData[shapeIdx].DotPos;
         var dotsCount = dotsPos.Length;
@@ -80,7 +80,7 @@ public partial struct MenuDotShapeSystem : ISystem, ISystemStartStop
             ecb.SetComponent(dot,
                 new LocalTransform()
                 {
-                    Position = new float3(dotsPos[i], 0),
+                    Position = new float3(dotsPos[i] + shapePos, 0),
                     Scale = 1.0f,
                     Rotation = quaternion.identity
                 });
@@ -103,11 +103,12 @@ public partial struct MenuDotShapeJob : IJobEntity
 {
     public float DeltaTime;
     public int ShapeIdx;
+    public float2 ShapePos;
     public BlobAssetReference<IntroConfigData> BlobIntro;
 
     private void Execute(MenuAnimatedDotAspect introDot)
     {
-        introDot.UpdateAnimation(DeltaTime, ShapeIdx, BlobIntro);
+        introDot.UpdateAnimation(DeltaTime, ShapeIdx, ShapePos, BlobIntro);
     }
 }
 

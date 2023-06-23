@@ -35,7 +35,8 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
         });
         ecb.AddComponent(mainEntity, new MenuDotShape()
         {
-            ShapeIdx = menuPhase.ValueRO.UIType == UIEvents.ShowUIType.Menu ? 0 : 1
+            ShapeIdx = menuPhase.ValueRO.UIType == UIEvents.ShowUIType.Menu ? 4 : 0,
+            ShapePos = menuPhase.ValueRO.UIType == UIEvents.ShowUIType.Menu ? new float2(-18.25f, 13.0f) : new float2(-18.25f, 15.0f)
         });
         var mainComponent = SystemAPI.GetComponentRW<Main>(mainEntity);
         m_random = new Random(mainComponent.ValueRW.RandomSeed++);

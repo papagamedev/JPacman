@@ -49,11 +49,11 @@ public class PausedMenuEvents : MenuEvents
     private IEnumerator OnExitAsync()
     {
         yield return OnClickButtonFadeAsync(AudioEvents.SoundType.PlayerEatFruit);
-        HudSystem.Instance?.OnPausedExit();
+        UISystem.Instance?.OnPausedExit();
     }
 
     private void OnContinue()
     {
-        HudSystem.Instance?.OnPausedContinue();
+        UISystem.Instance?.OnPausedContinue();
     }
 }

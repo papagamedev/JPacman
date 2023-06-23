@@ -77,7 +77,7 @@ public class IngameEvents : MonoBehaviour
 
     private void OnEnable()
     {
-        var hudSystem = HudSystem.Instance;
+        var hudSystem = UISystem.Instance;
         hudSystem.OnSetLabelText += OnSetLabelText;
         hudSystem.OnSetLabelPos += OnSetLabelPos;
         hudSystem.OnSetLivesText += OnSetLivesText;
@@ -96,7 +96,7 @@ public class IngameEvents : MonoBehaviour
     {
         OnKillAllScoreAnimations();
 
-        var hudSystem = HudSystem.Instance;
+        var hudSystem = UISystem.Instance;
         if (hudSystem != null)
         {
             hudSystem.OnSetLabelText -= OnSetLabelText;

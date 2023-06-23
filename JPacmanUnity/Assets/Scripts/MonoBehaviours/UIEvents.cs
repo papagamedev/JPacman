@@ -61,7 +61,7 @@ public class UIEvents : MonoBehaviour
     {
         OnShowUI(ShowUIType.None);
 
-        var hudSystem = HudSystem.Instance;
+        var hudSystem = UISystem.Instance;
         hudSystem.OnFadeAnimation += OnFadeAnimation;
         hudSystem.OnShowUI += OnShowUI;
 
@@ -75,7 +75,7 @@ public class UIEvents : MonoBehaviour
 
     private void OnDisable()
     {
-        var hudSystem = HudSystem.Instance;
+        var hudSystem = UISystem.Instance;
         if (hudSystem != null)
         {
             hudSystem.OnFadeAnimation -= OnFadeAnimation;

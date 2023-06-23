@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(CollectibleSystem))]
-public partial class HudSystem : SystemBase
+public partial class UISystem : SystemBase
 {
     public Action<IngameEvents.LabelMessage, int> OnSetLabelText;
     public Action<float3> OnSetLabelPos;
@@ -15,7 +15,7 @@ public partial class HudSystem : SystemBase
     public Action<bool, float> OnFadeAnimation;
     public Action<UIEvents.ShowUIType> OnShowUI;
 
-    public static HudSystem Instance => World.DefaultGameObjectInjectionWorld?.GetExistingSystemManaged<HudSystem>();
+    public static UISystem Instance => World.DefaultGameObjectInjectionWorld?.GetExistingSystemManaged<UISystem>();
 
     protected override void OnCreate()
     {

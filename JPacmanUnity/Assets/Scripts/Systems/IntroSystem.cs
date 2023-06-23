@@ -43,14 +43,10 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         {
             MusicType = AudioEvents.MusicType.Intro
         });
-        ecb.AddComponent(mainEntity, new MenuDotShape()
-        {
-            ShapeIdx = 0
-        });
-
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         ref var introData = ref mainComponent.ValueRO.IntroConfigBlob.Value;
 
+        CreateDots(ref state, mainComponent, ref introData, mainEntity, ecb);
         CreateEnemies(ref state, mainComponent, ref introData, mainEntity, ecb);
         CreatePlayer(ref state, mainComponent, ref introData, mainEntity, ecb);
 
@@ -102,6 +98,15 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         ecb.AddComponent(mainEntity, new MenuPhase()
         {
             UIType = UIEvents.ShowUIType.Menu
+        });
+    }
+
+    private void CreateDots(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        ecb.AddComponent(mainEntity, new MenuDotShape()
+        {
+            ShapeIdx = 0,
+            ShapePos = introData.ShapeData[0].ShapePos
         });
     }
 
@@ -174,7 +179,8 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
             {
                 ecb.SetComponent(mainEntity, new MenuDotShape()
                 {
-                    ShapeIdx = m_shapeIdx
+                    ShapeIdx = m_shapeIdx,
+                    ShapePos = introData.ShapeData[m_shapeIdx].ShapePos
                 });
             }
             else
