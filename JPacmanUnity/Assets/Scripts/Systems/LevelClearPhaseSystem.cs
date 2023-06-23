@@ -18,8 +18,8 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        var clearPhaseComponent = SystemAPI.GetComponent<LevelClearPhase>(mainEntity);
-        var mainMenuType = clearPhaseComponent.MenuUIType;
+        var clearPhaseComponent = SystemAPI.GetComponentRO<LevelClearPhase>(mainEntity);
+        var mainMenuType = clearPhaseComponent.ValueRO.MenuUIType;
         DestroyLevel(ref state, ecb);
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         if (gameAspect.Lives == 0 || gameAspect.IsPaused)

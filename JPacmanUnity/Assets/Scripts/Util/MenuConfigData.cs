@@ -1,5 +1,4 @@
 
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -25,31 +24,7 @@ public struct MenuConfigData
         menuConfigData.PlayerBoundsSize = menuData.PlayerBoundsSize;
         menuConfigData.EnemiesBoundsSize = menuData.EnemiesBoundsSize;
         var shapePos = new float2(menuData.DotsShapePos.x, -menuData.DotsShapePos.y);
-        var shapeLines = menuData.DotsShape.Split("\n");
-        var dotPosList = new List<float2>();
-        int y = 0;
-        foreach (var line in shapeLines)
-        {
-            int x = 0;
-            foreach (var c in line)
-            {
-                if (c == '#')
-                {
-                    var pos = shapePos + new float2(x, -y) * dotSpacing;
-                    dotPosList.Add(pos);
-                }
-                x++;
-            }
-            y++;
-        }
-        dotPosList.Sort( (a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : a.y < b.y ? -1 : a.y > b.y ? 1 : 0 );
-        var dotsCount = dotPosList.Count;
-        var arrayBuilder = builder.Allocate(ref menuConfigData.ShapeDotPos, dotsCount);
-        var j = 0;
-        foreach (var dotPos in dotPosList)
-        {
-            arrayBuilder[j++] = dotPos;
-        }
+        IntroConfigData.CreateDotsShapePosArray(builder, dotSpacing, menuData.DotsShape, shapePos, ref menuConfigData.ShapeDotPos);
         var result = builder.CreateBlobAssetReference<MenuConfigData>(Allocator.Persistent);
         builder.Dispose();
         return result;

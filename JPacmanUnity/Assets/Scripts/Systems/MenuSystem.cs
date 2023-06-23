@@ -24,19 +24,22 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        var menuPhase = SystemAPI.GetComponent<MenuPhase>(mainEntity);
+        var menuPhase = SystemAPI.GetComponentRO<MenuPhase>(mainEntity);
         ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
         {
-            UI = menuPhase.UIType
+            UI = menuPhase.ValueRO.UIType
         });
         ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
         {
             MusicType = AudioEvents.MusicType.Menu
         });
+        ecb.AddComponent(mainEntity, new MenuDotShape()
+        {
+            ShapeIdx = menuPhase.ValueRO.UIType == UIEvents.ShowUIType.Menu ? 0 : 1
+        });
         var mainComponent = SystemAPI.GetComponentRW<Main>(mainEntity);
         m_random = new Random(mainComponent.ValueRW.RandomSeed++);
         ref var menuData = ref mainComponent.ValueRO.MenuConfigBlob.Value;
-        CreateDots(ref state, mainComponent, ref menuData, mainEntity, ecb);
         CreateEnemies(ref state, mainComponent, ref menuData, mainEntity, ecb);
         CreatePlayer(ref state, mainComponent, ref menuData, mainEntity, ecb);
         ecb.Playback(state.EntityManager);
@@ -59,11 +62,16 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
     [BurstCompile]
     public void OnStopRunning(ref SystemState state)
     {
+        if (!SystemAPI.TryGetSingletonEntity<Main>(out var mainEntity))
+        {
+            return;
+        }
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         foreach (var (_, entity) in SystemAPI.Query<MenuSpriteTag>().WithEntityAccess())
         {
             ecb.DestroyEntity(entity);
         }
+        ecb.RemoveComponent<MenuDotShape>(mainEntity);
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
     }
@@ -72,30 +80,6 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
     public void OnDestroy(ref SystemState state)
     {
 
-    }
-
-    private void CreateDots(ref SystemState state, RefRW<Main> mainComponent, ref MenuConfigData menuData, Entity mainEntity, EntityCommandBuffer ecb)
-    {
-        ref var dotsPos = ref menuData.ShapeDotPos;
-        var dotsCount = dotsPos.Length;
-        for (int i = 0; i < dotsCount; i++)
-        {
-            var dot = ecb.Instantiate(mainComponent.ValueRO.DotPrefab);
-            ecb.SetComponent(dot,
-                new LocalTransform()
-                {
-                    Position = new float3(dotsPos[i], 0),
-                    Scale = 1.0f,
-                    Rotation = quaternion.identity
-                });
-            ecb.RemoveComponent<Collectible>(dot);
-            ecb.AddComponent(dot,
-                new RotateAnimator()
-                {
-                    Speed = 30.0f
-                });
-            ecb.AddComponent(dot, new MenuSpriteTag());
-        }
     }
 
     private void CreatePlayer(ref SystemState state, RefRW<Main> mainComponent, ref MenuConfigData menuData, Entity mainEntity, EntityCommandBuffer ecb)

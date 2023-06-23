@@ -22,11 +22,7 @@ public class GameOverEvents : MenuEvents
         m_exitButton.onClick.AddListener(OnExit);
         m_inputField.onValueChanged.AddListener(OnMessageChanged);
 
-        if (World.DefaultGameObjectInjectionWorld != null)
-        {
-            var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
-            hudSystem.GetGameOverParams(out m_score, out m_mapId, out m_round);
-        }
+        HudSystem.Instance?.GetGameOverParams(out m_score, out m_mapId, out m_round);
         m_scoreText.text = "Puntaje: " + ScoreEntryUI.GetFormattedScore(m_score); 
         m_inputField.text = "";
         UpdateButtons();
@@ -46,11 +42,7 @@ public class GameOverEvents : MenuEvents
     private IEnumerator OnExitAsync()
     {
         yield return OnClickButtonFadeAsync(AudioEvents.SoundType.PlayerEatFruit);
-        if (World.DefaultGameObjectInjectionWorld != null)
-        {
-            var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
-            hudSystem.OnGameOverExit();
-        }
+        HudSystem.Instance?.OnGameOverExit();
     }
 
     private bool IsValid()
@@ -89,11 +81,7 @@ public class GameOverEvents : MenuEvents
             UpdateButtons();
             yield break;
         }
-        if (World.DefaultGameObjectInjectionWorld != null)
-        {
-            var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
-            hudSystem.OnGameOverPostScore();
-        }
+        HudSystem.Instance?.OnGameOverPostScore();
     }
 
     private void OnMessageChanged(string message)

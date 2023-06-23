@@ -87,7 +87,7 @@ public class AudioEvents : MonoBehaviour
 
     private void OnEnable()
     {
-        var audioSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<AudioSystem>();
+        var audioSystem = AudioSystem.Instance;
         audioSystem.OnPlaySound += OnPlaySound;
         audioSystem.OnStopSound += OnStopSound;
         audioSystem.OnPlayMusic += OnPlayMusic;
@@ -112,9 +112,9 @@ public class AudioEvents : MonoBehaviour
 
     private void OnDisable()
     {
-        if (World.DefaultGameObjectInjectionWorld != null)
+        var audioSystem = AudioSystem.Instance;
+        if (audioSystem != null)
         {
-            var audioSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<AudioSystem>();
             audioSystem.OnPlaySound -= OnPlaySound;
             audioSystem.OnStopSound -= OnStopSound;
             audioSystem.OnPlayMusic -= OnPlayMusic;

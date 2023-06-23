@@ -11,6 +11,8 @@ public partial class AudioSystem : SystemBase
     public Action<bool> OnPauseAudio;
     public Action<bool, float> OnFadeMusic;
 
+    public static AudioSystem Instance => World.DefaultGameObjectInjectionWorld?.GetExistingSystemManaged<AudioSystem>();
+
     protected override void OnCreate()
     {
         base.OnCreate();

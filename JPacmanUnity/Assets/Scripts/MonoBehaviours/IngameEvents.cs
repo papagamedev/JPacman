@@ -77,7 +77,7 @@ public class IngameEvents : MonoBehaviour
 
     private void OnEnable()
     {
-        var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
+        var hudSystem = HudSystem.Instance;
         hudSystem.OnSetLabelText += OnSetLabelText;
         hudSystem.OnSetLabelPos += OnSetLabelPos;
         hudSystem.OnSetLivesText += OnSetLivesText;
@@ -96,9 +96,9 @@ public class IngameEvents : MonoBehaviour
     {
         OnKillAllScoreAnimations();
 
-        if (World.DefaultGameObjectInjectionWorld != null)
+        var hudSystem = HudSystem.Instance;
+        if (hudSystem != null)
         {
-            var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
             hudSystem.OnSetLabelText -= OnSetLabelText;
             hudSystem.OnSetLabelPos -= OnSetLabelPos;
             hudSystem.OnSetLivesText -= OnSetLivesText;

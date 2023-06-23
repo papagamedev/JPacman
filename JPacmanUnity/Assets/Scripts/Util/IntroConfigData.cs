@@ -42,36 +42,46 @@ public struct IntroConfigData
             var shape = shapes[i];
             var shapePos = new float2(shape.Pos.x, -shape.Pos.y);
             shapesArrayBuilder[i].Duration = shape.Duration;
-            var shapeLines = shape.Shape.Split("\n");
-            var dotPosList = new List<float2>();
-            int y = 0;
-            foreach (var line in shapeLines)
-            {
-                int x = 0;
-                foreach (var c in line)
-                {
-                    if (c == '#')
-                    {
-                        var pos = shapePos + new float2(x, -y) * dotSpacing;
-                        dotPosList.Add(pos);
-                    }
-                    x++;
-                }
-                y++;
-            }
-            dotPosList.Sort( (a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : a.y < b.y ? -1 : a.y > b.y ? 1 : 0 );
-
-            var dotsCount = dotPosList.Count;
-            var arrayBuilder = builder.Allocate(ref shapesArrayBuilder[i].DotPos, dotsCount);
-            var j = 0;
-            foreach (var dotPos in dotPosList)
-            {
-                arrayBuilder[j++] = dotPos;
-            }
+            CreateDotsShapePosArray(builder, dotSpacing, shape.Shape, shapePos, ref shapesArrayBuilder[i].DotPos);
         }
         var result = builder.CreateBlobAssetReference<IntroConfigData>(Allocator.Persistent);
         builder.Dispose();
         return result;
+    }
+
+    public static void CreateDotsShapePosArray(BlobBuilder builder, float dotSpacing, string shape, float2 shapePos, ref BlobArray<float2> blobArray)
+    {
+        var dotPosList = GetDotsShapePosList(dotSpacing, shape, shapePos);
+        var dotsCount = dotPosList.Count;
+        var arrayBuilder = builder.Allocate(ref blobArray, dotsCount);
+        var j = 0;
+        foreach (var dotPos in dotPosList)
+        {
+            arrayBuilder[j++] = dotPos;
+        }
+    }
+
+    private static List<float2> GetDotsShapePosList(float dotSpacing, string shape, float2 shapePos)
+    {
+        var shapeLines = shape.Split("\n");
+        var dotPosList = new List<float2>();
+        int y = 0;
+        foreach (var line in shapeLines)
+        {
+            int x = 0;
+            foreach (var c in line)
+            {
+                if (c == '#')
+                {
+                    var pos = shapePos + new float2(x, -y) * dotSpacing;
+                    dotPosList.Add(pos);
+                }
+                x++;
+            }
+            y++;
+        }
+        dotPosList.Sort((a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : a.y < b.y ? -1 : a.y > b.y ? 1 : 0);
+        return dotPosList;
     }
 }
 

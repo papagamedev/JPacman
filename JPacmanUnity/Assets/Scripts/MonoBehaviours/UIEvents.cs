@@ -61,7 +61,7 @@ public class UIEvents : MonoBehaviour
     {
         OnShowUI(ShowUIType.None);
 
-        var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
+        var hudSystem = HudSystem.Instance;
         hudSystem.OnFadeAnimation += OnFadeAnimation;
         hudSystem.OnShowUI += OnShowUI;
 
@@ -75,9 +75,9 @@ public class UIEvents : MonoBehaviour
 
     private void OnDisable()
     {
-        if (World.DefaultGameObjectInjectionWorld != null)
+        var hudSystem = HudSystem.Instance;
+        if (hudSystem != null)
         {
-            var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
             hudSystem.OnFadeAnimation -= OnFadeAnimation;
             hudSystem.OnShowUI += OnShowUI;
         }

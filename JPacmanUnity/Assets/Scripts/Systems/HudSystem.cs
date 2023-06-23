@@ -7,13 +7,15 @@ using Unity.Mathematics;
 public partial class HudSystem : SystemBase
 {
     public Action<IngameEvents.LabelMessage, int> OnSetLabelText;
-    public Action<float3> OnSetLabelPos; 
+    public Action<float3> OnSetLabelPos;
     public Action<int> OnSetLivesText;
     public Action<int> OnSetLevelIcon;
     public Action<bool, int, int, float3> OnSetScoreText;
     public Action OnKillAllScoreAnimations;
     public Action<bool, float> OnFadeAnimation;
     public Action<UIEvents.ShowUIType> OnShowUI;
+
+    public static HudSystem Instance => World.DefaultGameObjectInjectionWorld?.GetExistingSystemManaged<HudSystem>();
 
     protected override void OnCreate()
     {
@@ -172,10 +174,10 @@ public partial class HudSystem : SystemBase
     public void GetGameOverParams(out int score, out string mapId, out int round)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var mainComponent = SystemAPI.GetComponent<Main>(mainEntity);
+        var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
         var mapIdx = gameAspect.LevelData.MapId;
-        mapId = mainComponent.MapsConfigBlob.Value.MapsData[mapIdx].Id.ToString();
+        mapId = mainComponent.ValueRO.MapsConfigBlob.Value.MapsData[mapIdx].Id.ToString();
         round = gameAspect.LevelData.RoundNumber;
         score = gameAspect.Score;
     }

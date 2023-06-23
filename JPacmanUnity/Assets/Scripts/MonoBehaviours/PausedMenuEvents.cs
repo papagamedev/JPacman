@@ -49,20 +49,11 @@ public class PausedMenuEvents : MenuEvents
     private IEnumerator OnExitAsync()
     {
         yield return OnClickButtonFadeAsync(AudioEvents.SoundType.PlayerEatFruit);
-        if (World.DefaultGameObjectInjectionWorld != null)
-        {
-            var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
-            hudSystem.OnPausedExit();
-        }
+        HudSystem.Instance?.OnPausedExit();
     }
 
     private void OnContinue()
     {
-        if (World.DefaultGameObjectInjectionWorld != null)
-        {
-            var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
-            hudSystem.OnPausedContinue();
-        }
+        HudSystem.Instance?.OnPausedContinue();
     }
-
 }

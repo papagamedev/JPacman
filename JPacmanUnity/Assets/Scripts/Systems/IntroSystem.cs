@@ -43,11 +43,14 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         {
             MusicType = AudioEvents.MusicType.Intro
         });
+        ecb.AddComponent(mainEntity, new MenuDotShape()
+        {
+            ShapeIdx = 0
+        });
 
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         ref var introData = ref mainComponent.ValueRO.IntroConfigBlob.Value;
 
-        CreateDots(ref state, mainComponent, ref introData, mainEntity, ecb);
         CreateEnemies(ref state, mainComponent, ref introData, mainEntity, ecb);
         CreatePlayer(ref state, mainComponent, ref introData, mainEntity, ecb);
 
@@ -100,35 +103,6 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         {
             UIType = UIEvents.ShowUIType.Menu
         });
-    }
-
-    private void CreateDots(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
-    {
-        ref var dotsPos = ref introData.ShapeData[0].DotPos;
-        var dotsCount = dotsPos.Length;
-        for (int i = 0; i < dotsCount; i++)
-        {
-            var dot = ecb.Instantiate(mainComponent.ValueRO.DotPrefab);
-            ecb.SetComponent(dot,
-                new LocalTransform()
-                {
-                    Position = new float3(dotsPos[i], 0),
-                    Scale = 1.0f,
-                    Rotation = quaternion.identity
-                });
-            ecb.RemoveComponent<Collectible>(dot);
-            ecb.AddComponent(dot,
-                new RotateAnimator()
-                {
-                    Speed = 30.0f
-                });
-            ecb.AddComponent(dot,
-                new IntroDotAnimator()
-                {
-                    Idx = i,
-                });
-            ecb.AddComponent(dot, new IntroSpriteTag());
-        }
     }
 
     private void CreatePlayer(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
@@ -196,19 +170,18 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
             m_shapeTime = 0;
             m_shapeIdx++;
 
-            if (m_shapeIdx == introData.ShapeData.Length)
+            if (m_shapeIdx < introData.ShapeData.Length)
+            {
+                ecb.SetComponent(mainEntity, new MenuDotShape()
+                {
+                    ShapeIdx = m_shapeIdx
+                });
+            }
+            else
             {
                 StartFade(mainEntity, ecb);
-                return;
             }
         }
-
-        new MoveIntroDotJob
-        {
-            DeltaTime = deltaTime,
-            ShapeIdx = m_shapeIdx,
-            BlobIntro = mainComponent.ValueRO.IntroConfigBlob
-        }.ScheduleParallel();
     }
 
     private void UpdatePlayerEnemies(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
@@ -281,18 +254,6 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         {
             GoToMainMenu(mainEntity, ecb);
         }
-    }
-}
-
-public partial struct MoveIntroDotJob : IJobEntity
-{
-    public float DeltaTime;
-    public int ShapeIdx;
-    public BlobAssetReference<IntroConfigData> BlobIntro;
-
-    private void Execute(IntroDotAnimatorAspect introDot)
-    {
-        introDot.UpdateAnimation(DeltaTime, ShapeIdx, BlobIntro);
     }
 }
 

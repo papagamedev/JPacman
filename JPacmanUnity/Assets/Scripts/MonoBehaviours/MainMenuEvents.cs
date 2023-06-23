@@ -56,11 +56,7 @@ public class MainMenuEvents : MenuEvents
     private IEnumerator OnPlayAsync()
     {
         yield return OnClickButtonFadeAsync(AudioEvents.SoundType.PlayerEatFruit);
-        if (World.DefaultGameObjectInjectionWorld != null)
-        {
-            var hudSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<HudSystem>();
-            hudSystem.OnMenuPlay(m_startLevel);
-        }
+        HudSystem.Instance?.OnMenuPlay(m_startLevel);
     }
 
     private void OnOptions()

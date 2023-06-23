@@ -2,16 +2,16 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-public struct IntroDotAnimator : IComponentData
+public struct MenuAnimatedDot : IComponentData
 {
     public int Idx;
 }
 
-public readonly partial struct IntroDotAnimatorAspect : IAspect
+public readonly partial struct MenuAnimatedDotAspect : IAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
-    private readonly RefRO<IntroDotAnimator> m_animator;
+    private readonly RefRO<MenuAnimatedDot> m_animator;
 
     public void UpdateAnimation(float deltaTime, int shapeIdx, BlobAssetReference<IntroConfigData> introBlob)
     {
