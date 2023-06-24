@@ -33,16 +33,12 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
         {
             MusicType = AudioEvents.MusicType.Menu
         });
-        ecb.AddComponent(mainEntity, new MenuDotShape()
-        {
-            ShapeIdx = menuPhase.ValueRO.UIType == UIEvents.ShowUIType.Menu ? 4 : 0,
-            ShapePos = menuPhase.ValueRO.UIType == UIEvents.ShowUIType.Menu ? new float2(-18.25f, 13.0f) : new float2(-18.25f, 15.0f)
-        });
         var mainComponent = SystemAPI.GetComponentRW<Main>(mainEntity);
         m_random = new Random(mainComponent.ValueRW.RandomSeed++);
         ref var menuData = ref mainComponent.ValueRO.MenuConfigBlob.Value;
-        CreateEnemies(ref state, mainComponent, ref menuData, mainEntity, ecb);
-        CreatePlayer(ref state, mainComponent, ref menuData, mainEntity, ecb);
+        SetDotShape(menuPhase.ValueRO.UIType, ref menuData, mainEntity, ecb);
+        CreateEnemies(mainComponent, ref menuData, mainEntity, ecb);
+        CreatePlayer(mainComponent, ref menuData, mainEntity, ecb);
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
     }
@@ -83,7 +79,28 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
 
     }
 
-    private void CreatePlayer(ref SystemState state, RefRW<Main> mainComponent, ref MenuConfigData menuData, Entity mainEntity, EntityCommandBuffer ecb)
+    public static void SetDotShape(UIEvents.ShowUIType uiType, ref MenuConfigData menuData, Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        var shapesCount = menuData.ShapeData.Length;
+        for (int i = 0; i < shapesCount; i++)
+        {
+            var shape = menuData.ShapeData[i];
+            if (shape.UIType == uiType)
+            {
+                ecb.AddComponent(mainEntity, new MenuDotShape()
+                {
+                    ShapeIdx = shape.ShapeIdx,
+                    ShapePos = shape.ShapePos,
+                    DotSpeed = menuData.DotSpeed
+                });
+                return;
+            }
+        }
+
+        ecb.RemoveComponent<MenuDotShape>(mainEntity);
+    }
+
+    private void CreatePlayer(RefRW<Main> mainComponent, ref MenuConfigData menuData, Entity mainEntity, EntityCommandBuffer ecb)
     {
         GetNewPosAndDir(out var pos, out var dir, menuData.PlayerBoundsSize, ref m_random, false);
         var player = ecb.Instantiate(mainComponent.ValueRO.PlayerPrefab);
@@ -103,7 +120,7 @@ public partial struct MenuSystem : ISystem, ISystemStartStop
         ecb.AddComponent(player, new MenuSpriteTag());
     }
 
-    private void CreateEnemies(ref SystemState state, RefRW<Main> mainComponent, ref MenuConfigData menuData, Entity mainEntity, EntityCommandBuffer ecb)
+    private void CreateEnemies(RefRW<Main> mainComponent, ref MenuConfigData menuData, Entity mainEntity, EntityCommandBuffer ecb)
     {
         for (int i = 0; i < 4; i++)
         {

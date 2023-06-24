@@ -13,16 +13,15 @@ public readonly partial struct MenuAnimatedDotAspect : IAspect
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRO<MenuAnimatedDot> m_animator;
 
-    public void UpdateAnimation(float deltaTime, int shapeIdx, float2 shapePos, BlobAssetReference<IntroConfigData> introBlob)
+    public void UpdateAnimation(float deltaTime, int shapeIdx, float2 shapePos, float dotSpeed, BlobAssetReference<MenuDotShapeConfigData> shapesBlob)
     {
-        ref var introData = ref introBlob.Value;
-        ref var shapeData = ref introData.ShapeData[shapeIdx];
-        var speed = introData.DotSpeed;
+        ref var introData = ref shapesBlob.Value;
+        ref var shapeData = ref introData.ShapesData[shapeIdx];
         var targetPos = new float3(shapeData.DotPos[m_animator.ValueRO.Idx] + shapePos, 0);
         var pos = m_transform.ValueRO.Position;
         var dir = math.normalize(targetPos - pos);
         var dist = math.distance(pos, targetPos);
-        float deltaPos = speed * deltaTime;
+        float deltaPos = dotSpeed * deltaTime;
         if (dist < deltaPos)
         {
             pos = targetPos;

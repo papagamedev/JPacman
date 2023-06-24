@@ -14,6 +14,7 @@ public struct Main : IComponentData
     public BlobAssetReference<MapsConfigData> MapsConfigBlob;
     public BlobAssetReference<IntroConfigData> IntroConfigBlob;
     public BlobAssetReference<MenuConfigData> MenuConfigBlob;
+    public BlobAssetReference<MenuDotShapeConfigData> MenuDotShapeConfigBlob;
     public uint RandomSeed;
     public int LivesCount;
     public FixedList128Bytes<UnityEngine.Color> DotCloneColors;

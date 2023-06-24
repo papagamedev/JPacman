@@ -104,13 +104,7 @@ public class ScoresMenuEvents : MenuEvents
 
     public void OnBack()
     {
-        StartCoroutine(OnBackAsync());
-    }
-
-    private IEnumerator OnBackAsync()
-    {
-        yield return OnClickButtonFadeAsync(AudioEvents.SoundType.PlayerEatDot);
-        m_uiEvents.OnShowUI(UIEvents.ShowUIType.Menu);
+        SwitchToMenuUI(UIEvents.ShowUIType.Menu);
     }
 
     public void OnRound()

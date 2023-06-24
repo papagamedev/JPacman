@@ -14,9 +14,10 @@ public class MainAuthoring : MonoBehaviour
             var entity = GetEntity(TransformUsageFlags.None);
             var maps = new List<MapConfig>();
             var levelsConfigBlob = LevelsConfigData.CreateLevelsConfigBlob(authoring, maps);
-            var mapsConfigBlob = MapsConfigData.CreateMapsConfigBlob(maps.ToArray());
-            var introConfigBlob = IntroConfigData.CreateIntroConfigBlob(authoring);
-            var menuConfigBlob = MenuConfigData.CreateMenuConfigBlob(authoring);
+            var mapsConfigBlob = MapsConfigData.CreateMapsConfigBlob(maps);
+            var shapesConfigBlob = MenuDotShapeConfigData.CreateMenuDotShapeConfigBlob(authoring, out var shapeIndexMap);
+            var introConfigBlob = IntroConfigData.CreateIntroConfigBlob(authoring, shapeIndexMap);
+            var menuConfigBlob = MenuConfigData.CreateMenuConfigBlob(authoring, shapeIndexMap);
             var gameConfig = authoring.Config;
             var livesCount = gameConfig.LivesCount;
             var dotCloneColors = new FixedList128Bytes<UnityEngine.Color>();
@@ -36,6 +37,7 @@ public class MainAuthoring : MonoBehaviour
                 MapsConfigBlob = mapsConfigBlob,
                 IntroConfigBlob = introConfigBlob,
                 MenuConfigBlob = menuConfigBlob,
+                MenuDotShapeConfigBlob = shapesConfigBlob,
                 RandomSeed = (uint)(System.DateTime.Now.Ticks % 1000000000),
                 LivesCount = livesCount,
                 DotCloneColors = dotCloneColors

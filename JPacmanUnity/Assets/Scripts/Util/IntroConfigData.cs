@@ -7,7 +7,6 @@ using Unity.Mathematics;
 public struct IntroConfigData
 {
     public float DotSpeed;
-    public float DotSpacing;
     public float2 PlayerStartPos;
     public float PlayerSpeed;
     public float2 EnemyStartPos;
@@ -18,14 +17,19 @@ public struct IntroConfigData
     public float EnemyScaredSpeed;
     public BlobArray<IntroShapeData> ShapeData;
 
-    public static BlobAssetReference<IntroConfigData> CreateIntroConfigBlob(MainAuthoring authoring)
+    public struct IntroShapeData
+    {
+        public int ShapeIdx;
+        public float2 ShapePos;
+        public float Duration;
+    }
+
+    public static BlobAssetReference<IntroConfigData> CreateIntroConfigBlob(MainAuthoring authoring, Dictionary<MenuDotShapeConfig, int> shapeIndexMap)
     {
         var builder = new BlobBuilder(Allocator.Temp);
         ref var introConfigData = ref builder.ConstructRoot<IntroConfigData>();
         var introData = authoring.Config.IntroConfig;
-        var dotSpacing = introData.DotSpacing;
         introConfigData.DotSpeed = introData.DotSpeed;
-        introConfigData.DotSpacing = dotSpacing;
         introConfigData.PlayerStartPos = introData.PlayerStartPos;
         introConfigData.PlayerSpeed = introData.PlayerSpeed;
         introConfigData.EnemyStartPos = introData.EnemyStartPos;
@@ -34,60 +38,19 @@ public struct IntroConfigData
         introConfigData.EnemyFollowSpeed = introData.EnemyFollowSpeed;
         introConfigData.EnemyScaredDuration = introData.EnemyScaredDuration;
         introConfigData.EnemyScaredSpeed = introData.EnemyScaredSpeed;
-        var shapes = introData.Data;
-        var shapesCount = shapes.Length;
+        var shapesCount = introData.DotShapes.Length;
         var shapesArrayBuilder = builder.Allocate(ref introConfigData.ShapeData, shapesCount);
-        for (int i = 0; i < shapesCount; i++)
+        int i = 0;
+        foreach (var shape in introData.DotShapes)
         {
-            var shape = shapes[i];
             shapesArrayBuilder[i].Duration = shape.Duration;
             shapesArrayBuilder[i].ShapePos = new float2(shape.Pos.x, -shape.Pos.y);
-            CreateDotsShapePosArray(builder, dotSpacing, shape.Shape, ref shapesArrayBuilder[i].DotPos);
+            shapesArrayBuilder[i].ShapeIdx = shapeIndexMap[shape.Shape];
+            i++;
         }
         var result = builder.CreateBlobAssetReference<IntroConfigData>(Allocator.Persistent);
         builder.Dispose();
         return result;
     }
 
-    public static void CreateDotsShapePosArray(BlobBuilder builder, float dotSpacing, string shape, ref BlobArray<float2> blobArray)
-    {
-        var dotPosList = GetDotsShapePosList(dotSpacing, shape);
-        var dotsCount = dotPosList.Count;
-        var arrayBuilder = builder.Allocate(ref blobArray, dotsCount);
-        var j = 0;
-        foreach (var dotPos in dotPosList)
-        {
-            arrayBuilder[j++] = dotPos;
-        }
-    }
-
-    private static List<float2> GetDotsShapePosList(float dotSpacing, string shape)
-    {
-        var shapeLines = shape.Split("\n");
-        var dotPosList = new List<float2>();
-        int y = 0;
-        foreach (var line in shapeLines)
-        {
-            int x = 0;
-            foreach (var c in line)
-            {
-                if (c == '#')
-                {
-                    var pos = new float2(x, -y) * dotSpacing;
-                    dotPosList.Add(pos);
-                }
-                x++;
-            }
-            y++;
-        }
-        dotPosList.Sort((a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : a.y < b.y ? -1 : a.y > b.y ? 1 : 0);
-        return dotPosList;
-    }
-}
-
-public struct IntroShapeData
-{
-    public BlobArray<float2> DotPos;
-    public float2 ShapePos;
-    public float Duration;
 }

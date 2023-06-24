@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -115,15 +116,16 @@ public struct MapsConfigData
 {
     public BlobArray<MapConfigData> MapsData;
 
-    public static BlobAssetReference<MapsConfigData> CreateMapsConfigBlob(MapConfig[] maps)
+    public static BlobAssetReference<MapsConfigData> CreateMapsConfigBlob(List<MapConfig> maps)
     {
         var builder = new BlobBuilder(Allocator.Temp);
         ref var mapsConfigData = ref builder.ConstructRoot<MapsConfigData>();
-        var mapsCount = maps.Length;
+        var mapsCount = maps.Count;
         var mapsArrayBuilder = builder.Allocate(ref mapsConfigData.MapsData, mapsCount);
-        for (int i = 0; i < mapsCount; i++)
+        int i = 0;
+        foreach (var mapConfig in maps)
         {
-            var map = maps[i].Map;
+            var map = mapConfig.Map;
             var mapDataSize = map.m_height * map.m_width;
             mapsArrayBuilder[i].Id = map.m_id;
             mapsArrayBuilder[i].Idx = i;
@@ -209,6 +211,7 @@ public struct MapsConfigData
                 }
             }
             mapsArrayBuilder[i].EnemyHousePos = enemyHousePos;
+            i++;
         }
         var result = builder.CreateBlobAssetReference<MapsConfigData>(Allocator.Persistent);
         builder.Dispose();

@@ -171,6 +171,17 @@ public partial class UISystem : SystemBase
         SwitchToMainMenu<LevelGameOverPhaseTag>(UIEvents.ShowUIType.Scores);
     }
 
+    public void OnSwitchToMenuUI(UIEvents.ShowUIType uiType)
+    {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+        var mainComponent = SystemAPI.GetComponentRW<Main>(mainEntity);
+        ref var menuData = ref mainComponent.ValueRO.MenuConfigBlob.Value;
+        MenuSystem.SetDotShape(uiType, ref menuData, mainEntity, ecb);
+        ecb.Playback(EntityManager);
+        ecb.Dispose();
+    }
+
     public void GetGameOverParams(out int score, out string mapId, out int round)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();

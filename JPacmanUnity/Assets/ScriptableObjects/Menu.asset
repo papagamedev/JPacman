@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1dc7ad37dfda514aafad024cf52c579, type: 3}
   m_Name: Menu
   m_EditorClassIdentifier: 
+  DotSpeed: 50
   PlayerSpeed: 15
   EnemySpeed: 10
   PlayerBoundsSize: {x: 30, y: 5}
   EnemiesBoundsSize: {x: 30, y: 16}
+  DotShapes:
+  - Pos: {x: -18.25, y: -13}
+    UIType: 0
+    Shape: {fileID: 11400000, guid: d7022ce7fa5f53446a25cab6f9353098, type: 2}
+  - Pos: {x: -26, y: -10.5}
+    UIType: 1
+    Shape: {fileID: 11400000, guid: 12f54f3b1b468524ab995ee26be2a65d, type: 2}

@@ -9,13 +9,11 @@ public class IntroConfig : ScriptableObject
 	{
 		public Vector2 Pos;
 		public float Duration;
-        [Multiline(10)]
-        public string Shape;
+        public MenuDotShapeConfig Shape;
 	}
 
-	public ShapeData[] Data;
+	public ShapeData[] DotShapes;
     public float DotSpeed;
-    public float DotSpacing;
     public Vector2 PlayerStartPos;
     public float PlayerSpeed;
     public Vector2 EnemyStartPos;

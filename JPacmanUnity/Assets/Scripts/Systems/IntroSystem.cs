@@ -46,9 +46,9 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         ref var introData = ref mainComponent.ValueRO.IntroConfigBlob.Value;
 
-        CreateDots(ref state, mainComponent, ref introData, mainEntity, ecb);
-        CreateEnemies(ref state, mainComponent, ref introData, mainEntity, ecb);
-        CreatePlayer(ref state, mainComponent, ref introData, mainEntity, ecb);
+        CreateDots(mainComponent, ref introData, mainEntity, ecb);
+        CreateEnemies(mainComponent, ref introData, mainEntity, ecb);
+        CreatePlayer(mainComponent, ref introData, mainEntity, ecb);
 
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
@@ -101,16 +101,17 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         });
     }
 
-    private void CreateDots(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
+    private void CreateDots(RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
     {
         ecb.AddComponent(mainEntity, new MenuDotShape()
         {
-            ShapeIdx = 0,
-            ShapePos = introData.ShapeData[0].ShapePos
+            ShapeIdx = introData.ShapeData[0].ShapeIdx,
+            ShapePos = introData.ShapeData[0].ShapePos,
+            DotSpeed = introData.DotSpeed
         });
     }
 
-    private void CreatePlayer(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
+    private void CreatePlayer(RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
     {
         var player = ecb.Instantiate(mainComponent.ValueRO.PlayerPrefab);
         ecb.SetComponent(player,
@@ -129,7 +130,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
         ecb.AddComponent(player, new IntroSpriteTag());
     }
 
-    private void CreateEnemies(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
+    private void CreateEnemies(RefRO<Main> mainComponent, ref IntroConfigData introData, Entity mainEntity, EntityCommandBuffer ecb)
     {
         for (int i = 0; i < 4; i++)
         {
@@ -179,8 +180,9 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
             {
                 ecb.SetComponent(mainEntity, new MenuDotShape()
                 {
-                    ShapeIdx = m_shapeIdx,
-                    ShapePos = introData.ShapeData[m_shapeIdx].ShapePos
+                    ShapeIdx = introData.ShapeData[m_shapeIdx].ShapeIdx,
+                    ShapePos = introData.ShapeData[m_shapeIdx].ShapePos,
+                    DotSpeed = introData.DotSpeed
                 });
             }
             else

@@ -62,16 +62,11 @@ public class MainMenuEvents : MenuEvents
     private void OnOptions()
     {
         m_audioEvents.OnPlaySound(AudioEvents.SoundType.PlayerEatDot);
-
-
     }
 
     private void OnScores()
     {
-        m_audioEvents.OnPlaySound(AudioEvents.SoundType.PlayerEatDot);
-        m_uiEvents.OnShowUI(UIEvents.ShowUIType.Scores);
-
-
+        SwitchToMenuUI(UIEvents.ShowUIType.Scores);
     }
 
 }

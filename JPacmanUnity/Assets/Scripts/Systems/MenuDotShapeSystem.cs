@@ -23,9 +23,8 @@ public partial struct MenuDotShapeSystem : ISystem, ISystemStartStop
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
         var menuDotShape = SystemAPI.GetComponentRO<MenuDotShape>(mainEntity);
 
-        ref var introData = ref mainComponent.ValueRO.IntroConfigBlob.Value;
-
-        CreateDots(ref state, mainComponent, ref introData, menuDotShape.ValueRO.ShapeIdx, menuDotShape.ValueRO.ShapePos, mainEntity, ecb);
+        ref var shapesData = ref mainComponent.ValueRO.MenuDotShapeConfigBlob.Value;
+        CreateDots(ref state, mainComponent, ref shapesData, menuDotShape.ValueRO.ShapeIdx, menuDotShape.ValueRO.ShapePos, mainEntity, ecb);
 
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
@@ -45,7 +44,8 @@ public partial struct MenuDotShapeSystem : ISystem, ISystemStartStop
             DeltaTime = deltaTime,
             ShapeIdx = menuDotShape.ValueRO.ShapeIdx,
             ShapePos = menuDotShape.ValueRO.ShapePos,
-            BlobIntro = mainComponent.ValueRO.IntroConfigBlob
+            DotSpeed = menuDotShape.ValueRO.DotSpeed,
+            ShapesBlob = mainComponent.ValueRO.MenuDotShapeConfigBlob
         }.ScheduleParallel();
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
@@ -70,9 +70,9 @@ public partial struct MenuDotShapeSystem : ISystem, ISystemStartStop
     }
 
 
-    private void CreateDots(ref SystemState state, RefRO<Main> mainComponent, ref IntroConfigData introData, int shapeIdx, float2 shapePos, Entity mainEntity, EntityCommandBuffer ecb)
+    private void CreateDots(ref SystemState state, RefRO<Main> mainComponent, ref MenuDotShapeConfigData shapesData, int shapeIdx, float2 shapePos, Entity mainEntity, EntityCommandBuffer ecb)
     {
-        ref var dotsPos = ref introData.ShapeData[shapeIdx].DotPos;
+        ref var dotsPos = ref shapesData.ShapesData[shapeIdx].DotPos;
         var dotsCount = dotsPos.Length;
         for (int i = 0; i < dotsCount; i++)
         {
@@ -104,11 +104,12 @@ public partial struct MenuDotShapeJob : IJobEntity
     public float DeltaTime;
     public int ShapeIdx;
     public float2 ShapePos;
-    public BlobAssetReference<IntroConfigData> BlobIntro;
+    public float DotSpeed;
+    public BlobAssetReference<MenuDotShapeConfigData> ShapesBlob;
 
-    private void Execute(MenuAnimatedDotAspect introDot)
+    private void Execute(MenuAnimatedDotAspect dot)
     {
-        introDot.UpdateAnimation(DeltaTime, ShapeIdx, ShapePos, BlobIntro);
+        dot.UpdateAnimation(DeltaTime, ShapeIdx, ShapePos, DotSpeed, ShapesBlob);
     }
 }
 

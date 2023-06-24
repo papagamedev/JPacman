@@ -33,6 +33,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2ded9cb2a28fde34c85a1613a44d2bce, type: 2}
   - {fileID: 11400000, guid: b5ce6c809cb297d4fa444b1ec13d8b25, type: 2}
   - {fileID: 11400000, guid: 372f6b46e879ef44f97b31b2706e987b, type: 2}
+  DotShapes:
+  - {fileID: 11400000, guid: d7022ce7fa5f53446a25cab6f9353098, type: 2}
+  - {fileID: 11400000, guid: 3418335f0fe12904dbb7aebaaab1959a, type: 2}
+  - {fileID: 11400000, guid: 1e9ec8debf6785943bb298bc092838d7, type: 2}
+  - {fileID: 11400000, guid: 5a231cbf435a8e74d847642db127b06f, type: 2}
+  - {fileID: 11400000, guid: 12f54f3b1b468524ab995ee26be2a65d, type: 2}
   DotCloneColors:
   - {r: 0, g: 1, b: 0.016062975, a: 1}
   - {r: 1, g: 0.18745571, b: 0, a: 1}

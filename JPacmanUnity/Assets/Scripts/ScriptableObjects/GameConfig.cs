@@ -14,6 +14,7 @@ public class GameConfig : ScriptableObject
     public int LivesCount;
     public MapConfig[] MapConfigs;
     public RoundConfig[] RoundConfigs;
+    public MenuDotShapeConfig[] DotShapes;
     public Color[] DotCloneColors;
 
     [Header("Debugging")]

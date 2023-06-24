@@ -16,4 +16,10 @@ public class MenuEvents : MonoBehaviour
         yield return new WaitForSeconds(m_fadeTime);
     }
 
+    protected void SwitchToMenuUI(UIEvents.ShowUIType uiType)
+    {
+        m_audioEvents.OnPlaySound(AudioEvents.SoundType.PlayerEatDot);
+        m_uiEvents.OnShowUI(uiType);
+        UISystem.Instance?.OnSwitchToMenuUI(uiType);
+    }
 }
