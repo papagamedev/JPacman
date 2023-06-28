@@ -32,6 +32,7 @@ public struct MapConfigData
     public FixedList128Bytes<half2> TunnelPos;
     public Direction EnemyExitDir;
     public BlobArray<char> MapData;
+    public BlobArray<MapTileData> MapTiles;
 
     public bool IsDot(int x, int y) => x > 0 && y > 0 && IsChar(x, y, kDotChar) && IsChar(x - 1, y, kDotChar) && IsChar(x, y - 1, kDotChar) && IsChar(x - 1, y - 1, kDotChar);
     public bool IsEnemyHorizontalHome(int x, int y) => IsChar(x, y, kEnemyHorizontalHomeChar);
@@ -211,8 +212,17 @@ public struct MapsConfigData
                 }
             }
             mapsArrayBuilder[i].EnemyHousePos = enemyHousePos;
+
+            var tilesCount = map.m_tiles.Length;
+            var tilesArrayBuilder = builder.Allocate(ref mapsArrayBuilder[i].MapTiles, tilesCount);
+            for (int t = 0; t < tilesCount; t++)
+            {
+                tilesArrayBuilder[t] = map.m_tiles[t];
+            }
+
             i++;
         }
+
         var result = builder.CreateBlobAssetReference<MapsConfigData>(Allocator.Persistent);
         builder.Dispose();
         return result;

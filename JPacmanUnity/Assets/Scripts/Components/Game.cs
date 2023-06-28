@@ -347,6 +347,8 @@ public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
             }
         }
 
+        CreateMapLayout(ref mapData, mainEntity, ecb);
+
         var labelWorldPos = mapData.MapToWorldPos(mapData.LabelMessagePos);
         ecb.AppendToBuffer(mainEntity, new SetLabelPosBufferElement()
         {
@@ -524,4 +526,36 @@ public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
                 });
     }
 
+    private void CreateMapLayout(ref MapConfigData mapData, Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        ref var tiles = ref mapData.MapTiles;
+        var tilesCount = tiles.Length;
+        for (int i = 0; i < tilesCount; i++)
+        {
+            var tileInfo = tiles[i];
+            var tile = ecb.Instantiate(m_main.ValueRO.TilePrefab);
+            var tileWidth = tileInfo.MaxX - tileInfo.MinX + 1;
+            var tileHeight = tileInfo.MaxY - tileInfo.MinY + 1;
+            var tilePosX = tileInfo.MinX + tileWidth * 0.5f;
+            var tilePosY = tileInfo.MinY + tileHeight * 0.5f;
+            var color = tileInfo.TunnelIdx == -1 ? UnityEngine.Color.cyan : UnityEngine.Color.green;
+            ecb.SetComponent(tile,
+                new LocalTransform()
+                {
+                    Position = mapData.MapToWorldPos(tilePosX, tilePosY),
+                    Scale = 1.0f,
+                    Rotation = quaternion.identity
+                });
+            ecb.AddComponent(tile,
+                new PostTransformMatrix()
+                {
+                    Value = UnityEngine.Matrix4x4.Scale(new UnityEngine.Vector3(tileWidth, tileHeight, 1.0f))
+                });
+            ecb.AddComponent(tile,
+                new SpriteSetColor()
+                {
+                    Color = color
+                });
+        }
+    }
 }

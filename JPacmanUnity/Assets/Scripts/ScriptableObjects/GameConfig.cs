@@ -7,6 +7,7 @@ public class GameConfig : ScriptableObject
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
     public GameObject WallPrefab;
+    public GameObject TilePrefab;
     public GameObject FruitPrefab;
     public GameObject PowerupPrefab;
     public IntroConfig IntroConfig;

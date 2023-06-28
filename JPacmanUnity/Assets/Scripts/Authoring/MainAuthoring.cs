@@ -31,6 +31,7 @@ public class MainAuthoring : MonoBehaviour
                 EnemyPrefab = GetEntity(gameConfig.EnemyPrefab, TransformUsageFlags.None),
                 PlayerPrefab = GetEntity(authoring.Config.PlayerPrefab, TransformUsageFlags.None),
                 WallPrefab = GetEntity(gameConfig.WallPrefab, TransformUsageFlags.None),
+                TilePrefab = GetEntity(gameConfig.TilePrefab, TransformUsageFlags.None),
                 FruitPrefab = GetEntity(gameConfig.FruitPrefab, TransformUsageFlags.None),
                 PowerupPrefab = GetEntity(gameConfig.PowerupPrefab, TransformUsageFlags.None),
                 LevelsConfigBlob = levelsConfigBlob,
