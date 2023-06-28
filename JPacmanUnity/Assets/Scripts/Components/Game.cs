@@ -1,7 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine.SocialPlatforms.Impl;
 
 public struct Game : IComponentData
 {

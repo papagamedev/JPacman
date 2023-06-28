@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10be59f956aa0094cbfda238ab5f10bd, type: 3}
   m_Name: Round03
   m_EditorClassIdentifier: 
-  DisplayName: "Dif\xEDcil"
+  DisplayName: "- Dif\xEDcil -"
   RoundNumber: 3
   BaseEnemyCI: 6
   BaseDotsMoveWaitTime: -8

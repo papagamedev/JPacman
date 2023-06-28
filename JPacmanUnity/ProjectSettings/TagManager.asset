@@ -44,6 +44,12 @@ TagManager:
   - name: Background
     uniqueID: 348129859
     locked: 0
+  - name: Tiles
+    uniqueID: 2640189613
+    locked: 0
+  - name: Walls
+    uniqueID: 2707993305
+    locked: 0
   - name: Dots
     uniqueID: 1753778391
     locked: 0
