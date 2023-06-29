@@ -9,6 +9,7 @@ public struct Main : IComponentData
     public Entity EnemyPrefab;
     public Entity WallPrefab;
     public Entity TilePrefab;
+    public Entity TunnelPrefab;
     public Entity FruitPrefab;
     public Entity PowerupPrefab;
     public BlobAssetReference<LevelsConfigData> LevelsConfigBlob;

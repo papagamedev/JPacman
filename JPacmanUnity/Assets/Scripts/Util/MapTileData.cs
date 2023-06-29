@@ -163,7 +163,6 @@ public struct MapTileData
     {
         public TunnelGenerator(MapConfig.MapData map) : base(map)
         {
-
         }
 
         public override IEnumerator<MapTileData> GetEnumerator()
@@ -173,17 +172,32 @@ public struct MapTileData
 
         class TunnelIterator : Iterator
         {
-            private int m_tunnelIdx;
-
             public TunnelIterator(MapConfig.MapData map, char[] validChars) : base(map, validChars)
             {
             }
 
             public override void OnTileFound()
             {
-                // TODO
-                m_current.TunnelIdx = m_tunnelIdx++;
-                m_current.TunnelDir = Direction.Right;
+                for (int x = m_current.MinX; x <= m_current.MaxX; x++)
+                {
+                    for (int y = m_current.MinY; y <= m_current.MaxY; y++)
+                    {
+                        var c = m_workingData[x, y];
+                        if (c >= MapConfigData.kTeleportFirstChar && c <= MapConfigData.kTeleportLastChar)
+                        {
+                            m_current.TunnelIdx = c - MapConfigData.kTeleportFirstChar;
+                            var isVertical = (m_current.MaxX - m_current.MinX) < (m_current.MaxY - m_current.MinY);
+                            if (isVertical)
+                            {
+                                m_current.TunnelDir = y == m_current.MaxY ? Direction.Down : Direction.Up;
+                            }
+                            else
+                            {
+                                m_current.TunnelDir = x == m_current.MaxX ? Direction.Right : Direction.Left;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -535,19 +535,46 @@ public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
         for (int i = 0; i < tilesCount; i++)
         {
             var tileInfo = tiles[i];
-            var tile = ecb.Instantiate(m_main.ValueRO.TilePrefab);
+            var isTunnel = tileInfo.TunnelIdx >= 0;
+            var tile = isTunnel ? ecb.Instantiate(m_main.ValueRO.TunnelPrefab) : ecb.Instantiate(m_main.ValueRO.TilePrefab);
             var tileWidth = tileInfo.MaxX - tileInfo.MinX + 1;
             var tileHeight = tileInfo.MaxY - tileInfo.MinY + 1;
             var tilePosX = tileInfo.MinX + tileWidth * 0.5f;
             var tilePosY = tileInfo.MinY + tileHeight * 0.5f;
             var tunnelColorIdx = (tileInfo.TunnelIdx / 2) % tunnelColorsCount;
-            var color = tileInfo.TunnelIdx == -1 ? mainConfig.TileColor : mainConfig.TunnelColors[tunnelColorIdx];
+            var color = isTunnel ? mainConfig.TunnelColors[tunnelColorIdx] : mainConfig.TileColor;
+            var rotation = quaternion.identity;
+            if (isTunnel)
+            {
+                var swapScale = false;
+                switch (tileInfo.TunnelDir)
+                {
+                    case Direction.Left:
+                        rotation = quaternion.RotateZ(math.radians(180));
+                        break;
+                    case Direction.Up:
+                        rotation = quaternion.RotateZ(math.radians(90));
+                        swapScale = true;
+                        break;
+                    case Direction.Down:
+                        rotation = quaternion.RotateZ(math.radians(270));
+                        swapScale = true;
+                        break;
+                }
+                if (swapScale)
+                {
+                    var swap = tileWidth;
+                    tileWidth = tileHeight;
+                    tileHeight = swap;
+                }
+            }
+
             ecb.SetComponent(tile,
                 new LocalTransform()
                 {
                     Position = mapData.MapToWorldPos(tilePosX, tilePosY),
                     Scale = 1.0f,
-                    Rotation = quaternion.identity
+                    Rotation = rotation
                 });
             ecb.AddComponent(tile,
                 new PostTransformMatrix()

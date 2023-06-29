@@ -37,7 +37,6 @@ public struct MapConfigData
         .Append(kTileEmptyChar)
         .Append(kEnemyHorizontalHomeChar)
         .Append(kEnemyVerticalHomeChar)
-        .Append(kEnemyExitChar)
         .Append(kFruitChar)
         .Append(kPowerupHorizontalChar)
         .Append(kPowerupVerticalChar).ToArray();

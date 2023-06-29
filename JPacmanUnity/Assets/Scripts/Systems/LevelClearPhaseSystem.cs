@@ -67,6 +67,10 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
         {
             ecb.DestroyEntity(entity);
         }
+        foreach (var (tile, entity) in SystemAPI.Query<SpriteSetColor>().WithEntityAccess())
+        {
+            ecb.DestroyEntity(entity);
+        }
         var player = SystemAPI.GetSingletonEntity<Player>();
         ecb.DestroyEntity(player);
     }
