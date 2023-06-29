@@ -20,10 +20,15 @@ public class MainAuthoring : MonoBehaviour
             var menuConfigBlob = MenuConfigData.CreateMenuConfigBlob(authoring, shapeIndexMap);
             var gameConfig = authoring.Config;
             var livesCount = gameConfig.LivesCount;
-            var dotCloneColors = new FixedList128Bytes<UnityEngine.Color>();
+            var dotCloneColors = new FixedList128Bytes<Color>();
             foreach (var color in gameConfig.DotCloneColors)
             {
                 dotCloneColors.Add(color);
+            }
+            var tunnelColors = new FixedList512Bytes<Color>();
+            foreach (var color in gameConfig.TunnelColor)
+            {
+                tunnelColors.Add(color);
             }
             AddComponent(entity, new Main
             {
@@ -41,7 +46,9 @@ public class MainAuthoring : MonoBehaviour
                 MenuDotShapeConfigBlob = shapesConfigBlob,
                 RandomSeed = (uint)(System.DateTime.Now.Ticks % 1000000000),
                 LivesCount = livesCount,
-                DotCloneColors = dotCloneColors
+                DotCloneColors = dotCloneColors,
+                TileColor = gameConfig.TileColor,
+                TunnelColors = tunnelColors
             });
             AddBuffer<SoundEventBufferElement>(entity);
             AddBuffer<SoundStopEventBufferElement>(entity);

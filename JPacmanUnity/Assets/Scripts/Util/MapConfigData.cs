@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -16,8 +17,30 @@ public struct MapConfigData
     public const char kPowerupVerticalChar = 'G';
     public const char kPowerupHorizontalChar = 'C';
     public const char kWallChar = ' ';
-    public const char kTunnelFirstChar = 'a';
-    public const char kTunnelLastChar = 'z';
+    public const char kTeleportFirstChar = 'a';
+    public const char kTeleportLastChar = 'l';
+    public const char kTunnelFillChar = '$';
+    public const char kTileEmptyChar = '%';
+
+    public static char[] kTeleportChars = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l' };
+
+    public static char[] TunnelChars =
+        Enumerable.AsEnumerable(kTeleportChars)
+        .Append(kTunnelEntranceChar)
+        .Append(kTunnelFillChar).ToArray();
+
+    public static char[] TileChars =
+        Enumerable.AsEnumerable(TunnelChars)
+        .Append(kDotChar)
+        .Append(kPlayerChar)
+        .Append(kLabelsChar)
+        .Append(kTileEmptyChar)
+        .Append(kEnemyHorizontalHomeChar)
+        .Append(kEnemyVerticalHomeChar)
+        .Append(kEnemyExitChar)
+        .Append(kFruitChar)
+        .Append(kPowerupHorizontalChar)
+        .Append(kPowerupVerticalChar).ToArray();
 
     public FixedString32Bytes Id;
     public int Idx;
@@ -33,7 +56,6 @@ public struct MapConfigData
     public Direction EnemyExitDir;
     public BlobArray<char> MapData;
     public BlobArray<MapTileData> MapTiles;
-
     public bool IsDot(int x, int y) => x > 0 && y > 0 && IsChar(x, y, kDotChar) && IsChar(x - 1, y, kDotChar) && IsChar(x, y - 1, kDotChar) && IsChar(x - 1, y - 1, kDotChar);
     public bool IsEnemyHorizontalHome(int x, int y) => IsChar(x, y, kEnemyHorizontalHomeChar);
     public bool IsEnemyVerticalHome(int x, int y) => IsChar(x, y, kEnemyVerticalHomeChar);
@@ -47,8 +69,8 @@ public struct MapConfigData
     public bool IsTunnel(int x, int y, out int tunnelIdx)
     {
         var c = MapData[y * Width + x];
-        var isTunnel = c >= kTunnelFirstChar && c <= kTunnelLastChar;
-        tunnelIdx = isTunnel ? c - kTunnelFirstChar : -1;
+        var isTunnel = c >= kTeleportFirstChar && c <= kTeleportLastChar;
+        tunnelIdx = isTunnel ? c - kTeleportFirstChar : -1;
         return isTunnel;
     }
     private bool IsChar(int x, int y, char c) => MapData[y * Width + x] == c;
@@ -127,20 +149,20 @@ public struct MapsConfigData
         foreach (var mapConfig in maps)
         {
             var map = mapConfig.Map;
-            var mapDataSize = map.m_height * map.m_width;
-            mapsArrayBuilder[i].Id = map.m_id;
+            var mapDataSize = map.Height * map.Width;
+            mapsArrayBuilder[i].Id = map.Id;
             mapsArrayBuilder[i].Idx = i;
-            mapsArrayBuilder[i].Width = map.m_width;
-            mapsArrayBuilder[i].Height = map.m_height;
+            mapsArrayBuilder[i].Width = map.Width;
+            mapsArrayBuilder[i].Height = map.Height;
             var arrayBuilder = builder.Allocate(ref mapsArrayBuilder[i].MapData, mapDataSize);
             var enemyHousePos = half2.zero;
             var enemyExitPos = half2.zero;
-            for (int y = 0; y < map.m_height; y++)
+            for (int y = 0; y < map.Height; y++)
             {
-                for (int x = 0; x < map.m_width; x++)
+                for (int x = 0; x < map.Width; x++)
                 {
-                    var c = map.m_data[x, y];
-                    arrayBuilder[y * map.m_width + x] = c;
+                    var c = map.Data[x, y];
+                    arrayBuilder[y * map.Width + x] = c;
 
                     if (c == MapConfigData.kPlayerChar)
                     {
@@ -158,9 +180,9 @@ public struct MapsConfigData
                     {
                         enemyExitPos = new half2((half)x, (half)y);
                     }
-                    else if (c >= MapConfigData.kTunnelFirstChar && c <= MapConfigData.kTunnelLastChar)
+                    else if (c >= MapConfigData.kTeleportFirstChar && c <= MapConfigData.kTeleportLastChar)
                     {
-                        int tunnelIdx = c - MapConfigData.kTunnelFirstChar;
+                        int tunnelIdx = c - MapConfigData.kTeleportFirstChar;
                         var length = mapsArrayBuilder[i].TunnelPos.Length;
                         if (tunnelIdx >= length)
                         {
@@ -212,12 +234,11 @@ public struct MapsConfigData
                 }
             }
             mapsArrayBuilder[i].EnemyHousePos = enemyHousePos;
-
-            var tilesCount = map.m_tiles.Length;
+            var tilesCount = map.Tiles.Length;
             var tilesArrayBuilder = builder.Allocate(ref mapsArrayBuilder[i].MapTiles, tilesCount);
             for (int t = 0; t < tilesCount; t++)
             {
-                tilesArrayBuilder[t] = map.m_tiles[t];
+                tilesArrayBuilder[t] = map.Tiles[t];
             }
 
             i++;

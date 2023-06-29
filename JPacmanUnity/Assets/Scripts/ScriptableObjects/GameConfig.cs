@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Collections;
+using UnityEngine;
 
 [CreateAssetMenu(fileName="GameConfig", menuName = "JPacman Data/Game Config")]
 public class GameConfig : ScriptableObject
@@ -17,6 +18,8 @@ public class GameConfig : ScriptableObject
     public RoundConfig[] RoundConfigs;
     public MenuDotShapeConfig[] DotShapes;
     public Color[] DotCloneColors;
+    public Color TileColor;
+    public Color[] TunnelColor;
 
     [Header("Debugging")]
     [Tooltip("-1 means go to intro and menu; 0+ means go straight to that level")]
@@ -26,7 +29,7 @@ public class GameConfig : ScriptableObject
     {
         foreach (var map in MapConfigs)
         {
-            if (map.Map.m_id == mapId)
+            if (map.Map.Id == mapId)
             {
                 return map.DisplayName;
             }

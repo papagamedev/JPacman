@@ -528,8 +528,10 @@ public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
 
     private void CreateMapLayout(ref MapConfigData mapData, Entity mainEntity, EntityCommandBuffer ecb)
     {
+        var mainConfig = m_main.ValueRO;
         ref var tiles = ref mapData.MapTiles;
         var tilesCount = tiles.Length;
+        var tunnelColorsCount = mainConfig.TunnelColors.Length;
         for (int i = 0; i < tilesCount; i++)
         {
             var tileInfo = tiles[i];
@@ -538,7 +540,8 @@ public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
             var tileHeight = tileInfo.MaxY - tileInfo.MinY + 1;
             var tilePosX = tileInfo.MinX + tileWidth * 0.5f;
             var tilePosY = tileInfo.MinY + tileHeight * 0.5f;
-            var color = tileInfo.TunnelIdx == -1 ? UnityEngine.Color.cyan : UnityEngine.Color.green;
+            var tunnelColorIdx = (tileInfo.TunnelIdx / 2) % tunnelColorsCount;
+            var color = tileInfo.TunnelIdx == -1 ? mainConfig.TileColor : mainConfig.TunnelColors[tunnelColorIdx];
             ecb.SetComponent(tile,
                 new LocalTransform()
                 {

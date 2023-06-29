@@ -19,6 +19,8 @@ public struct Main : IComponentData
     public uint RandomSeed;
     public int LivesCount;
     public FixedList128Bytes<UnityEngine.Color> DotCloneColors;
+    public UnityEngine.Color TileColor;
+    public FixedList512Bytes<UnityEngine.Color> TunnelColors;
 }
 
 public struct IntroPhaseTag : IComponentData { }

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MapConfig", menuName = "JPacman Data/Map Config")]
@@ -12,11 +15,11 @@ public class MapConfig : ScriptableObject
 
     public class MapData
 	{
-		public string m_id;
-		public int m_width;
-		public int m_height;
-		public char[,] m_data;
-		public MapTileData[] m_tiles;
+		public string Id;
+		public int Width;
+		public int Height;
+		public char[,] Data;
+		public MapTileData[] Tiles;
 	}
 
     public MapData Map => BuildMapData();
@@ -43,55 +46,14 @@ public class MapConfig : ScriptableObject
             y++;
             x = 0;
         }
-        data.m_id = name;
-        data.m_width = width;
-        data.m_height = height;
-        data.m_data = mapChars;
-        data.m_tiles = BuildTilesData();
-
+        data.Id = name;
+        data.Width = width;
+        data.Height = height;
+        data.Data = mapChars;
+        var tiles = new List<MapTileData>();
+        tiles.AddRange(new MapTileData.Generator(data));
+        tiles.AddRange(new MapTileData.TunnelGenerator(data));
+        data.Tiles = tiles.ToArray();
         return data;
     }
-
-	private MapTileData[] BuildTilesData()
-	{
-        var tiles = new List<MapTileData>();
-        tiles.Add(new MapTileData()
-        {
-            MinX = 1,
-            MinY = 1,
-            MaxX = 13,
-            MaxY = 2,
-            TunnelIdx = -1,
-            TunnelDir = -1
-        });
-        tiles.Add(new MapTileData()
-        {
-            MinX = 9,
-            MinY = 1,
-            MaxX = 13,
-            MaxY = 2,
-            TunnelIdx = 0,
-            TunnelDir = Direction.Right
-        });
-        tiles.Add(new MapTileData()
-        {
-            MinX = 26,
-            MinY = 1,
-            MaxX = 38,
-            MaxY = 2,
-            TunnelIdx = -1,
-            TunnelDir = -1
-        });
-        tiles.Add(new MapTileData()
-        {
-            MinX = 26,
-            MinY = 1,
-            MaxX = 30,
-            MaxY = 2,
-            TunnelIdx = 0,
-            TunnelDir = Direction.Left
-        });
-
-        return tiles.ToArray();
-	}
 }
