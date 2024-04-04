@@ -45,28 +45,12 @@ public partial struct LevelPlayingPhaseSystem : ISystem, ISystemStartStop
         gameAspect.CheckMoveDots(mainEntity, ecb);
         gameAspect.CheckMovePowerups(mainEntity, ecb);
         gameAspect.CheckCloneDots(mainEntity, ecb);
-
-        if (gameAspect.IsLevelCompleted()
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            || Input.GetKeyDown(KeyCode.W)
-#endif
-            )
+        gameAspect.CheckPause(mainEntity, ecb);
+        gameAspect.CheckCheats(mainEntity, ecb);
+        if (gameAspect.IsLevelCompleted())
         {
             SwitchToWinPhase(mainEntity, ecb);
         }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            gameAspect.SetPaused(true, mainEntity, ecb);
-        }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            gameAspect.CheatGameOverWithScore(mainEntity, ecb);
-        }
-#endif
-
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
     }

@@ -4,6 +4,7 @@ using Unity.Transforms;
 
 public struct Player : IComponentData
 {
+    public float2 DesiredDirection;
 }
 
 public readonly partial struct PlayerAspect : IAspect
@@ -12,15 +13,14 @@ public readonly partial struct PlayerAspect : IAspect
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<CollisionCircle> m_collision;
-#pragma warning disable IDE0052 // Remove unread private members
-    private readonly RefRW<Player> _;
-#pragma warning restore IDE0052 // Remove unread private members
+    private readonly RefRW<Player> m_player;
 
     public readonly float3 GetWorldPos() => m_transform.ValueRO.Position;
     public readonly float GetCollisionRadius() => m_collision.ValueRO.Radius;
 
-    public void UpdateInput(float2 desiredDirection)
+    public void UpdateMovement()
     {
+        var desiredDirection = m_player.ValueRO.DesiredDirection;
         if (math.abs(desiredDirection.x) < 0.3f && math.abs(desiredDirection.y) < 0.3f)
         {
             return;
