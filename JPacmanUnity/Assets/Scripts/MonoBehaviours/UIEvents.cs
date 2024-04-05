@@ -1,14 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
-using TMPro;
-using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIEvents : MonoBehaviour
 {
     public GameObject m_levelBackgroundRoot;
+    public GameObject m_introRoot;
     public GameObject m_ingameRoot;
     public GameObject m_menuRoot;
     public GameObject m_scoresRoot;
@@ -44,11 +40,12 @@ public class UIEvents : MonoBehaviour
 
     public enum ShowUIType
     {
+        None,
+        Intro,
         Menu,
         Scores,
         Ingame,
         Paused,
-        None,
         GameOver
     }
 
@@ -108,6 +105,7 @@ public class UIEvents : MonoBehaviour
 
     public void OnShowUI(ShowUIType uiType)
     {
+        m_introRoot.SetActive(uiType == ShowUIType.Intro);
         m_menuRoot.SetActive(uiType == ShowUIType.Menu);
         m_scoresRoot.SetActive(uiType == ShowUIType.Scores);
         m_ingameRoot.SetActive(uiType == ShowUIType.Ingame);

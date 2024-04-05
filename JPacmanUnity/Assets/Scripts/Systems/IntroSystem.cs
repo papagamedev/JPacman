@@ -29,7 +29,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<Main>();
-        state.RequireForUpdate<IntroPhaseTag>();
+        state.RequireForUpdate<IntroPhase>();
     }
 
 
@@ -38,7 +38,10 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-
+        ecb.AppendToBuffer(mainEntity, new ShowUIBufferElement()
+        {
+            UI = UIEvents.ShowUIType.Intro
+        });
         ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
         {
             MusicType = AudioEvents.MusicType.Intro
@@ -94,7 +97,7 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
 
     private void GoToMainMenu(Entity mainEntity, EntityCommandBuffer ecb)
     {
-        ecb.RemoveComponent<IntroPhaseTag>(mainEntity);
+        ecb.RemoveComponent<IntroPhase>(mainEntity);
         ecb.AddComponent(mainEntity, new MenuPhase()
         {
             UIType = UIEvents.ShowUIType.Menu
@@ -249,7 +252,8 @@ public partial struct IntroSystem : ISystem, ISystemStartStop
     {
         if (!m_inFade)
         {
-            if (Input.anyKeyDown)
+            var intro = SystemAPI.GetComponentRO<IntroPhase>(mainEntity);
+            if (intro.ValueRO.Skip)
             {
                 StartFade(mainEntity, ecb);
             }

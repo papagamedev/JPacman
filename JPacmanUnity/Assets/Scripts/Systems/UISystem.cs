@@ -114,6 +114,14 @@ public partial class UISystem : SystemBase
         mainAspect.ShowUIBuffer.Clear();
     }
 
+
+    public void OnIntroSkip()
+    {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var intro = SystemAPI.GetComponentRW<IntroPhase>(mainEntity);
+        intro.ValueRW.Skip = true;
+    }
+
     public void OnMenuPlay(int levelIndex)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();

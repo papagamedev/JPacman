@@ -82,7 +82,7 @@ public class MainAuthoring : MonoBehaviour
             }
             else
             {
-                AddComponent(entity, new IntroPhaseTag());
+                AddComponent(entity, new IntroPhase());
             }
         }
     }
