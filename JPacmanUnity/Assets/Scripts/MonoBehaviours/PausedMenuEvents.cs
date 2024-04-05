@@ -14,8 +14,10 @@ public class PausedMenuEvents : MenuEvents
 
     private float m_blinkTime;
 
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         m_continueButton.onClick.AddListener(OnContinue);
         m_exitButton.onClick.AddListener(OnExit);
     }
@@ -35,8 +37,10 @@ public class PausedMenuEvents : MenuEvents
         }
     }
 
-    void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
+
         m_continueButton.onClick.RemoveListener(OnContinue);
         m_exitButton.onClick.RemoveListener(OnExit);
     }

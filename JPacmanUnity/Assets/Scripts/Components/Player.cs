@@ -4,11 +4,13 @@ using Unity.Transforms;
 
 public struct Player : IComponentData
 {
-    public float2 DesiredDirection;
+    public float2 MoveVector;
 }
 
 public readonly partial struct PlayerAspect : IAspect
 {
+    const float kInputThreshold = 0.5f;
+
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
@@ -20,27 +22,28 @@ public readonly partial struct PlayerAspect : IAspect
 
     public void UpdateMovement()
     {
-        var desiredDirection = m_player.ValueRO.DesiredDirection;
-        if (math.abs(desiredDirection.x) < 0.3f && math.abs(desiredDirection.y) < 0.3f)
+        var moveVector = m_player.ValueRO.MoveVector;
+        if (math.abs(moveVector.x) > kInputThreshold)
         {
-            return;
+            if (moveVector.x > 0)
+            {
+                m_movable.ValueRW.DesiredDir = Direction.Right;
+            }
+            else
+            {
+                m_movable.ValueRW.DesiredDir = Direction.Left;
+            }
         }
-
-        if (desiredDirection.x > 0)
+        else if (math.abs(moveVector.y) > kInputThreshold)
         {
-            m_movable.ValueRW.DesiredDir = Direction.Right;
-        }
-        else if (desiredDirection.y > 0)
-        {
-            m_movable.ValueRW.DesiredDir = Direction.Down;
-        }
-        else if (desiredDirection.x < 0)
-        {
-            m_movable.ValueRW.DesiredDir = Direction.Left;
-        }
-        else if (desiredDirection.y < 0)
-        {
-            m_movable.ValueRW.DesiredDir = Direction.Up;
+            if (moveVector.y > 0)
+            {
+                m_movable.ValueRW.DesiredDir = Direction.Up;
+            }
+            else
+            {
+                m_movable.ValueRW.DesiredDir = Direction.Down;
+            }
         }
     }
 
