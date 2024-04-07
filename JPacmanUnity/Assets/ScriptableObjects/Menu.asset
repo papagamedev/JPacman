@@ -19,8 +19,8 @@ MonoBehaviour:
   EnemiesBoundsSize: {x: 30, y: 16}
   DotShapes:
   - Pos: {x: -18.25, y: -13}
-    UIType: 0
+    UIType: 2
     Shape: {fileID: 11400000, guid: d7022ce7fa5f53446a25cab6f9353098, type: 2}
   - Pos: {x: -26, y: -10.5}
-    UIType: 1
+    UIType: 3
     Shape: {fileID: 11400000, guid: 12f54f3b1b468524ab995ee26be2a65d, type: 2}

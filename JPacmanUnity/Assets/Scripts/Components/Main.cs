@@ -24,7 +24,10 @@ public struct Main : IComponentData
     public FixedList512Bytes<UnityEngine.Color> TunnelColors;
 }
 
-public struct IntroPhaseTag : IComponentData { }
+public struct IntroPhase : IComponentData
+{
+    public bool Skip;
+}
 
 public struct MenuPhase : IComponentData 
 {

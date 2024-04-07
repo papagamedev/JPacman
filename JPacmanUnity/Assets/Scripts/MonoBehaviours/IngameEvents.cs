@@ -4,6 +4,7 @@ using TMPro;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class IngameEvents : MonoBehaviour
@@ -14,6 +15,7 @@ public class IngameEvents : MonoBehaviour
     public GameObject m_scoreAnimationPrefab;
     public GameObject m_levelIconTemplate;
     public GameObject m_levelIconRoot;
+    public GameObject m_onScreenControls;
     public GameConfig m_gameConfig;
 
     private class ScoreAnimState
@@ -85,6 +87,8 @@ public class IngameEvents : MonoBehaviour
         hudSystem.OnSetScoreText += OnSetScoreText;
         hudSystem.OnKillAllScoreAnimations += OnKillAllScoreAnimations;
         m_scoreAnimations = new List<ScoreAnimState>();
+
+        UpdateOnScreenControls();
     }
 
     private void Update()
@@ -105,6 +109,12 @@ public class IngameEvents : MonoBehaviour
             hudSystem.OnSetLevelIcon -= OnSetLevelIcon;
             hudSystem.OnSetScoreText -= OnSetScoreText;
         }
+    }
+
+    private void UpdateOnScreenControls()
+    {
+        var showOnScreenControls = Application.isMobilePlatform;
+        m_onScreenControls.SetActive(showOnScreenControls);
     }
 
     private void UpdateScoreText()

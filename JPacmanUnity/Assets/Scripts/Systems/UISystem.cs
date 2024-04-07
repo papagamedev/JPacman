@@ -35,8 +35,8 @@ public partial class UISystem : SystemBase
             {
                 OnSetLivesText(element.Value);
             }
+            mainAspect.SetLivesTextBuffer.Clear();
         }
-        mainAspect.SetLivesTextBuffer.Clear();
 
         if (OnSetScoreText != null)
         {
@@ -44,8 +44,8 @@ public partial class UISystem : SystemBase
             {
                 OnSetScoreText(element.HasAnimation, element.Score, element.DeltaScore, element.WorldPos);
             }
+            mainAspect.SetScoreTextBuffer.Clear();
         }
-        mainAspect.SetScoreTextBuffer.Clear();
 
         if (OnSetLabelText != null)
         {
@@ -65,8 +65,8 @@ public partial class UISystem : SystemBase
                 }
                 OnSetLabelText(element.Value, value);
             }
+            mainAspect.SetLabelTextBuffer.Clear();
         }
-        mainAspect.SetLabelTextBuffer.Clear();
 
         if (OnSetLabelPos != null)
         {
@@ -74,8 +74,8 @@ public partial class UISystem : SystemBase
             {
                 OnSetLabelPos(element.Value);
             }
+            mainAspect.SetLabelPosBuffer.Clear();
         }
-        mainAspect.SetLabelPosBuffer.Clear();
 
         if (OnSetLevelIcon != null)
         {
@@ -83,8 +83,8 @@ public partial class UISystem : SystemBase
             {
                 OnSetLevelIcon(element.IconIdx);
             }
+            mainAspect.SetLevelIconBuffer.Clear();
         }
-        mainAspect.SetLevelIconBuffer.Clear();
 
         if (OnKillAllScoreAnimations != null)
         {
@@ -92,8 +92,8 @@ public partial class UISystem : SystemBase
             {
                 OnKillAllScoreAnimations();
             }
+            mainAspect.KillAllScoreAnimationsBuffer.Clear();
         }
-        mainAspect.KillAllScoreAnimationsBuffer.Clear();
 
         if (OnFadeAnimation != null)
         {
@@ -101,8 +101,8 @@ public partial class UISystem : SystemBase
             {
                 OnFadeAnimation(element.IsFadeIn, element.Duration);
             }
+            mainAspect.FadeAnimationBuffer.Clear();
         }
-        mainAspect.FadeAnimationBuffer.Clear();
 
         if (OnShowUI != null)
         {
@@ -110,8 +110,16 @@ public partial class UISystem : SystemBase
             {
                 OnShowUI(element.UI);
             }
+            mainAspect.ShowUIBuffer.Clear();
         }
-        mainAspect.ShowUIBuffer.Clear();
+    }
+
+
+    public void OnIntroSkip()
+    {
+        var mainEntity = SystemAPI.GetSingletonEntity<Main>();
+        var intro = SystemAPI.GetComponentRW<IntroPhase>(mainEntity);
+        intro.ValueRW.Skip = true;
     }
 
     public void OnMenuPlay(int levelIndex)

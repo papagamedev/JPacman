@@ -27,13 +27,8 @@ public partial struct PlayerSystem : ISystem
             return;
         }
 
-        float inputX = Input.GetAxis("Horizontal");
-        float inputY = Input.GetAxis("Vertical");
-        var desiredDirection = new float2(math.sign(inputX), -math.sign(inputY));
-
         new PlayerJob
         {
-            DesiredDirection = desiredDirection
         }.ScheduleParallel();
     }
 
@@ -47,10 +42,8 @@ public partial struct PlayerSystem : ISystem
 
 public partial struct PlayerJob : IJobEntity
 {
-    public float2 DesiredDirection;
-
     private void Execute(PlayerAspect player)
     {
-        player.UpdateInput(DesiredDirection);
+        player.UpdateMovement();
     }
 }

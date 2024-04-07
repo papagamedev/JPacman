@@ -16,8 +16,10 @@ public class GameOverEvents : MenuEvents
     private string m_mapId;
     private int m_round;
 
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         m_postScoreButton.onClick.AddListener(OnPostScore);
         m_exitButton.onClick.AddListener(OnExit);
         m_inputField.onValueChanged.AddListener(OnMessageChanged);
@@ -27,8 +29,11 @@ public class GameOverEvents : MenuEvents
         m_inputField.text = "";
         UpdateButtons();
     }
-    void OnDisable()
+
+    protected override void OnDisable()
     {
+        base.OnDisable();
+
         m_postScoreButton.onClick.RemoveListener(OnPostScore);
         m_exitButton.onClick.RemoveListener(OnExit);
         m_inputField.onValueChanged.RemoveListener(OnMessageChanged);

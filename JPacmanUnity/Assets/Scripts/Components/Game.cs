@@ -1,3 +1,8 @@
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#define CHEATS_ENABLED
+#endif
+
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -15,7 +20,10 @@ public struct Game : IComponentData
     public bool DotsMoving;
     public bool PowerupsMoving;
     public int EnemyScore;
-    public bool Paused;
+    public int Paused;
+    public bool PauseRequested;
+    public bool CheatLevelCompleted;
+    public bool CheatGameOverWithScore;
 }
 
 public struct LevelStartPhaseTag : IComponentData { }
@@ -55,7 +63,7 @@ public struct DotCloneBufferElement : IBufferElementData
 public readonly partial struct GameAspect : IAspect
 {
     const int kNewLiveScore = 10000;
-
+    const int kPauseCooldownValue = 5;
 
     public readonly Entity Entity;
     private readonly RefRW<Main> m_main;
@@ -64,10 +72,10 @@ public readonly partial struct GameAspect : IAspect
     private readonly DynamicBuffer<AddScoreBufferElement> m_addScoreBuffer;
     private readonly DynamicBuffer<DotCloneBufferElement> m_dotCloneBuffer;
 
-    public bool IsPaused => m_game.ValueRO.Paused;
+    public bool IsPaused => m_game.ValueRO.Paused == kPauseCooldownValue;
     public void SetPaused(bool paused, Entity mainEntity, EntityCommandBuffer ecb)
     {
-        m_game.ValueRW.Paused = paused;
+        m_game.ValueRW.Paused = paused ? kPauseCooldownValue : kPauseCooldownValue - 1;
         ecb.AppendToBuffer(mainEntity, new PauseAudioEventBufferElement()
         {
             Paused = paused
@@ -170,7 +178,36 @@ public readonly partial struct GameAspect : IAspect
         return m_game.ValueRO.Lives;
     }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public void CheckPause(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+        if (m_game.ValueRO.Paused > 0)
+        {
+            m_game.ValueRW.Paused--;
+        }
+        else if (m_game.ValueRO.PauseRequested)
+        {
+            m_game.ValueRW.PauseRequested = false;
+            SetPaused(true, mainEntity, ecb);
+        }
+    }
+
+    public void CheckCheats(Entity mainEntity, EntityCommandBuffer ecb)
+    {
+#if CHEATS_ENABLED
+        if (m_game.ValueRO.CheatLevelCompleted)
+        {
+            m_game.ValueRW.CheatLevelCompleted = false;
+            m_game.ValueRW.CollectibleCount = 0;
+        }
+        if (m_game.ValueRO.CheatGameOverWithScore)
+        {
+            m_game.ValueRW.CheatGameOverWithScore = false;
+            CheatGameOverWithScore(mainEntity, ecb);
+        }
+#endif // CHEATS_ENABLED
+    }
+
+#if CHEATS_ENABLED
     public void CheatGameOverWithScore(Entity mainEntity, EntityCommandBuffer ecb)
     {
         m_game.ValueRW.Lives = 1;
@@ -188,7 +225,7 @@ public readonly partial struct GameAspect : IAspect
         ecb.RemoveComponent<LevelPlayingPhaseTag>(mainEntity);
         ecb.AddComponent<LevelDeadPhaseTag>(mainEntity);
     }
-#endif
+#endif // CHEATS_ENABLED
 
 
 public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)

@@ -20,8 +20,10 @@ public class ScoresMenuEvents : MenuEvents
     private int m_roundIdx = 0;
     private Coroutine m_getScoresRoutine;
 
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         m_backButton.onClick.AddListener(OnBack);
         m_roundButton.onClick.AddListener(OnRound);
         m_mapButton.onClick.AddListener(OnMap);
@@ -95,8 +97,10 @@ public class ScoresMenuEvents : MenuEvents
         obj.SetActive(true);
     }
 
-    void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
+
         m_backButton.onClick.RemoveListener(OnBack);
         m_roundButton.onClick.RemoveListener(OnRound);
         m_mapButton.onClick.RemoveListener(OnMap);

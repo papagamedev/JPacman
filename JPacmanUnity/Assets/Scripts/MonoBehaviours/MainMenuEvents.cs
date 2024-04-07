@@ -13,8 +13,10 @@ public class MainMenuEvents : MenuEvents
     public Button m_exitButton;
     public int m_startLevel;
 
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         m_playButton.onClick.AddListener(OnPlay);
         m_optionsButton.onClick.AddListener(OnOptions);
         m_scoresButton.onClick.AddListener(OnScores);
@@ -22,8 +24,10 @@ public class MainMenuEvents : MenuEvents
         m_uiEvents.OnFadeAnimation(true, 0.5f);
     }
 
-    void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
+
         m_playButton.onClick.RemoveListener(OnPlay);
         m_optionsButton.onClick.RemoveListener(OnOptions);
         m_scoresButton.onClick.RemoveListener(OnScores);
