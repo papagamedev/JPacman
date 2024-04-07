@@ -46,3 +46,5 @@ JPacmanUnity/Assets/SceneDependencyCache.meta
 JPacmanUnity/Assets/SceneDependencyCache/
 JPacmanUnity/obj/
 JPacmanUnity/build_webgl/
+JPacmanUnity/JPacmanUnity_BurstDebugInformation_DoNotShip/
+*.apk
