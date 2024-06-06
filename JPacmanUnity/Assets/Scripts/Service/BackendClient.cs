@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class BackendClient
 {
@@ -26,7 +27,7 @@ public class BackendClient
 
     public async Task<ScoreData> AddScore(string mapId, int round, string message, int score)
     {
-        var payload = new
+        var payload = new ScoreData()
         {
             Message = message,
             Score = score
@@ -56,6 +57,7 @@ public class BackendClient
             var response = await m_httpClient.SendAsync(message);
             if (!response.IsSuccessStatusCode)
             {
+                Debug.LogError("Request failed:" + response.StatusCode);
                 return null;
             }
             var stream = await response.Content.ReadAsStreamAsync();
@@ -65,6 +67,7 @@ public class BackendClient
         }
         catch (Exception e)
         {
+            Debug.LogException(e);
             return null;
         }
     }

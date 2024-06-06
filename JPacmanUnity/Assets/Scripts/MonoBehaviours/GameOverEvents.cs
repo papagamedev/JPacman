@@ -81,7 +81,7 @@ public class GameOverEvents : MenuEvents
         {
             yield return null;
         }
-        if (task.IsFaulted)
+        if (task.IsFaulted || task.Result == null)
         {
             UpdateButtons();
             yield break;
