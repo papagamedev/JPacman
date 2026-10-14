@@ -19,6 +19,7 @@ public struct Game : IComponentData
     public bool FruitSpawned;
     public bool DotsMoving;
     public bool PowerupsMoving;
+    public bool CollectiblesMoveDisabled;
     public int EnemyScore;
     public int Paused;
     public bool PauseRequested;
@@ -267,7 +268,7 @@ public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
 
     public void CheckMoveDots(Entity mainEntity, EntityCommandBuffer ecb)
     {
-        if (m_game.ValueRO.DotsMoving || LevelData.DotsMoveSpeed <= 0 || m_game.ValueRO.LiveTime < LevelData.DotsMoveWaitTime)
+        if (m_game.ValueRO.CollectiblesMoveDisabled || m_game.ValueRO.DotsMoving || LevelData.DotsMoveSpeed <= 0 || m_game.ValueRO.LiveTime < LevelData.DotsMoveWaitTime)
         {
             return;
         }
@@ -280,7 +281,7 @@ public void CheckSpawnFruit(Entity mainEntity, EntityCommandBuffer ecb)
 
     public void CheckMovePowerups(Entity mainEntity, EntityCommandBuffer ecb)
     {
-        if (m_game.ValueRO.PowerupsMoving || LevelData.PowerupsMoveSpeed <= 0 || m_game.ValueRO.LiveTime < LevelData.PowerupsMoveWaitTime)
+        if (m_game.ValueRO.CollectiblesMoveDisabled || m_game.ValueRO.PowerupsMoving || LevelData.PowerupsMoveSpeed <= 0 || m_game.ValueRO.LiveTime < LevelData.PowerupsMoveWaitTime)
         {
             return;
         }

@@ -10,6 +10,8 @@ public class UIEvents : MonoBehaviour
     public GameObject m_scoresRoot;
     public GameObject m_pausedRoot;
     public GameObject m_gameOverRoot;
+    public GameObject m_optionsRoot;
+    public GameObject m_infoRoot;
     public Image m_fade;
 
     private class FadeState
@@ -46,7 +48,9 @@ public class UIEvents : MonoBehaviour
         Scores,
         Ingame,
         Paused,
-        GameOver
+        GameOver,
+        Options,
+        Info
     }
 
     public void Start()
@@ -112,6 +116,8 @@ public class UIEvents : MonoBehaviour
         m_pausedRoot.SetActive(uiType == ShowUIType.Paused);
         m_levelBackgroundRoot.SetActive(uiType == ShowUIType.Ingame || uiType == ShowUIType.Paused || uiType == ShowUIType.GameOver);
         m_gameOverRoot.SetActive(uiType == ShowUIType.GameOver);
+        m_optionsRoot.SetActive(uiType == ShowUIType.Options);
+        m_infoRoot.SetActive(uiType == ShowUIType.Info);
     }
 
     public static Vector3 WorldToUIPos(Vector3 worldPos)

@@ -124,7 +124,7 @@ public partial class UISystem : SystemBase
         intro.ValueRW.Skip = true;
     }
 
-    public void OnMenuPlay(int levelIndex)
+    public void OnMenuPlay(int startRound, bool movingCollectibles)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
@@ -135,11 +135,32 @@ public partial class UISystem : SystemBase
         {
             Lives = lives,
             Score = 0,
-            LevelId = levelIndex
+            LevelId = GetRoundFirstLevel(ref mainComponent.ValueRO.LevelsConfigBlob.Value, startRound),
+            CollectiblesMoveDisabled = !movingCollectibles
         });
         ecb.Playback(EntityManager);
         ecb.Dispose();
 
+    }
+
+    // Levels of all rounds are baked into a single list, in GameConfig.RoundConfigs order;
+    // like the original game, starting on a later round just starts further down that list.
+    private static int GetRoundFirstLevel(ref LevelsConfigData levelsData, int roundIdx)
+    {
+        var levelsCount = levelsData.LevelsData.Length;
+        var currentRoundIdx = 0;
+        for (int i = 1; i < levelsCount && currentRoundIdx < roundIdx; i++)
+        {
+            if (levelsData.LevelsData[i].RoundNumber != levelsData.LevelsData[i - 1].RoundNumber)
+            {
+                currentRoundIdx++;
+                if (currentRoundIdx == roundIdx)
+                {
+                    return i;
+                }
+            }
+        }
+        return 0;
     }
 
     public void OnPausedContinue()
