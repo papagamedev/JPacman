@@ -1,3 +1,7 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#define CHEATS_ENABLED
+#endif
+
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,19 +11,17 @@ using UnityEngine.InputSystem;
 [UpdateBefore(typeof(PlayerSystem))]
 public partial class PlayerInputSystem : SystemBase
 {
-    private InputAction m_moveAction;
-    private InputAction m_cancelAction;
     private InputActionMap m_playerActions;
-    private InputActionMap m_uiActions;
+    private InputAction m_moveAction;
+    private InputAction m_pauseAction;
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        var actions = new DefaultInputActions();
-        m_playerActions = actions.Player;
-        m_moveAction = actions.Player.Move;
-        m_uiActions = actions.UI;
-        m_cancelAction = actions.UI.Cancel;
+        // Project-wide actions (Assets/InputSystem_Actions.inputactions, set in Project Settings > Input System Package)
+        m_playerActions = InputSystem.actions.FindActionMap("Player", throwIfNotFound: true);
+        m_moveAction = m_playerActions.FindAction("Move", throwIfNotFound: true);
+        m_pauseAction = m_playerActions.FindAction("Pause", throwIfNotFound: true);
         RequireForUpdate<Player>();
         RequireForUpdate<Game>();
     }
@@ -28,14 +30,12 @@ public partial class PlayerInputSystem : SystemBase
     {
         base.OnStartRunning();
         m_playerActions.Enable();
-        m_uiActions.Enable();
     }
 
     protected override void OnStopRunning()
     {
         base.OnStopRunning();
         m_playerActions.Disable();
-        m_uiActions.Disable();
     }
 
     protected override void OnUpdate()
@@ -67,18 +67,26 @@ public partial class PlayerInputSystem : SystemBase
             return;
         }
 
-        if (m_cancelAction.triggered)
+        if (m_pauseAction.WasPressedThisFrame())
         {
             game.ValueRW.PauseRequested = true;
         }
-        if (Keyboard.current.wKey.ReadValue() > 0)
+
+#if CHEATS_ENABLED
+        var keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            return;
+        }
+        if (keyboard.wKey.isPressed)
         {
             game.ValueRW.CheatLevelCompleted = true;
         }
-        if (Keyboard.current.gKey.ReadValue() > 0)
+        if (keyboard.gKey.isPressed)
         {
             game.ValueRW.CheatGameOverWithScore = true;
         }
+#endif // CHEATS_ENABLED
     }
 
 }
