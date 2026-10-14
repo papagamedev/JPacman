@@ -28,7 +28,9 @@ public partial class EnemyColorSystem : SystemBase
         }
 
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var powerupModeAspect = new PowerupModeAspect(ref CheckedStateRef, mainEntity);
+        var powerupModeAspect = new PowerupModeAspect(mainEntity, SystemAPI.GetComponentRW<PowerupMode>(mainEntity),
+            SystemAPI.GetBuffer<PowerupCollectedBufferElement>(mainEntity), SystemAPI.GetBuffer<EnemyEatenBufferElement>(mainEntity),
+            SystemAPI.GetBuffer<EnemyReturnedHomeBufferElement>(mainEntity));
         var enemyScaredBlinking = powerupModeAspect.IsEnemyScaredBlinking;
 
         foreach (var (sprite, enemyDef) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>>().WithAll<EnemyScaredTag>())

@@ -68,18 +68,16 @@ public readonly struct GameAspect
     public readonly Entity Entity;
     private readonly RefRW<Main> m_main;
     private readonly RefRW<Game> m_game;
-    private readonly RefRW<PowerupMode> m_powerupMode;
     private readonly DynamicBuffer<AddScoreBufferElement> m_addScoreBuffer;
     private readonly DynamicBuffer<DotCloneBufferElement> m_dotCloneBuffer;
 
-    public GameAspect(ref SystemState state, Entity entity)
+    public GameAspect(Entity entity, RefRW<Main> main, RefRW<Game> game, DynamicBuffer<AddScoreBufferElement> addScoreBuffer, DynamicBuffer<DotCloneBufferElement> dotCloneBuffer)
     {
         Entity = entity;
-        m_main = state.GetComponentRW<Main>(entity);
-        m_game = state.GetComponentRW<Game>(entity);
-        m_powerupMode = state.GetComponentRW<PowerupMode>(entity);
-        m_addScoreBuffer = state.EntityManager.GetBuffer<AddScoreBufferElement>(entity);
-        m_dotCloneBuffer = state.EntityManager.GetBuffer<DotCloneBufferElement>(entity);
+        m_main = main;
+        m_game = game;
+        m_addScoreBuffer = addScoreBuffer;
+        m_dotCloneBuffer = dotCloneBuffer;
     }
 
     public bool IsPaused => m_game.ValueRO.Paused == kPauseCooldownValue;

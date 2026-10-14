@@ -21,7 +21,9 @@ public partial struct LevelClearPhaseSystem : ISystem, ISystemStartStop
         var clearPhaseComponent = SystemAPI.GetComponentRO<LevelClearPhase>(mainEntity);
         var mainMenuType = clearPhaseComponent.ValueRO.MenuUIType;
         DestroyLevel(ref state, ecb);
-        var gameAspect = new GameAspect(ref state, mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.Lives == 0 || gameAspect.IsPaused)
         {
             SwitchToMenu(mainEntity, ecb, mainMenuType);

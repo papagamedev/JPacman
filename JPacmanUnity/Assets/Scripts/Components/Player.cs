@@ -26,12 +26,6 @@ public readonly struct PlayerAspect
         m_player = player;
     }
 
-    public static PlayerAspect Get(ref SystemState state, Entity entity) => new PlayerAspect(entity,
-        state.GetComponentRW<LocalTransform>(entity),
-        state.GetComponentRW<Movable>(entity),
-        state.GetComponentRO<CollisionCircle>(entity),
-        state.GetComponentRW<Player>(entity));
-
     public readonly float3 GetWorldPos() => m_transform.ValueRO.Position;
     public readonly float GetCollisionRadius() => m_collision.ValueRO.Radius;
 

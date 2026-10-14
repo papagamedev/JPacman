@@ -112,7 +112,6 @@ public struct ShowUIBufferElement : IBufferElementData
 public readonly struct MainAspect
 {
     public readonly Entity Entity;
-    private readonly RefRO<Main> m_main;
     public readonly DynamicBuffer<SoundEventBufferElement> SoundEventBuffer;
     public readonly DynamicBuffer<SoundStopEventBufferElement> SoundStopEventBuffer;
     public readonly DynamicBuffer<MusicEventBufferElement> MusicEventBuffer;
@@ -130,7 +129,6 @@ public readonly struct MainAspect
     public MainAspect(ref SystemState state, Entity entity)
     {
         Entity = entity;
-        m_main = state.GetComponentRO<Main>(entity);
         SoundEventBuffer = state.EntityManager.GetBuffer<SoundEventBufferElement>(entity);
         SoundStopEventBuffer = state.EntityManager.GetBuffer<SoundStopEventBufferElement>(entity);
         MusicEventBuffer = state.EntityManager.GetBuffer<MusicEventBufferElement>(entity);

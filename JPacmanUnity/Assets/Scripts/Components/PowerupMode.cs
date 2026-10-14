@@ -36,20 +36,18 @@ public readonly struct PowerupModeAspect
     const float kBlinkFreq = 0.5f;
 
     public readonly Entity Entity;
-    private readonly RefRO<Main> m_main;
     private readonly RefRW<PowerupMode> m_powerupMode;
     private readonly DynamicBuffer<PowerupCollectedBufferElement> m_powerupCollectedBuffer;
     private readonly DynamicBuffer<EnemyEatenBufferElement> m_enemyEatenBuffer;
     private readonly DynamicBuffer<EnemyReturnedHomeBufferElement> m_enemyReturnedHomeBuffer;
 
-    public PowerupModeAspect(ref SystemState state, Entity entity)
+    public PowerupModeAspect(Entity entity, RefRW<PowerupMode> powerupMode, DynamicBuffer<PowerupCollectedBufferElement> powerupCollectedBuffer, DynamicBuffer<EnemyEatenBufferElement> enemyEatenBuffer, DynamicBuffer<EnemyReturnedHomeBufferElement> enemyReturnedHomeBuffer)
     {
         Entity = entity;
-        m_main = state.GetComponentRO<Main>(entity);
-        m_powerupMode = state.GetComponentRW<PowerupMode>(entity);
-        m_powerupCollectedBuffer = state.EntityManager.GetBuffer<PowerupCollectedBufferElement>(entity);
-        m_enemyEatenBuffer = state.EntityManager.GetBuffer<EnemyEatenBufferElement>(entity);
-        m_enemyReturnedHomeBuffer = state.EntityManager.GetBuffer<EnemyReturnedHomeBufferElement>(entity);
+        m_powerupMode = powerupMode;
+        m_powerupCollectedBuffer = powerupCollectedBuffer;
+        m_enemyEatenBuffer = enemyEatenBuffer;
+        m_enemyReturnedHomeBuffer = enemyReturnedHomeBuffer;
     }
 
     public void InitLive(LevelConfigData levelData)

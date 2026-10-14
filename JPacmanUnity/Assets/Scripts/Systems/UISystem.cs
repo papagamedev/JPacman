@@ -51,7 +51,9 @@ public partial class UISystem : SystemBase
         {
             foreach (var element in mainAspect.SetLabelTextBuffer)
             {
-                var gameAspect = new GameAspect(ref CheckedStateRef, main);
+                var gameAspect = new GameAspect(main,
+                    SystemAPI.GetComponentRW<Main>(main), SystemAPI.GetComponentRW<Game>(main),
+                    SystemAPI.GetBuffer<AddScoreBufferElement>(main), SystemAPI.GetBuffer<DotCloneBufferElement>(main));
                 int value = 0;
                 switch (element.Value)
                 {
@@ -144,7 +146,9 @@ public partial class UISystem : SystemBase
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
-        var gameAspect = new GameAspect(ref CheckedStateRef, mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         gameAspect.SetPaused(false, mainEntity, ecb);
         ecb.Playback(EntityManager);
         ecb.Dispose();
@@ -194,7 +198,9 @@ public partial class UISystem : SystemBase
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
-        var gameAspect = new GameAspect(ref CheckedStateRef, mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         var mapIdx = gameAspect.LevelData.MapId;
         mapId = mainComponent.ValueRO.MapsConfigBlob.Value.MapsData[mapIdx].Id.ToString();
         round = gameAspect.LevelData.RoundNumber;

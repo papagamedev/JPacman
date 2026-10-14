@@ -23,7 +23,9 @@ public partial struct EnemySystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
-        var gameAspect = new GameAspect(ref state, mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -42,9 +44,8 @@ public partial struct EnemySystem : ISystem
         else
         {
             playerIsTeleporting = false;
-            var playerAspect = PlayerAspect.Get(ref state, player);
-            var playerWorldPos = playerAspect.GetWorldPos();
-            playerCollisionRadius = playerAspect.GetCollisionRadius();
+            var playerWorldPos = SystemAPI.GetComponent<LocalTransform>(player).Position;
+            playerCollisionRadius = SystemAPI.GetComponent<CollisionCircle>(player).Radius;
             playerMapPos = map.WorldToMapPos(playerWorldPos);
         }
         var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();

@@ -20,7 +20,9 @@ public partial struct TeleportableSystem: ISystem
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = new GameAspect(ref state, mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;

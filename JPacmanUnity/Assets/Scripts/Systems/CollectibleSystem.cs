@@ -22,7 +22,9 @@ public partial struct CollectibleSystem : ISystem
     {
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = new GameAspect(ref state, mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -35,9 +37,8 @@ public partial struct CollectibleSystem : ISystem
             // player is teleporting!
             return;
         }
-        var playerAspect = PlayerAspect.Get(ref state, player);
-        var playerWorldPos = playerAspect.GetWorldPos();
-        var playerCollisionRadius = playerAspect.GetCollisionRadius();
+        var playerWorldPos = SystemAPI.GetComponent<LocalTransform>(player).Position;
+        var playerCollisionRadius = SystemAPI.GetComponent<CollisionCircle>(player).Radius;
         var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
         ref var map = ref gameAspect.GetCurrentMapData();
         var playerMapPos = map.WorldToMapPos(playerWorldPos);
