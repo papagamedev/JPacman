@@ -11,7 +11,6 @@ public class MainMenuEvents : MenuEvents
     public Button m_optionsButton;
     public Button m_scoresButton;
     public Button m_exitButton;
-    public int m_startLevel;
 
     protected override void OnEnable()
     {
@@ -60,12 +59,12 @@ public class MainMenuEvents : MenuEvents
     private IEnumerator OnPlayAsync()
     {
         yield return OnClickButtonFadeAsync(AudioEvents.SoundType.PlayerEatFruit);
-        UISystem.Instance?.OnMenuPlay(m_startLevel);
+        UISystem.Instance?.OnMenuPlay(GameSettings.StartRound, GameSettings.MovingCollectibles);
     }
 
     private void OnOptions()
     {
-        m_audioEvents.OnPlaySound(AudioEvents.SoundType.PlayerEatDot);
+        SwitchToMenuUI(UIEvents.ShowUIType.Options);
     }
 
     private void OnScores()

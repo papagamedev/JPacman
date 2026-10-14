@@ -103,6 +103,18 @@ public class AudioEvents : MonoBehaviour
         }
         m_musicSource = gameObject.AddComponent<AudioSource>();
         m_musicSource.volume = m_musicVolume;
+
+        ApplySettings();
+        GameSettings.Changed += ApplySettings;
+    }
+
+    private void ApplySettings()
+    {
+        m_musicSource.mute = !GameSettings.MusicOn;
+        foreach (var source in m_soundSource)
+        {
+            source.mute = !GameSettings.SoundOn;
+        }
     }
 
     private void Update()
@@ -112,6 +124,8 @@ public class AudioEvents : MonoBehaviour
 
     private void OnDisable()
     {
+        GameSettings.Changed -= ApplySettings;
+
         var audioSystem = AudioSystem.Instance;
         if (audioSystem != null)
         {
