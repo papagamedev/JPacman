@@ -60,7 +60,7 @@ public struct DotCloneBufferElement : IBufferElementData
     public int BaseScore;
 }
 
-public readonly partial struct GameAspect : IAspect
+public readonly struct GameAspect
 {
     const int kNewLiveScore = 10000;
     const int kPauseCooldownValue = 5;
@@ -71,6 +71,16 @@ public readonly partial struct GameAspect : IAspect
     private readonly RefRW<PowerupMode> m_powerupMode;
     private readonly DynamicBuffer<AddScoreBufferElement> m_addScoreBuffer;
     private readonly DynamicBuffer<DotCloneBufferElement> m_dotCloneBuffer;
+
+    public GameAspect(ref SystemState state, Entity entity)
+    {
+        Entity = entity;
+        m_main = state.GetComponentRW<Main>(entity);
+        m_game = state.GetComponentRW<Game>(entity);
+        m_powerupMode = state.GetComponentRW<PowerupMode>(entity);
+        m_addScoreBuffer = state.EntityManager.GetBuffer<AddScoreBufferElement>(entity);
+        m_dotCloneBuffer = state.EntityManager.GetBuffer<DotCloneBufferElement>(entity);
+    }
 
     public bool IsPaused => m_game.ValueRO.Paused == kPauseCooldownValue;
     public void SetPaused(bool paused, Entity mainEntity, EntityCommandBuffer ecb)

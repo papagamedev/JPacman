@@ -31,9 +31,9 @@ public partial struct RandomMoverSystem: ISystem
 
 public partial struct RandomMoverJob : IJobEntity
 {
-    private void Execute(RandomMoverAspect mover, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<Movable> movable, RefRO<RandomMover> randomMover, [EntityIndexInQuery] int sortKey)
     {
-        mover.Update();
+        new RandomMoverAspect(entity, movable, randomMover).Update();
     }
 }
 

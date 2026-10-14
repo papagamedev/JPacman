@@ -7,11 +7,18 @@ public struct MenuAnimatedDot : IComponentData
     public int Idx;
 }
 
-public readonly partial struct MenuAnimatedDotAspect : IAspect
+public readonly struct MenuAnimatedDotAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRO<MenuAnimatedDot> m_animator;
+
+    public MenuAnimatedDotAspect(Entity entity, RefRW<LocalTransform> transform, RefRO<MenuAnimatedDot> animator)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_animator = animator;
+    }
 
     public void UpdateAnimation(float deltaTime, int shapeIdx, float2 shapePos, float dotSpeed, BlobAssetReference<MenuDotShapeConfigData> shapesBlob)
     {

@@ -48,3 +48,5 @@ JPacmanUnity/obj/
 JPacmanUnity/build_webgl/
 JPacmanUnity/JPacmanUnity_BurstDebugInformation_DoNotShip/
 *.apk
+JPacmanUnity/JPacmanUnity.slnx
+JPacmanUnity/.claude/settings.local.json

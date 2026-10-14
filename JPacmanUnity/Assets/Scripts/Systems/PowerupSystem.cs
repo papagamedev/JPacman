@@ -20,14 +20,14 @@ public partial struct PowerupSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(ref state, mainEntity);
         if (gameAspect.IsPaused)
         {
             return;
         }
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-        var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
+        var powerupModeAspect = new PowerupModeAspect(ref state, mainEntity);
         powerupModeAspect.CheckEnemiesReturnedHome(mainEntity, ecb);
         if (powerupModeAspect.CheckPowerupCollected())
         {

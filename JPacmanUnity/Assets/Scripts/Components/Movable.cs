@@ -20,11 +20,18 @@ public struct Movable : IComponentData
     public bool JustTeleported;
 }
 
-public readonly partial struct MovableAspect : IAspect
+public readonly struct MovableAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
+
+    public MovableAspect(Entity entity, RefRW<LocalTransform> transform, RefRW<Movable> movable)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_movable = movable;
+    }
 
     public void SetMapPos(ref MapConfigData map, float2 mapPos)
     {

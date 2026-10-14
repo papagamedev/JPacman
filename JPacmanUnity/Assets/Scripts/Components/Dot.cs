@@ -10,13 +10,22 @@ public struct DotsMovingTag : IComponentData
 {
 }
 
-public readonly partial struct DotCloningAspect : IAspect
+public readonly struct DotCloningAspect
 {
     public readonly Entity Entity;
     private readonly RefRO<Dot> m_dot;
     private readonly RefRO<Collectible> m_collectible;
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<LocalTransform> m_transform;
+
+    public DotCloningAspect(Entity entity, RefRO<Dot> dot, RefRO<Collectible> collectible, RefRW<Movable> movable, RefRO<LocalTransform> transform)
+    {
+        Entity = entity;
+        m_dot = dot;
+        m_collectible = collectible;
+        m_movable = movable;
+        m_transform = transform;
+    }
 
     public void CheckClone(int remainingCollectibles, int totalCollectibles, float dotsCloneFactor, Entity mainEntity, int sortKey, EntityCommandBuffer.ParallelWriter ecb)
     {

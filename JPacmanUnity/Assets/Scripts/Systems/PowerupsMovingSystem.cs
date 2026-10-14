@@ -34,7 +34,7 @@ public partial struct PowerupsMovingSystem: ISystem , ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(ref state, mainEntity);
         ref var map = ref gameAspect.GetCurrentMapData();
         var powerupsMoveSpeed = gameAspect.LevelData.PowerupsMoveSpeed;
         foreach (var (_, entity) in SystemAPI.Query<Powerup>().WithEntityAccess())

@@ -31,11 +31,12 @@ public partial struct SpriteAnimatedMovableSystem : ISystem
     }
 }
 
+[WithAll(typeof(SpriteAnimatedMovableTag))]
 public partial struct SpriteAnimatedMoveEntityJob : IJobEntity
 {
-    private void Execute(SpriteAnimatedMovableAspect movable)
+    private void Execute(Entity entity, RefRO<Movable> movable, RefRW<SpriteAnimator> animator)
     {
-        movable.UpdateAnimation();
+        new SpriteAnimatedMovableAspect(entity, movable, animator).UpdateAnimation();
     }
 }
 

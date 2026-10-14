@@ -27,12 +27,18 @@ public struct EnemyHomeScaredTag : IComponentData { }
 public struct EnemyReturnHomeTag : IComponentData { }
 
 
-public readonly partial struct EnemyHomeAspect : IAspect
+public readonly struct EnemyHomeAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<Enemy> m_enemy;
-    private readonly RefRO<EnemyHomeTag> m_enemyHome;
+
+    public EnemyHomeAspect(Entity entity, RefRW<Movable> movable, RefRO<Enemy> enemy)
+    {
+        Entity = entity;
+        m_movable = movable;
+        m_enemy = enemy;
+    }
 
     public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, int sortKey, float liveTime, float exitHomeTime, float enemySpeed, EntityCommandBuffer.ParallelWriter ecb)
     {
@@ -64,14 +70,22 @@ public readonly partial struct EnemyHomeAspect : IAspect
 
 }
 
-public readonly partial struct EnemyFollowPlayerAspect : IAspect
+public readonly struct EnemyFollowPlayerAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<Enemy> m_enemy;
-    private readonly RefRO<EnemyFollowPlayerTag> m_enemyFollowPLayer;
     private readonly RefRO<CollisionCircle> m_collision;
+
+    public EnemyFollowPlayerAspect(Entity entity, RefRW<LocalTransform> transform, RefRW<Movable> movable, RefRO<Enemy> enemy, RefRO<CollisionCircle> collision)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_movable = movable;
+        m_enemy = enemy;
+        m_collision = collision;
+    }
 
     public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, bool playerIsTeleporting, float2 playerMapPos, float playerCollisionRadius, int enemyCI, float enemySpeed, float enemySpeedInTunnel, bool isBonus, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
@@ -110,13 +124,20 @@ public readonly partial struct EnemyFollowPlayerAspect : IAspect
     }
 }
 
-public readonly partial struct EnemyScaredAspect : IAspect
+public readonly struct EnemyScaredAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Movable> m_movable;
-    private readonly RefRO<EnemyScaredTag> m_enemyScared;
     private readonly RefRO<CollisionCircle> m_collision;
+
+    public EnemyScaredAspect(Entity entity, RefRW<LocalTransform> transform, RefRW<Movable> movable, RefRO<CollisionCircle> collision)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_movable = movable;
+        m_collision = collision;
+    }
 
     public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, bool playerIsTeleporting, float2 playerMapPos, float playerCollisionRadius, float enemySpeedScared, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {
@@ -147,11 +168,16 @@ public readonly partial struct EnemyScaredAspect : IAspect
     }
 }
 
-public readonly partial struct EnemyHomeScaredAspect : IAspect
+public readonly struct EnemyHomeScaredAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<Movable> m_movable;
-    private readonly RefRO<EnemyHomeScaredTag> m_enemyScared;
+
+    public EnemyHomeScaredAspect(Entity entity, RefRW<Movable> movable)
+    {
+        Entity = entity;
+        m_movable = movable;
+    }
 
     public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float enemySpeedScared, EntityCommandBuffer.ParallelWriter ecb)
     {
@@ -164,11 +190,16 @@ public readonly partial struct EnemyHomeScaredAspect : IAspect
 
 }
 
-public readonly partial struct EnemyReturnHomeAspect : IAspect
+public readonly struct EnemyReturnHomeAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<Movable> m_movable;
-    private readonly RefRO<EnemyReturnHomeTag> m_enemyScared;
+
+    public EnemyReturnHomeAspect(Entity entity, RefRW<Movable> movable)
+    {
+        Entity = entity;
+        m_movable = movable;
+    }
 
     public void Update(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float enemySpeedRerturnHome, int sortKey, Entity mainEntity, EntityCommandBuffer.ParallelWriter ecb)
     {

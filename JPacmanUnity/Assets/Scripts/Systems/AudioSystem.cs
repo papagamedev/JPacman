@@ -23,7 +23,7 @@ public partial class AudioSystem : SystemBase
     protected override void OnUpdate()
     {
         var main = SystemAPI.GetSingletonEntity<Main>();
-        var mainAspect = SystemAPI.GetAspect<MainAspect>(main);
+        var mainAspect = new MainAspect(ref CheckedStateRef, main);
         if (OnPlayMusic != null)
         {
             foreach (var music in mainAspect.MusicEventBuffer)

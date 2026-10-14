@@ -17,12 +17,20 @@ public struct Collectible : IComponentData
     public EType Type;
 }
 
-public readonly partial struct CollectibleAspect : IAspect
+public readonly struct CollectibleAspect
 {
     public readonly Entity Entity;
     private readonly RefRO<LocalTransform> m_transform;
     private readonly RefRO<Collectible> m_collectible;
     private readonly RefRO<CollisionCircle> m_collision;
+
+    public CollectibleAspect(Entity entity, RefRO<LocalTransform> transform, RefRO<Collectible> collectible, RefRO<CollisionCircle> collision)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_collectible = collectible;
+        m_collision = collision;
+    }
 
     public void CheckPlayer(BlobAssetReference<MapsConfigData> mapsBlobRef, int mapId, float2 playerMapPos, float playerCollisionRadius, int fruitScore, int sortKey, Entity main, EntityCommandBuffer.ParallelWriter ecb)
     {

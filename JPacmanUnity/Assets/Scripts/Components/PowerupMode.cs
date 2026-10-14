@@ -30,7 +30,7 @@ public struct EnemyReturnedHomeBufferElement : IBufferElementData
     public byte Dummy;
 }
 
-public readonly partial struct PowerupModeAspect : IAspect
+public readonly struct PowerupModeAspect
 {
     const float kBlinkTime = 3.0f;
     const float kBlinkFreq = 0.5f;
@@ -41,6 +41,16 @@ public readonly partial struct PowerupModeAspect : IAspect
     private readonly DynamicBuffer<PowerupCollectedBufferElement> m_powerupCollectedBuffer;
     private readonly DynamicBuffer<EnemyEatenBufferElement> m_enemyEatenBuffer;
     private readonly DynamicBuffer<EnemyReturnedHomeBufferElement> m_enemyReturnedHomeBuffer;
+
+    public PowerupModeAspect(ref SystemState state, Entity entity)
+    {
+        Entity = entity;
+        m_main = state.GetComponentRO<Main>(entity);
+        m_powerupMode = state.GetComponentRW<PowerupMode>(entity);
+        m_powerupCollectedBuffer = state.EntityManager.GetBuffer<PowerupCollectedBufferElement>(entity);
+        m_enemyEatenBuffer = state.EntityManager.GetBuffer<EnemyEatenBufferElement>(entity);
+        m_enemyReturnedHomeBuffer = state.EntityManager.GetBuffer<EnemyReturnedHomeBufferElement>(entity);
+    }
 
     public void InitLive(LevelConfigData levelData)
     {

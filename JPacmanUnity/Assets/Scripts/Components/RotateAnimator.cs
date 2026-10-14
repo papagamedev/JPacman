@@ -7,11 +7,18 @@ public struct RotateAnimator: IComponentData
     public float Speed;
 }
 
-public readonly partial struct RotateAnimatorAspect : IAspect
+public readonly struct RotateAnimatorAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRO<RotateAnimator> m_animator;
+
+    public RotateAnimatorAspect(Entity entity, RefRW<LocalTransform> transform, RefRO<RotateAnimator> animator)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_animator = animator;
+    }
 
     public void UpdateAnimation(float timeDelta)
     {

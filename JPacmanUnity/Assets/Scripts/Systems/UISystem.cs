@@ -27,7 +27,7 @@ public partial class UISystem : SystemBase
     protected override void OnUpdate()
     {
         var main = SystemAPI.GetSingletonEntity<Main>();
-        var mainAspect = SystemAPI.GetAspect<MainAspect>(main);
+        var mainAspect = new MainAspect(ref CheckedStateRef, main);
 
         if (OnSetLivesText != null)
         {
@@ -51,7 +51,7 @@ public partial class UISystem : SystemBase
         {
             foreach (var element in mainAspect.SetLabelTextBuffer)
             {
-                var gameAspect = SystemAPI.GetAspect<GameAspect>(main);
+                var gameAspect = new GameAspect(ref CheckedStateRef, main);
                 int value = 0;
                 switch (element.Value)
                 {
@@ -144,7 +144,7 @@ public partial class UISystem : SystemBase
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(ref CheckedStateRef, mainEntity);
         gameAspect.SetPaused(false, mainEntity, ecb);
         ecb.Playback(EntityManager);
         ecb.Dispose();
@@ -194,7 +194,7 @@ public partial class UISystem : SystemBase
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(ref CheckedStateRef, mainEntity);
         var mapIdx = gameAspect.LevelData.MapId;
         mapId = mainComponent.ValueRO.MapsConfigBlob.Value.MapsData[mapIdx].Id.ToString();
         round = gameAspect.LevelData.RoundNumber;

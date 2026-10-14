@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Transforms;
 using UnityEngine;
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
@@ -16,24 +17,37 @@ public partial class SpriteAnimationSystem : SystemBase
     protected override void OnUpdate()
     {
         var time = SystemAPI.Time.ElapsedTime;
-        Entities.ForEach((SpriteAnimatorAspect spriteAnimator) =>
+        new SpriteAnimatorJob
         {
-            spriteAnimator.UpdateAnimation((float)time);
-        }).ScheduleParallel();
+            Time = (float)time
+        }.ScheduleParallel();
 
-        Entities.ForEach((SpriteAnimCopyParentFrameAspect sprite) =>
-        {
-            sprite.UpdateAnimFrame(EntityManager);
-        }).WithoutBurst().Run();
+        // SystemAPI.Query doesn't wait for jobs this system just scheduled (Entities.ForEach.Run used to)
+        CompleteDependency();
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, SpriteAnimatorDef spriteDef, in SpriteSetFrame set) =>
+        foreach (var (animator, parent, entity) in SystemAPI.Query<RefRW<SpriteAnimator>, RefRO<Parent>>().WithAll<SpriteAnimCopyParentFrame>().WithEntityAccess())
         {
-            sprite.sprite = spriteDef.AnimationFrames[set.Frame];
-        }).WithoutBurst().Run();
+            new SpriteAnimCopyParentFrameAspect(entity, animator, parent).UpdateAnimFrame(EntityManager);
+        }
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, SpriteAnimatorDef spriteDef, in SpriteAnimator spriteAnimator) =>
+        foreach (var (sprite, spriteDef, set) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, SpriteAnimatorDef, RefRO<SpriteSetFrame>>())
         {
-            sprite.sprite = spriteDef.AnimationFrames[spriteAnimator.Frame];
-        }).WithoutBurst().Run();
+            sprite.Value.sprite = spriteDef.AnimationFrames[set.ValueRO.Frame];
+        }
+
+        foreach (var (sprite, spriteDef, spriteAnimator) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, SpriteAnimatorDef, RefRO<SpriteAnimator>>())
+        {
+            sprite.Value.sprite = spriteDef.AnimationFrames[spriteAnimator.ValueRO.Frame];
+        }
+    }
+}
+
+public partial struct SpriteAnimatorJob : IJobEntity
+{
+    public float Time;
+
+    private void Execute(Entity entity, RefRW<SpriteAnimator> animator)
+    {
+        new SpriteAnimatorAspect(entity, animator).UpdateAnimation(Time);
     }
 }

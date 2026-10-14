@@ -107,9 +107,9 @@ public partial struct MenuDotShapeJob : IJobEntity
     public float DotSpeed;
     public BlobAssetReference<MenuDotShapeConfigData> ShapesBlob;
 
-    private void Execute(MenuAnimatedDotAspect dot)
+    private void Execute(Entity entity, RefRW<LocalTransform> transform, RefRO<MenuAnimatedDot> animator)
     {
-        dot.UpdateAnimation(DeltaTime, ShapeIdx, ShapePos, DotSpeed, ShapesBlob);
+        new MenuAnimatedDotAspect(entity, transform, animator).UpdateAnimation(DeltaTime, ShapeIdx, ShapePos, DotSpeed, ShapesBlob);
     }
 }
 

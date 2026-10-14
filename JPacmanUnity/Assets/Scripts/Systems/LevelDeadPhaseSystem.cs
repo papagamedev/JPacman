@@ -49,7 +49,7 @@ public partial struct LevelDeadPhaseSystem : ISystem, ISystemStartStop
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         if (m_phaseTimer >= kDeathAnimTime)
         {
-            var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+            var gameAspect = new GameAspect(ref state, mainEntity);
             var lives = gameAspect.RemoveLive();
             ecb.AppendToBuffer(mainEntity, new SetLivesTextBufferElement()
             {
