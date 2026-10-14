@@ -37,7 +37,9 @@ public partial struct GameSystem : ISystem, ISystemStartStop
     {
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         gameAspect.ApplyAddScore(mainEntity, ecb);
         ecb.Playback(state.EntityManager);
         ecb.Dispose();

@@ -19,7 +19,9 @@ public partial struct FruitSystem: ISystem
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -45,9 +47,9 @@ public partial struct FruitJob : IJobEntity
     public float DeltaTime;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(FruitAspect fruit, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<Fruit> fruit, [EntityIndexInQuery] int sortKey)
     {
-        fruit.CheckTime(DeltaTime, sortKey, ECB);
+        new FruitAspect(entity, fruit).CheckTime(DeltaTime, sortKey, ECB);
     }
 }
 

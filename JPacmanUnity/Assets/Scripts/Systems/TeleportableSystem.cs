@@ -1,5 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Transforms;
 
 
 [BurstCompile]
@@ -19,7 +20,9 @@ public partial struct TeleportableSystem: ISystem
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -45,9 +48,9 @@ public partial struct TeleportableJob : IJobEntity
     public float DeltaTime;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(TeleportableAspect teleportable, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<LocalTransform> transform, RefRW<Teleportable> teleportable, [EntityIndexInQuery] int sortKey)
     {
-        teleportable.Teleport(DeltaTime, sortKey, ECB);
+        new TeleportableAspect(entity, transform, teleportable).Teleport(DeltaTime, sortKey, ECB);
     }
 }
 

@@ -1,5 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Transforms;
 
 
 [BurstCompile]
@@ -34,9 +35,9 @@ public partial struct DeathAnimationJob : IJobEntity
 {
     public float DeltaTime;
 
-    private void Execute(DeathAnimationAspect deathAnim)
+    private void Execute(Entity entity, RefRW<LocalTransform> transform, RefRO<DeathAnimation> death)
     {
-        deathAnim.UpdateAnimation(DeltaTime);
+        new DeathAnimationAspect(entity, transform, death).UpdateAnimation(DeltaTime);
     }
 }
 

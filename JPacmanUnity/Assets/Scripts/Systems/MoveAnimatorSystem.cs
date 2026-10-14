@@ -1,5 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Transforms;
 
 
 [BurstCompile]
@@ -34,9 +35,9 @@ public partial struct MoveAnimatorSystem : ISystem
 public partial struct MoveAnimatorJob : IJobEntity
 {
     public float TimeDelta;
-    private void Execute(MoveAnimatorAspect animator)
+    private void Execute(Entity entity, RefRW<LocalTransform> transform, RefRO<MoveAnimator> animator)
     {
-        animator.UpdateAnimation(TimeDelta);
+        new MoveAnimatorAspect(entity, transform, animator).UpdateAnimation(TimeDelta);
     }
 }
 

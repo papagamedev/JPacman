@@ -6,7 +6,7 @@ public struct DeathAnimation : IComponentData
     public float Duration;
 }
 
-public readonly partial struct DeathAnimationAspect : IAspect
+public readonly struct DeathAnimationAspect
 {
     const float kMinScale = 0.01f;
     const float kRotationSpeed = 10.0f;
@@ -14,6 +14,13 @@ public readonly partial struct DeathAnimationAspect : IAspect
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRO<DeathAnimation> m_death;
+
+    public DeathAnimationAspect(Entity entity, RefRW<LocalTransform> transform, RefRO<DeathAnimation> death)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_death = death;
+    }
     
     public void UpdateAnimation(float deltaTime)
     {

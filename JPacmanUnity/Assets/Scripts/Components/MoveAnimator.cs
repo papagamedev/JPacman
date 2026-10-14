@@ -8,11 +8,18 @@ public struct MoveAnimator: IComponentData
     public Direction Direction;
 }
 
-public readonly partial struct MoveAnimatorAspect : IAspect
+public readonly struct MoveAnimatorAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRO<MoveAnimator> m_animator;
+
+    public MoveAnimatorAspect(Entity entity, RefRW<LocalTransform> transform, RefRO<MoveAnimator> animator)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_animator = animator;
+    }
 
     public void UpdateAnimation(float timeDelta)
     {

@@ -20,10 +20,16 @@ public struct SpriteAnimator : IComponentData
     public bool Backwards;
 }
 
-public readonly partial struct SpriteAnimatorAspect : IAspect
+public readonly struct SpriteAnimatorAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<SpriteAnimator> m_animator;
+
+    public SpriteAnimatorAspect(Entity entity, RefRW<SpriteAnimator> animator)
+    {
+        Entity = entity;
+        m_animator = animator;
+    }
 
     public void UpdateAnimation(float time)
     {

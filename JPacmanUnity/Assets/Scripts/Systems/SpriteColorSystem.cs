@@ -14,9 +14,9 @@ public partial class SpriteColorSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, in SpriteSetColor spriteColor) =>
+        foreach (var (sprite, spriteColor) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<SpriteSetColor>>())
         {
-            sprite.color = spriteColor.Color;
-        }).WithoutBurst().Run();
+            sprite.Value.color = spriteColor.ValueRO.Color;
+        }
     }
 }

@@ -1,5 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Transforms;
 using Unity.Mathematics;
 
 
@@ -22,7 +23,9 @@ public partial struct EnemySystem : ISystem
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var mainComponent = SystemAPI.GetComponentRO<Main>(mainEntity);
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -41,9 +44,8 @@ public partial struct EnemySystem : ISystem
         else
         {
             playerIsTeleporting = false;
-            var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
-            var playerWorldPos = playerAspect.GetWorldPos();
-            playerCollisionRadius = playerAspect.GetCollisionRadius();
+            var playerWorldPos = SystemAPI.GetComponent<LocalTransform>(player).Position;
+            playerCollisionRadius = SystemAPI.GetComponent<CollisionCircle>(player).Radius;
             playerMapPos = map.WorldToMapPos(playerWorldPos);
         }
         var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
@@ -110,6 +112,7 @@ public partial struct EnemySystem : ISystem
     }
 }
 
+[WithAll(typeof(EnemyHomeTag))]
 public partial struct EnemyHomeJob : IJobEntity
 {
     public float DeltaTime;
@@ -120,12 +123,13 @@ public partial struct EnemyHomeJob : IJobEntity
     public float EnemySpeed;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(EnemyHomeAspect enemy, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<Movable> movable, RefRO<Enemy> enemy, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, sortKey, LiveTime, ExitHomeTime, EnemySpeed, ECB);
+        new EnemyHomeAspect(entity, movable, enemy).Update(BlobMapsRef, MapId, sortKey, LiveTime, ExitHomeTime, EnemySpeed, ECB);
     }
 }
 
+[WithAll(typeof(EnemyFollowPlayerTag))]
 public partial struct EnemyFollowPlayerJob : IJobEntity
 {
     public float DeltaTime;
@@ -141,12 +145,13 @@ public partial struct EnemyFollowPlayerJob : IJobEntity
     public Entity MainEntity;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(EnemyFollowPlayerAspect enemy, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<LocalTransform> transform, RefRW<Movable> movable, RefRO<Enemy> enemy, RefRO<CollisionCircle> collision, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerIsTeleporting, PlayerMapPos, PlayerCollisionRadius, EnemyCI, EnemySpeed, EnemySpeedInTunnel, IsBonus, sortKey, MainEntity, ECB);
+        new EnemyFollowPlayerAspect(entity, transform, movable, enemy, collision).Update(BlobMapsRef, MapId, PlayerIsTeleporting, PlayerMapPos, PlayerCollisionRadius, EnemyCI, EnemySpeed, EnemySpeedInTunnel, IsBonus, sortKey, MainEntity, ECB);
     }
 }
 
+[WithAll(typeof(EnemyScaredTag))]
 public partial struct EnemyScaredJob : IJobEntity
 {
     public float DeltaTime;
@@ -159,13 +164,14 @@ public partial struct EnemyScaredJob : IJobEntity
     public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(EnemyScaredAspect enemy, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<LocalTransform> transform, RefRW<Movable> movable, RefRO<CollisionCircle> collision, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, PlayerIsTeleporting, PlayerMapPos, PlayerCollisionRadius, EnemySpeedScared, sortKey, Main, ECB);
+        new EnemyScaredAspect(entity, transform, movable, collision).Update(BlobMapsRef, MapId, PlayerIsTeleporting, PlayerMapPos, PlayerCollisionRadius, EnemySpeedScared, sortKey, Main, ECB);
     }
 }
 
 
+[WithAll(typeof(EnemyHomeScaredTag))]
 public partial struct EnemyHomeScaredJob : IJobEntity
 {
     public float DeltaTime;
@@ -174,12 +180,13 @@ public partial struct EnemyHomeScaredJob : IJobEntity
     public float EnemySpeedScared;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(EnemyHomeScaredAspect enemy, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<Movable> movable, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, EnemySpeedScared, ECB);
+        new EnemyHomeScaredAspect(entity, movable).Update(BlobMapsRef, MapId, EnemySpeedScared, ECB);
     }
 }
 
+[WithAll(typeof(EnemyReturnHomeTag))]
 public partial struct EnemyReturnHomeJob : IJobEntity
 {
     public float DeltaTime;
@@ -189,8 +196,8 @@ public partial struct EnemyReturnHomeJob : IJobEntity
     public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(EnemyReturnHomeAspect enemy, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<Movable> movable, [EntityIndexInQuery] int sortKey)
     {
-        enemy.Update(BlobMapsRef, MapId, EnemySpeedReturnHome, sortKey, Main, ECB);
+        new EnemyReturnHomeAspect(entity, movable).Update(BlobMapsRef, MapId, EnemySpeedReturnHome, sortKey, Main, ECB);
     }
 }

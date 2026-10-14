@@ -32,7 +32,9 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
     public void OnStartRunning(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         ecb.AppendToBuffer(mainEntity, new MusicEventBufferElement()
         {
@@ -59,7 +61,9 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
 
         uint randSeed = gameAspect.RandomSeed;
         gameAspect.CreateLevel(ecb, mainEntity, randSeed);
-        var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
+        var powerupModeAspect = new PowerupModeAspect(mainEntity, SystemAPI.GetComponentRW<PowerupMode>(mainEntity),
+            SystemAPI.GetBuffer<PowerupCollectedBufferElement>(mainEntity), SystemAPI.GetBuffer<EnemyEatenBufferElement>(mainEntity),
+            SystemAPI.GetBuffer<EnemyReturnedHomeBufferElement>(mainEntity));
         powerupModeAspect.InitLive(gameAspect.LevelData);
 
         ecb.Playback(state.EntityManager);
@@ -73,7 +77,9 @@ public partial struct LevelStartPhaseSystem : ISystem, ISystemStartStop
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
         m_phaseTimer += SystemAPI.Time.DeltaTime;

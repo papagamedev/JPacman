@@ -17,33 +17,35 @@ public partial class EnemyColorSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in Enemy enemy, in EnemyHomeTag enemyHome) =>
+        foreach (var (sprite, enemyDef, enemy) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>, RefRO<Enemy>>().WithAll<EnemyHomeTag>())
         {
-            sprite.color = enemyDef.EnemyColors[enemy.Id];
-        }).WithoutBurst().Run();
+            sprite.Value.color = enemyDef.ValueRO.EnemyColors[enemy.ValueRO.Id];
+        }
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in Enemy enemy, in EnemyFollowPlayerTag enemyFollowPlayerTag) =>
+        foreach (var (sprite, enemyDef, enemy) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>, RefRO<Enemy>>().WithAll<EnemyFollowPlayerTag>())
         {
-            sprite.color = enemyDef.EnemyColors[enemy.Id];
-        }).WithoutBurst().Run();
+            sprite.Value.color = enemyDef.ValueRO.EnemyColors[enemy.ValueRO.Id];
+        }
 
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
+        var powerupModeAspect = new PowerupModeAspect(mainEntity, SystemAPI.GetComponentRW<PowerupMode>(mainEntity),
+            SystemAPI.GetBuffer<PowerupCollectedBufferElement>(mainEntity), SystemAPI.GetBuffer<EnemyEatenBufferElement>(mainEntity),
+            SystemAPI.GetBuffer<EnemyReturnedHomeBufferElement>(mainEntity));
         var enemyScaredBlinking = powerupModeAspect.IsEnemyScaredBlinking;
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in EnemyScaredTag enemy) =>
+        foreach (var (sprite, enemyDef) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>>().WithAll<EnemyScaredTag>())
         {
-            sprite.color = enemyScaredBlinking ? enemyDef.EnemyScaredBlinkColor : enemyDef.EnemyScaredColor;
-        }).WithoutBurst().Run();
+            sprite.Value.color = enemyScaredBlinking ? enemyDef.ValueRO.EnemyScaredBlinkColor : enemyDef.ValueRO.EnemyScaredColor;
+        }
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in EnemyHomeScaredTag enemy) =>
+        foreach (var (sprite, enemyDef) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>>().WithAll<EnemyHomeScaredTag>())
         {
-            sprite.color = enemyScaredBlinking ? enemyDef.EnemyScaredBlinkColor : enemyDef.EnemyScaredColor;
-        }).WithoutBurst().Run();
+            sprite.Value.color = enemyScaredBlinking ? enemyDef.ValueRO.EnemyScaredBlinkColor : enemyDef.ValueRO.EnemyScaredColor;
+        }
 
-        Entities.ForEach((Entity entity, SpriteRenderer sprite, in EnemyDef enemyDef, in EnemyReturnHomeTag enemy) =>
+        foreach (var (sprite, enemyDef) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>>().WithAll<EnemyReturnHomeTag>())
         {
-            sprite.color = enemyDef.EnemyReturnHomeColor;
-        }).WithoutBurst().Run();
+            sprite.Value.color = enemyDef.ValueRO.EnemyReturnHomeColor;
+        }
     }
 }

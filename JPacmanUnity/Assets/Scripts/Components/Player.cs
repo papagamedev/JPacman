@@ -7,7 +7,7 @@ public struct Player : IComponentData
     public float2 MoveVector;
 }
 
-public readonly partial struct PlayerAspect : IAspect
+public readonly struct PlayerAspect
 {
     const float kInputThreshold = 0.5f;
 
@@ -16,6 +16,15 @@ public readonly partial struct PlayerAspect : IAspect
     private readonly RefRW<Movable> m_movable;
     private readonly RefRO<CollisionCircle> m_collision;
     private readonly RefRW<Player> m_player;
+
+    public PlayerAspect(Entity entity, RefRW<LocalTransform> transform, RefRW<Movable> movable, RefRO<CollisionCircle> collision, RefRW<Player> player)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_movable = movable;
+        m_collision = collision;
+        m_player = player;
+    }
 
     public readonly float3 GetWorldPos() => m_transform.ValueRO.Position;
     public readonly float GetCollisionRadius() => m_collision.ValueRO.Radius;

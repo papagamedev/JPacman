@@ -3,14 +3,18 @@ using Unity.Transforms;
 
 public struct SpriteAnimCopyParentFrame : IComponentData { }
 
-public readonly partial struct SpriteAnimCopyParentFrameAspect : IAspect
+public readonly struct SpriteAnimCopyParentFrameAspect
 {
     public readonly Entity Entity;
-#pragma warning disable IDE0052 // Remove unread private members
-    private readonly RefRO<SpriteAnimCopyParentFrame> m_copyFromParent;
-#pragma warning restore IDE0052 // Remove unread private members
     private readonly RefRW<SpriteAnimator> m_animator;
     private readonly RefRO<Parent> m_parent;
+
+    public SpriteAnimCopyParentFrameAspect(Entity entity, RefRW<SpriteAnimator> animator, RefRO<Parent> parent)
+    {
+        Entity = entity;
+        m_animator = animator;
+        m_parent = parent;
+    }
 
     public void UpdateAnimFrame(EntityManager manager)
     {

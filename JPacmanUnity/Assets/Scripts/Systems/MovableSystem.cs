@@ -1,5 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Transforms;
 
 
 [BurstCompile]
@@ -20,7 +21,9 @@ public partial struct MovableSystem : ISystem
     {
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -54,9 +57,9 @@ public partial struct MoveEntityJob : IJobEntity
     public int MapId;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(MovableAspect movable, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRW<LocalTransform> transform, RefRW<Movable> movable, [EntityIndexInQuery] int sortKey)
     {
-       movable.Move(BlobMapsRef, MapId, DeltaTime, MainEntity, sortKey, ECB);
+       new MovableAspect(entity, transform, movable).Move(BlobMapsRef, MapId, DeltaTime, MainEntity, sortKey, ECB);
     }
 }
 

@@ -23,9 +23,13 @@ public partial struct LevelResetLivePhaseSystem : ISystem, ISystemStartStop
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         ResetLevel(ref state, ecb);
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         gameAspect.InitLive(ecb, mainEntity, gameAspect.RandomSeed);
-        var powerupModeAspect = SystemAPI.GetAspect<PowerupModeAspect>(mainEntity);
+        var powerupModeAspect = new PowerupModeAspect(mainEntity, SystemAPI.GetComponentRW<PowerupMode>(mainEntity),
+            SystemAPI.GetBuffer<PowerupCollectedBufferElement>(mainEntity), SystemAPI.GetBuffer<EnemyEatenBufferElement>(mainEntity),
+            SystemAPI.GetBuffer<EnemyReturnedHomeBufferElement>(mainEntity));
         powerupModeAspect.InitLive(gameAspect.LevelData);
         ref var mapData = ref gameAspect.GetCurrentMapData();
         foreach (var (powerup, entity) in SystemAPI.Query<Powerup>().WithEntityAccess())

@@ -1,6 +1,7 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -21,7 +22,9 @@ public partial struct PlayerSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -42,8 +45,8 @@ public partial struct PlayerSystem : ISystem
 
 public partial struct PlayerJob : IJobEntity
 {
-    private void Execute(PlayerAspect player)
+    private void Execute(Entity entity, RefRW<LocalTransform> transform, RefRW<Movable> movable, RefRO<CollisionCircle> collision, RefRW<Player> player)
     {
-        player.UpdateMovement();
+        new PlayerAspect(entity, transform, movable, collision, player).UpdateMovement();
     }
 }

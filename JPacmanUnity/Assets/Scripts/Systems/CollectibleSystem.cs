@@ -1,5 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Transforms;
 using Unity.Mathematics;
 
 
@@ -21,7 +22,9 @@ public partial struct CollectibleSystem : ISystem
     {
         var deltaTime = SystemAPI.Time.DeltaTime;
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -34,9 +37,8 @@ public partial struct CollectibleSystem : ISystem
             // player is teleporting!
             return;
         }
-        var playerAspect = SystemAPI.GetAspect<PlayerAspect>(player);
-        var playerWorldPos = playerAspect.GetWorldPos();
-        var playerCollisionRadius = playerAspect.GetCollisionRadius();
+        var playerWorldPos = SystemAPI.GetComponent<LocalTransform>(player).Position;
+        var playerCollisionRadius = SystemAPI.GetComponent<CollisionCircle>(player).Radius;
         var mapsBlobRef = mainComponent.ValueRO.MapsConfigBlob;
         ref var map = ref gameAspect.GetCurrentMapData();
         var playerMapPos = map.WorldToMapPos(playerWorldPos);
@@ -72,9 +74,9 @@ public partial struct CollectJob : IJobEntity
     public Entity Main;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(CollectibleAspect collectible, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRO<LocalTransform> transform, RefRO<Collectible> collectible, RefRO<CollisionCircle> collision, [EntityIndexInQuery] int sortKey)
     {
-        collectible.CheckPlayer(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, FruitScore, sortKey, Main, ECB);
+        new CollectibleAspect(entity, transform, collectible, collision).CheckPlayer(BlobMapsRef, MapId, PlayerMapPos, PlayerCollisionRadius, FruitScore, sortKey, Main, ECB);
     }
 }
 

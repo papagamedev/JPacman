@@ -1,6 +1,7 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Transforms;
 
 [BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
@@ -22,7 +23,9 @@ public partial struct DotsMovingSystem: ISystem , ISystemStartStop
 
 
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         if (gameAspect.IsPaused)
         {
             return;
@@ -61,7 +64,9 @@ public partial struct DotsMovingSystem: ISystem , ISystemStartStop
     {
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+        var gameAspect = new GameAspect(mainEntity,
+            SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+            SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
         ref var map = ref gameAspect.GetCurrentMapData();
         foreach (var (_, entity) in SystemAPI.Query<Dot>().WithEntityAccess())
         {
@@ -94,8 +99,8 @@ public partial struct DotCloneJob : IJobEntity
     public Entity MainEntity;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    private void Execute(DotCloningAspect dot, [EntityIndexInQuery] int sortKey)
+    private void Execute(Entity entity, RefRO<Dot> dot, RefRO<Collectible> collectible, RefRW<Movable> movable, RefRO<LocalTransform> transform, [EntityIndexInQuery] int sortKey)
     {
-        dot.CheckClone(RemainingCollectibles, TotalCollectibles, DotsCloneFactor, MainEntity, sortKey, ECB);
+        new DotCloningAspect(entity, dot, collectible, movable, transform).CheckClone(RemainingCollectibles, TotalCollectibles, DotsCloneFactor, MainEntity, sortKey, ECB);
     }
 }

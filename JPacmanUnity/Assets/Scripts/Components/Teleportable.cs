@@ -16,11 +16,18 @@ public struct Teleportable : IComponentData
     public Random Rand;
 }
 
-public readonly partial struct TeleportableAspect : IAspect
+public readonly struct TeleportableAspect
 {
     public readonly Entity Entity;
     private readonly RefRW<LocalTransform> m_transform;
     private readonly RefRW<Teleportable> m_teleportable;
+
+    public TeleportableAspect(Entity entity, RefRW<LocalTransform> transform, RefRW<Teleportable> teleportable)
+    {
+        Entity = entity;
+        m_transform = transform;
+        m_teleportable = teleportable;
+    }
 
     public void Teleport(float deltaTime, int sortKey, EntityCommandBuffer.ParallelWriter ecb)
     {

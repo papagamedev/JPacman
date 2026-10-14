@@ -74,7 +74,9 @@ public partial struct LevelWinPhaseSystem : ISystem, ISystemStartStop
             case Mode.FadeOut:
                 if (m_phaseTimer >= kTotalWinTime)
                 {
-                    var gameAspect = SystemAPI.GetAspect<GameAspect>(mainEntity);
+                    var gameAspect = new GameAspect(mainEntity,
+                        SystemAPI.GetComponentRW<Main>(mainEntity), SystemAPI.GetComponentRW<Game>(mainEntity),
+                        SystemAPI.GetBuffer<AddScoreBufferElement>(mainEntity), SystemAPI.GetBuffer<DotCloneBufferElement>(mainEntity));
                     gameAspect.SetNextLevel();
 
                     SwitchToLevelClearPhase(mainEntity, ecb);

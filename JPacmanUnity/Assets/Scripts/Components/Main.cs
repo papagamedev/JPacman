@@ -109,10 +109,9 @@ public struct ShowUIBufferElement : IBufferElementData
 }
 
 
-public readonly partial struct MainAspect : IAspect
+public readonly struct MainAspect
 {
     public readonly Entity Entity;
-    private readonly RefRO<Main> m_main;
     public readonly DynamicBuffer<SoundEventBufferElement> SoundEventBuffer;
     public readonly DynamicBuffer<SoundStopEventBufferElement> SoundStopEventBuffer;
     public readonly DynamicBuffer<MusicEventBufferElement> MusicEventBuffer;
@@ -126,4 +125,22 @@ public readonly partial struct MainAspect : IAspect
     public readonly DynamicBuffer<KillAllScoreAnimationBufferElement> KillAllScoreAnimationsBuffer;
     public readonly DynamicBuffer<FadeAnimationBufferElement> FadeAnimationBuffer;
     public readonly DynamicBuffer<ShowUIBufferElement> ShowUIBuffer;
+
+    public MainAspect(ref SystemState state, Entity entity)
+    {
+        Entity = entity;
+        SoundEventBuffer = state.EntityManager.GetBuffer<SoundEventBufferElement>(entity);
+        SoundStopEventBuffer = state.EntityManager.GetBuffer<SoundStopEventBufferElement>(entity);
+        MusicEventBuffer = state.EntityManager.GetBuffer<MusicEventBufferElement>(entity);
+        PauseAudioEventBuffer = state.EntityManager.GetBuffer<PauseAudioEventBufferElement>(entity);
+        FadeMusicEventBuffer = state.EntityManager.GetBuffer<FadeMusicEventBufferElement>(entity);
+        SetLivesTextBuffer = state.EntityManager.GetBuffer<SetLivesTextBufferElement>(entity);
+        SetScoreTextBuffer = state.EntityManager.GetBuffer<SetScoreTextBufferElement>(entity);
+        SetLabelTextBuffer = state.EntityManager.GetBuffer<SetLabelTextBufferElement>(entity);
+        SetLabelPosBuffer = state.EntityManager.GetBuffer<SetLabelPosBufferElement>(entity);
+        SetLevelIconBuffer = state.EntityManager.GetBuffer<SetLevelIconBufferElement>(entity);
+        KillAllScoreAnimationsBuffer = state.EntityManager.GetBuffer<KillAllScoreAnimationBufferElement>(entity);
+        FadeAnimationBuffer = state.EntityManager.GetBuffer<FadeAnimationBufferElement>(entity);
+        ShowUIBuffer = state.EntityManager.GetBuffer<ShowUIBufferElement>(entity);
+    }
 }
