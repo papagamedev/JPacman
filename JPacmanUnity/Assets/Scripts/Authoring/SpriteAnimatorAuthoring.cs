@@ -1,9 +1,10 @@
 using Unity.Entities;
 using UnityEngine;
 
+// Animates the frames of the SpriteAuthoring on the same GameObject
+[RequireComponent(typeof(SpriteAuthoring))]
 public class SpriteAnimatorAuthoring : MonoBehaviour
 {
-    public Sprite[] AnimationFrames;
     public float AnimationLength = 1.0f;
     public WrapMode WrapMode;
     public bool StartPlaying = true;
@@ -13,19 +14,16 @@ public class SpriteAnimatorAuthoring : MonoBehaviour
         public override void Bake(SpriteAnimatorAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponentObject(entity, new SpriteAnimatorDef()
-            {
-                AnimationFrames = authoring.AnimationFrames
-            });
+            var framesCount = GetComponent<SpriteAuthoring>().Frames.Length;
             if (authoring.AnimationLength > 0)
             {
                 AddComponent(entity, new SpriteAnimator()
                 {
                     StartTime = 0,
                     Frame = 0,
-                    FramesCount = authoring.AnimationFrames.Length,
+                    FramesCount = framesCount,
                     StartFrame = 0,
-                    LastFrame = authoring.AnimationFrames.Length - 1,
+                    LastFrame = framesCount - 1,
                     AnimationLength = authoring.AnimationLength,
                     WrapMode = authoring.WrapMode,
                     Backwards = false,
@@ -35,5 +33,3 @@ public class SpriteAnimatorAuthoring : MonoBehaviour
         }
     }
 }
-
-

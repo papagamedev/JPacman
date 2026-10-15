@@ -1,22 +1,30 @@
+using Unity.Burst;
 using Unity.Entities;
-using UnityEngine;
 
+[BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(SpriteAnimationSystem))]
-public partial class SpriteColorSystem : SystemBase
+public partial struct SpriteColorSystem : ISystem
 {
-    protected override void OnCreate()
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
     {
-        base.OnCreate();
-
-        RequireForUpdate<SpriteSetColor>();
+        state.RequireForUpdate<SpriteSetColor>();
     }
 
-    protected override void OnUpdate()
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
     {
-        foreach (var (sprite, spriteColor) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<SpriteSetColor>>())
-        {
-            sprite.Value.color = spriteColor.ValueRO.Color;
-        }
+        new SpriteSetColorJob().ScheduleParallel();
+    }
+}
+
+[BurstCompile]
+[WithChangeFilter(typeof(SpriteSetColor))]
+public partial struct SpriteSetColorJob : IJobEntity
+{
+    private void Execute(in SpriteSetColor spriteColor, ref SpriteColorProperty color)
+    {
+        color = SpriteColorProperty.FromColor(spriteColor.Color);
     }
 }
