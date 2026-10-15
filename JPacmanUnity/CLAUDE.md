@@ -4,9 +4,9 @@ Unity port of JPacman, a Pac-Man clone originally written in C++ in 1998–99 (s
 
 ## Versions
 
-- Unity **6000.5.8f1** (6.5). `ProjectSettings/ProjectVersion.txt` is the source of truth.
-- Entities **6.5** (now a core package), Entities Graphics, Burst, Input System, uGUI + TextMesh Pro.
-- **URP 17.5 with the 2D Renderer** (`Assets/New Universal Render Pipeline Asset.asset`, assigned in Graphics settings). Built-in RP is deprecated in 6.5; don't switch back.
+- Unity **6000.6.5f1** (6.6). `ProjectSettings/ProjectVersion.txt` is the source of truth.
+- Entities **6.6** (now a core package), Entities Graphics, Burst 2.0, Input System, uGUI + TextMesh Pro.
+- **URP 17.6 with the 2D Renderer** (`Assets/New Universal Render Pipeline Asset.asset`, assigned in Graphics settings). Built-in RP is deprecated in 6.5; don't switch back.
 - MCP for Unity (`com.coplaydev.unity-mcp`, from OpenUPM) for editor automation; see "Working with the editor" below.
 
 ## Layout
@@ -57,7 +57,8 @@ All code is in the single `Assembly-CSharp` assembly (no asmdefs), global namesp
 - `ISystem` structs with `[BurstCompile]` for gameplay; `SystemBase` only where managed objects are involved (UI, audio, input, sprites).
 - Parallel jobs write structural changes through `EntityCommandBuffer.ParallelWriter` with `[EntityIndexInQuery] int sortKey`.
 - Source files use **CRLF** line endings (git `core.autocrlf=true`). Keep them when editing. Note that Git Bash `sed -i` strips CRs.
-- Cheats (`CHEATS_ENABLED`) exist only in the editor and development builds (see `Game.cs`).
+- Cheats (`CHEATS_ENABLED`) exist only in the editor and debug builds (see `Game.cs`). Use `DEBUG`, not `DEVELOPMENT_BUILD`, which is deprecated since 6.6.
+- Managed components (`AddComponentObject`, `SystemAPI.ManagedAPI`, used for the `SpriteRenderer` companions) are deprecated since Entities 6.6 and produce CS0618 warnings. They go away with the planned move to DOTS rendering; don't add new uses.
 
 ## Working with the editor
 
