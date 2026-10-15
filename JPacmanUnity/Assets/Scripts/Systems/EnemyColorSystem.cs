@@ -1,30 +1,30 @@
+using Unity.Burst;
 using Unity.Entities;
-using UnityEngine;
 
+[BurstCompile]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(MovableSystem))]
-public partial class EnemyColorSystem : SystemBase
+public partial struct EnemyColorSystem : ISystem
 {
-    protected override void OnCreate()
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
     {
-        base.OnCreate();
-
-        RequireForUpdate<Enemy>();
-        RequireForUpdate<PowerupMode>();
-        RequireForUpdate<SpriteAnimator>();
-        RequireForUpdate<SpriteAnimatorDef>();
+        state.RequireForUpdate<Enemy>();
+        state.RequireForUpdate<PowerupMode>();
+        state.RequireForUpdate<SpriteFrames>();
     }
 
-    protected override void OnUpdate()
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
     {
-        foreach (var (sprite, enemyDef, enemy) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>, RefRO<Enemy>>().WithAll<EnemyHomeTag>())
+        foreach (var (color, enemyDef, enemy) in SystemAPI.Query<RefRW<SpriteColorProperty>, RefRO<EnemyDef>, RefRO<Enemy>>().WithAll<EnemyHomeTag>())
         {
-            sprite.Value.color = enemyDef.ValueRO.EnemyColors[enemy.ValueRO.Id];
+            color.ValueRW = SpriteColorProperty.FromColor(enemyDef.ValueRO.EnemyColors[enemy.ValueRO.Id]);
         }
 
-        foreach (var (sprite, enemyDef, enemy) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>, RefRO<Enemy>>().WithAll<EnemyFollowPlayerTag>())
+        foreach (var (color, enemyDef, enemy) in SystemAPI.Query<RefRW<SpriteColorProperty>, RefRO<EnemyDef>, RefRO<Enemy>>().WithAll<EnemyFollowPlayerTag>())
         {
-            sprite.Value.color = enemyDef.ValueRO.EnemyColors[enemy.ValueRO.Id];
+            color.ValueRW = SpriteColorProperty.FromColor(enemyDef.ValueRO.EnemyColors[enemy.ValueRO.Id]);
         }
 
         var mainEntity = SystemAPI.GetSingletonEntity<Main>();
@@ -33,19 +33,19 @@ public partial class EnemyColorSystem : SystemBase
             SystemAPI.GetBuffer<EnemyReturnedHomeBufferElement>(mainEntity));
         var enemyScaredBlinking = powerupModeAspect.IsEnemyScaredBlinking;
 
-        foreach (var (sprite, enemyDef) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>>().WithAll<EnemyScaredTag>())
+        foreach (var (color, enemyDef) in SystemAPI.Query<RefRW<SpriteColorProperty>, RefRO<EnemyDef>>().WithAll<EnemyScaredTag>())
         {
-            sprite.Value.color = enemyScaredBlinking ? enemyDef.ValueRO.EnemyScaredBlinkColor : enemyDef.ValueRO.EnemyScaredColor;
+            color.ValueRW = SpriteColorProperty.FromColor(enemyScaredBlinking ? enemyDef.ValueRO.EnemyScaredBlinkColor : enemyDef.ValueRO.EnemyScaredColor);
         }
 
-        foreach (var (sprite, enemyDef) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>>().WithAll<EnemyHomeScaredTag>())
+        foreach (var (color, enemyDef) in SystemAPI.Query<RefRW<SpriteColorProperty>, RefRO<EnemyDef>>().WithAll<EnemyHomeScaredTag>())
         {
-            sprite.Value.color = enemyScaredBlinking ? enemyDef.ValueRO.EnemyScaredBlinkColor : enemyDef.ValueRO.EnemyScaredColor;
+            color.ValueRW = SpriteColorProperty.FromColor(enemyScaredBlinking ? enemyDef.ValueRO.EnemyScaredBlinkColor : enemyDef.ValueRO.EnemyScaredColor);
         }
 
-        foreach (var (sprite, enemyDef) in SystemAPI.Query<SystemAPI.ManagedAPI.UnityEngineComponent<SpriteRenderer>, RefRO<EnemyDef>>().WithAll<EnemyReturnHomeTag>())
+        foreach (var (color, enemyDef) in SystemAPI.Query<RefRW<SpriteColorProperty>, RefRO<EnemyDef>>().WithAll<EnemyReturnHomeTag>())
         {
-            sprite.Value.color = enemyDef.ValueRO.EnemyReturnHomeColor;
+            color.ValueRW = SpriteColorProperty.FromColor(enemyDef.ValueRO.EnemyReturnHomeColor);
         }
     }
 }
